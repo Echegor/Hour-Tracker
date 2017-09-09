@@ -3,6 +3,8 @@
     android:id="@+id/weekSearchfield"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:text="@string/inception" >
+    android:text="@string/inception"
+    android:textAlignment="center"
+    android:gravity="center">
 
 </TextView>

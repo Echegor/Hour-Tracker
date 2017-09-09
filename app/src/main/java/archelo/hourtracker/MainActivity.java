@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, TimeActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, TimeActivity.class);
+//        startActivity(intent);
 
         initPageModel();
 
@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        View logo = getLayoutInflater().inflate(R.layout.action_bar_main, toolbar);
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

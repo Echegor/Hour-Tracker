@@ -1,5 +1,6 @@
 package archelo.hourtracker;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
@@ -20,6 +21,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import archelo.hourtracker.wheel.widget.WheelView;
 
 import static archelo.hourtracker.DbHelperContract.DbEntry.*;
 
@@ -215,7 +218,7 @@ public class PageModel implements View.OnTouchListener {
     }
 
     public BigDecimal calcTime(String startTime, String endTime) throws ParseException{
-        DateFormat format = new SimpleDateFormat("HH:mm");
+        DateFormat format = new SimpleDateFormat("hh:mm");
         Date time_1 = format.parse(startTime);
         Date time_2 = format.parse(endTime);
         long timeStart = time_1.getTime();
@@ -252,35 +255,81 @@ public class PageModel implements View.OnTouchListener {
             Calendar mcurrentTime = Calendar.getInstance();
             int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
             int minute = mcurrentTime.get(Calendar.MINUTE);
-            TimePickerDialog mTimePicker;
-            mTimePicker = new TimePickerDialog(rootView.getContext(),1, new TimePickerDialog.OnTimeSetListener() {
+//            TimePickerDialog mTimePicker;
+//            mTimePicker = new TimePickerDialog(rootView.getContext(),1, new TimePickerDialog.OnTimeSetListener() {
+//                @Override
+//                public void onTimeSet(TimePicker timePicker, int i, int i1) {
+//                    String hour = "";
+//                    String minute = "";
+//                    if(i<10){
+//                        hour = "0"+i;
+//                    }
+//                    else{
+//                        hour = ""+i;
+//                    }
+//
+//                    if(i1<10){
+//                        minute = "0"+i1;
+//                    }
+//                    else{
+//                        minute = ""+i1;
+//                    }
+//                    String time = hour + ":" + minute;
+//
+//                    ((EditText) view).setText(time);
+////                        TODO Implment better search. Best thing I can think of is a hashtable that has key and value and then value as key.
+//                    evaluateTimeDifference();
+//                    insertTimesIntoDb();
+//                }
+//            }, hour, minute, true);//Yes 24 hour time
+//            mTimePicker.setTitle("Select Time");
+//            mTimePicker.show();
+            TimeDialog dialog = new TimeDialog(rootView.getContext()){
                 @Override
-                public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                    String hour = "";
-                    String minute = "";
-                    if(i<10){
-                        hour = "0"+i;
+                public void onOKPressed(WheelView hours, WheelView mins, WheelView ampm) {
+                    super.onOKPressed(hours, mins, ampm);
+                    int hour = hours.getCurrentItem()+1;
+                    int minute = mins.getCurrentItem();
+                    int hourAMPM = ampm.getCurrentItem();
+
+                    Log.v(TAG,"hour: " + hour +", minute: " + minute +", ampm: "+hourAMPM);
+                    String hourS = "";
+                    String minuteS = "";
+                    String ampmS = "";
+                    if(hour<10){
+                        hourS = "0"+hour;
                     }
                     else{
-                        hour = ""+i;
+                        hourS = ""+hour;
                     }
 
-                    if(i1<10){
-                        minute = "0"+i1;
+                    if(minute<10){
+                        minuteS = "0"+minute;
                     }
                     else{
-                        minute = ""+i1;
+                        minuteS = ""+minute;
                     }
-                    String time = hour + ":" + minute;
+
+                    if(hourAMPM == 0){
+                        ampmS = "AM";
+                    }
+                    else{
+                        ampmS = "PM";
+                    }
+
+                    String time = hourS + ":" + minuteS +" " +ampmS;
 
                     ((EditText) view).setText(time);
 //                        TODO Implment better search. Best thing I can think of is a hashtable that has key and value and then value as key.
                     evaluateTimeDifference();
                     insertTimesIntoDb();
                 }
-            }, hour, minute, true);//Yes 24 hour time
-            mTimePicker.setTitle("Select Time");
-            mTimePicker.show();
+            };
+
+
+
+
+            dialog.show();
             return true;
         }
         return false;
