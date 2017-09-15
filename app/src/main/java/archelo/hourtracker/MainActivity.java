@@ -1,11 +1,16 @@
 package archelo.hourtracker;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
     // we save each page in a model
     private PageModel[] mPageModel = new PageModel[3];
     public static TextView actionBarText;
+    private ActionBar actionBar;
+
+    private String[] mPlanetTitles;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -41,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG,"onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.drawer_main);
 
 //        Intent intent = new Intent(this, TimeActivity.class);
 //        startActivity(intent);
@@ -75,6 +87,59 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //disables left swipe.
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        mNavigationView = (NavigationView) findViewById(R.id.left_drawer);
+
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                Log.v(TAG,"You clicked on the item");
+                mDrawerLayout.closeDrawers();
+                menuItem.setChecked(true);
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_home:
+                        // TODO - Do something
+                        break;
+                    // TODO - Handle other items
+                }
+                return true;
+            }
+        });
+
+
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                actionBar.setTitle("BYEBYE");
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                actionBar.setTitle("WAssup");
+
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
     }
 
 
@@ -97,7 +162,16 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-//        Log.v(TAG,"onOptionsItemSelected");
+        Log.v(TAG,"onOptionsItemSelected item " + item.getItemId());
+
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
+            return true;
+        }
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -189,5 +263,19 @@ public class MainActivity extends AppCompatActivity {
         public boolean isViewFromObject(View view, Object obj) {
             return view == obj;
         }
+    }
+
+    //drawer stuff
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
     }
 }
