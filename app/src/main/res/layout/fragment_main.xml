@@ -7,13 +7,13 @@
     android:weightSum="16">
     <!--android:background="@color/colorPrimary">-->
 
-    <TextView
-        android:id="@+id/weekLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/inception"
-        android:textAlignment="center" />
+    <!--<TextView-->
+        <!--android:id="@+id/weekLabel"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:text="@string/inception"-->
+        <!--android:textAlignment="center" />-->
 
 
     <TextView

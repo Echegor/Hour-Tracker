@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private int mSelectedPageIndex = 1;
     // we save each page in a model
     private PageModel[] mPageModel = new PageModel[3];
+    public static TextView actionBarText;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -59,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        View logo = getLayoutInflater().inflate(R.layout.action_bar_main, toolbar);
+        View toolBarView  = getLayoutInflater().inflate(R.layout.action_bar_main, toolbar);
+        actionBarText = toolBarView.findViewById(R.id.weekSearchfield);
 
 
 

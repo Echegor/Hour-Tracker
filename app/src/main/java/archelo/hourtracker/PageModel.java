@@ -36,7 +36,7 @@ public class PageModel implements View.OnTouchListener {
     private EditText[] endTimes;
     private TextView[] dailyTotals;
     private TextView[] moneyPerDay;
-    private TextView weekView;
+//    private TextView weekView;
     private DbHelper database;
     private Date currentDate;
     private PageType type;
@@ -107,7 +107,7 @@ public class PageModel implements View.OnTouchListener {
         if(rootView != null){
             Log.v(TAG,type.toString() + ": Initializing hooks");
             currentDate = calculateCurrentWeekStart();
-            weekView = (TextView) rootView.findViewById(R.id.weekLabel);
+//            weekView = (TextView) rootView.findViewById(R.id.weekLabel);
             initializeDateTextView();
             initViewArrays();
             attachClocksWidget();
@@ -191,7 +191,7 @@ public class PageModel implements View.OnTouchListener {
     }
 
     public void refreshDate(){
-        weekView.setText("Week: "+getCurrentWeekAsString());
+        MainActivity.actionBarText.setText("Week: "+getCurrentWeekAsString());
     }
 
     public void evaluateTimeDifference(){
@@ -255,35 +255,8 @@ public class PageModel implements View.OnTouchListener {
             Calendar mcurrentTime = Calendar.getInstance();
             int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
             int minute = mcurrentTime.get(Calendar.MINUTE);
-//            TimePickerDialog mTimePicker;
-//            mTimePicker = new TimePickerDialog(rootView.getContext(),1, new TimePickerDialog.OnTimeSetListener() {
-//                @Override
-//                public void onTimeSet(TimePicker timePicker, int i, int i1) {
-//                    String hour = "";
-//                    String minute = "";
-//                    if(i<10){
-//                        hour = "0"+i;
-//                    }
-//                    else{
-//                        hour = ""+i;
-//                    }
-//
-//                    if(i1<10){
-//                        minute = "0"+i1;
-//                    }
-//                    else{
-//                        minute = ""+i1;
-//                    }
-//                    String time = hour + ":" + minute;
-//
-//                    ((EditText) view).setText(time);
-////                        TODO Implment better search. Best thing I can think of is a hashtable that has key and value and then value as key.
-//                    evaluateTimeDifference();
-//                    insertTimesIntoDb();
-//                }
-//            }, hour, minute, true);//Yes 24 hour time
-//            mTimePicker.setTitle("Select Time");
-//            mTimePicker.show();
+
+            //TODO: use get item view from each wheel view. Also, try to access each element and eliminate the centerDrawable from wheel view.
             TimeDialog dialog = new TimeDialog(rootView.getContext()){
                 @Override
                 public void onOKPressed(WheelView hours, WheelView mins, WheelView ampm) {

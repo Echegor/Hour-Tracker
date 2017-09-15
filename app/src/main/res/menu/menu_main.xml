@@ -2,9 +2,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="archelo.hourtracker.MainActivity">
+
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+    android:id="@+id/action_settings"
+    android:orderInCategory="100"
+    android:title="@string/action_settings"
+    app:showAsAction="never" />
+
+    <RadioButton
+        android:id="@+id/dayRadioButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".75"
+        android:text="RadioButton" />
+
+    <RadioButton
+        android:id="@+id/weekRadioButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".75"
+        android:text="RadioButton" />
+
+    <RadioButton
+        android:id="@+id/monthRadioButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".75"
+        android:text="RadioButton" />
+
+
+    <group android:id="@+id/group"
+        android:checkableBehavior="single">
+        <item android:id="@+id/menu_sort_by_name"
+            android:title="hloo"/>
+        <item android:id="@+id/menu_sort_by_last_edit"
+            android:title="heheh"/>
+    </group>
+
+
+
 </menu>
