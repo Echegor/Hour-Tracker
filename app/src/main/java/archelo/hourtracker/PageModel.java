@@ -36,7 +36,6 @@ public class PageModel implements View.OnTouchListener {
     private EditText[] endTimes;
     private TextView[] dailyTotals;
     private TextView[] moneyPerDay;
-//    private TextView weekView;
     private DbHelper database;
     private Date currentDate;
     private PageType type;
@@ -82,27 +81,33 @@ public class PageModel implements View.OnTouchListener {
         loadItemsFromDb();
     }
 
-    public void setType(PageType type){
-        this.type = type;
-    }
     public void moveDateToNextWeek(){
-        String currentTime = getCurrentWeekAsString();
+        String currentTime = getDateAsString(currentDate);
+        currentDate = getNextWeekDate();
+        Log.v(TAG,type.toString() + ": moved " + currentTime + " to " + getDateAsString(currentDate));
+    }
+    public void moveDateToPreviousWeek(){
+        String currentTime = getDateAsString(currentDate);
+        currentDate = getPreviousWeekDate();
+        Log.v(TAG,type.toString() + ": moved " + currentTime + " to " + getDateAsString(currentDate));
+    }
+
+
+    public Date getNextWeekDate(){
         Calendar c = Calendar.getInstance();
         c.setTime(currentDate);
         c.add(Calendar.DAY_OF_MONTH, 7);
-        currentDate = c.getTime();
-        Log.v(TAG,type.toString() + ": moved " + currentTime + " to " + getCurrentWeekAsString());
+        return c.getTime();
     }
 
-    public void moveDateToPreviousWeek(){
-        String currentTime = getCurrentWeekAsString();
+    public Date getPreviousWeekDate(){
         Calendar c = Calendar.getInstance();
         c.setTime(currentDate);
         c.add(Calendar.DAY_OF_MONTH, -7);
-        currentDate = c.getTime();
-        Log.v(TAG,type.toString() + ": moved " + currentTime + " to " + getCurrentWeekAsString());
+        return c.getTime();
     }
-
+    
+    
     private void initializeHooks() {
         if(rootView != null){
             Log.v(TAG,type.toString() + ": Initializing hooks");
@@ -191,7 +196,7 @@ public class PageModel implements View.OnTouchListener {
     }
 
     public void refreshDate(){
-        MainActivity.actionBarText.setText("Week: "+getCurrentWeekAsString());
+        MainActivity.actionBarText.setText("Week: "+getDateAsString(currentDate));
     }
 
     public void evaluateTimeDifference(){
@@ -319,7 +324,7 @@ public class PageModel implements View.OnTouchListener {
 
 // Filter results WHERE "title" = 'My Title'
         String selection = COLUMN_NAME_WEEK_DATE_START + " = ?";
-        String[] selectionArgs = { getCurrentWeekAsString() };
+        String[] selectionArgs = { getDateAsString(currentDate) };
 
 //        String sortOrder =
 //                COLUMN_NAME_SUBTITLE + " DESC";
@@ -337,7 +342,7 @@ public class PageModel implements View.OnTouchListener {
         try{
             if(cursor.moveToFirst()){
                 do{
-                    Log.v(TAG,type.toString() + ": Loading from db " + cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_WEEK_DATE_START)) + ", current week is "+getCurrentWeekAsString());
+                    Log.v(TAG,type.toString() + ": Loading from db " + cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_WEEK_DATE_START)) + ", current week is "+getDateAsString(currentDate));
                     for(int i = 0 ; i < DAYS_OF_WEEK_COLUMN_START_TIME.length ; i++){
                         startTimes[i].setText(cursor.getString(cursor.getColumnIndexOrThrow(DAYS_OF_WEEK_COLUMN_START_TIME[i])));
                         endTimes[i].setText(cursor.getString(cursor.getColumnIndexOrThrow(DAYS_OF_WEEK_COLUMN_END_TIME[i])));
@@ -354,7 +359,7 @@ public class PageModel implements View.OnTouchListener {
         }
         catch (IllegalArgumentException e){
             // if this happens, views are empty.
-            Log.v(TAG,type.toString() + ": IllegalArgumentException: "+getCurrentWeekAsString());
+            Log.v(TAG,type.toString() + ": IllegalArgumentException: "+getDateAsString(currentDate));
             initializeEmptyViews();
         }
         finally {
@@ -373,13 +378,13 @@ public class PageModel implements View.OnTouchListener {
     }
 
     private void insertTimesIntoDb() {
-        Log.v(TAG,type.toString() + ": Saving page "+getCurrentWeekAsString());
+        Log.v(TAG,type.toString() + ": Saving page "+getDateAsString(currentDate));
         if(database == null){
             database = new DbHelper(rootView.getContext());
         }
         SQLiteDatabase db = database.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME_WEEK_DATE_START,getCurrentWeekAsString());
+        values.put(COLUMN_NAME_WEEK_DATE_START,getDateAsString(currentDate));
         for(int i = 0; i<startTimes.length;i++ ){
             if(startTimes[i] != null && endTimes[i] != null) {
                 values.put(DAYS_OF_WEEK_COLUMN_START_TIME[i], startTimes[i].getText().toString());
@@ -399,11 +404,23 @@ public class PageModel implements View.OnTouchListener {
         return rootView;
     }
 
-    public String getCurrentWeekAsString(){
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String weekStart = df.format(currentDate);
+    public String getDateAsString(Date date){
+        SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+        String weekStart = df.format(date);
 //        Log.v(TAG,type.toString() + ": Calculated Start date is: " + weekStart);
         return weekStart;
+    }
+
+    public String getNextWeekAsString(){
+        return getDateAsString(getNextWeekDate());
+    }
+
+    public String getCurrentWeekAsString(){
+        return getDateAsString(getNextWeekDate());
+    }
+
+    public String getPreviousWeekAsString(){
+        return getDateAsString(getPreviousWeekDate());
     }
 
     public Date calculateCurrentWeekStart(){

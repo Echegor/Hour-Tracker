@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -196,34 +196,58 @@ public class MainActivity extends AppCompatActivity {
                 mSelectedPageIndex = position;
             }
 
+            /**
+             * This method will be invoked when the current page is scrolled, either as part
+             * of a programmatically initiated smooth scroll or a user initiated touch scroll.
+             *
+             * @param position Position index of the first page currently being displayed.
+             *                 Page position+1 will be visible if positionOffset is nonzero.
+             * @param positionOffset Value from [0, 1) indicating the offset from the page at position.
+             * @param positionOffsetPixels Value in pixels indicating the offset from position.
+             */
             @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) { }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.v(TAG,"onPageScrolled log pos:"+position+ ", offset: "+ positionOffset +", pixelOffset" +positionOffsetPixels);
+
+                if(positionOffset > 0.5 ){
+                    if(position == 1){
+                        Log.v(TAG,"Swiped right, setting actionbar text to: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
+                        MainActivity.actionBarText.setText("Week: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
+                    }
+                }// left swipe
+                else {
+                    if(position == 0){
+                        Log.v(TAG,"Swiped left, setting actionbar text to: "+mPageModel[PAGE_LEFT].getCurrentWeekAsString());
+                        MainActivity.actionBarText.setText("Week: "+mPageModel[PAGE_LEFT].getCurrentWeekAsString());
+                    }
+                }
+
+
+            }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager.SCROLL_STATE_IDLE) {
-
-                    final PageModel leftPage = mPageModel[PAGE_LEFT];
-                    final PageModel middlePage = mPageModel[PAGE_MIDDLE];
-                    final PageModel rightPage = mPageModel[PAGE_RIGHT];
-
                     // user swiped to right direction --> left page
                     if (mSelectedPageIndex == PAGE_LEFT) {
                         Log.v(TAG,"Swiped Left");
                         // moving each page content one page to the left
-                        leftPage.doLeftSwipe();
-                        middlePage.doLeftSwipe();
-                        rightPage.doLeftSwipe();
+                        mPageModel[PAGE_LEFT].doLeftSwipe();
+                        mPageModel[PAGE_MIDDLE].doLeftSwipe();
+                        mPageModel[PAGE_RIGHT].doLeftSwipe();
 
 
                         // user swiped to left direction --> right page
                     } else if (mSelectedPageIndex == PAGE_RIGHT) {
                         Log.v(TAG,"Swiped Right");
-
-                        leftPage.doRightSwipe();
-                        middlePage.doRightSwipe();
-                        rightPage.doRightSwipe();
-
+                        mPageModel[PAGE_LEFT].doRightSwipe();
+                        mPageModel[PAGE_MIDDLE].doRightSwipe();
+                        mPageModel[PAGE_RIGHT].doRightSwipe();
+                    }
+                    else {
+                        mPageModel[PAGE_LEFT].refreshView();
+                        mPageModel[PAGE_MIDDLE].refreshView();
+                        mPageModel[PAGE_RIGHT].refreshView();
                     }
                     //TODO fix ficlkering
                     viewPager.setCurrentItem(PAGE_MIDDLE, false);
@@ -247,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // we only need three pages
-            return 4;
+            return 3;
         }
 
         @Override
