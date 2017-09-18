@@ -71,18 +71,11 @@ public class MainActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(getPageChangeListener());
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        View toolBarView  = getLayoutInflater().inflate(R.layout.action_bar_main, toolbar);
-        actionBarText = toolBarView.findViewById(R.id.weekSearchfield);
-
-
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Luis needs to figure out what to do with this", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -122,20 +115,26 @@ public class MainActivity extends AppCompatActivity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                actionBar.setTitle("BYEBYE");
+//                actionBar.setTitle("BYEBYE");
                 mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                actionBar.setTitle("WAssup");
+//                actionBar.setTitle("WAssup");
 
             }
         };
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        View toolBarView  = getLayoutInflater().inflate(R.layout.action_bar_main, toolbar);
+        actionBarText = toolBarView.findViewById(R.id.weekSearchfield);
 
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -147,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         Log.v(TAG,"onCreateOptionMenu");
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        //this is what inflate the overflow menu
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
