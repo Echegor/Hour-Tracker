@@ -5,22 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="16">
-    <!--android:background="@color/colorPrimary">-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/weekLabel"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="@string/inception"-->
-        <!--android:textAlignment="center" />-->
-
 
     <TextView
         android:id="@+id/sundayLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".75"
+        android:layout_weight="0"
         android:text="@string/sunday" />
 
     <LinearLayout

@@ -1,11 +1,15 @@
 package archelo.hourtracker;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         initPageModel();
 
         mInflater = getLayoutInflater();
-        MyPagerAdaper adapter = new MyPagerAdaper();
+        final MyPagerAdaper adapter = new MyPagerAdaper();
 
         viewPager = (ViewPager) findViewById(R.id.container);
         viewPager.setAdapter(adapter);
@@ -89,11 +93,19 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                Log.v(TAG,"You clicked on the item");
+//                Log.v(TAG,"You clicked on the item");
                 mDrawerLayout.closeDrawers();
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
+                        viewPager.setAdapter(adapter);
+                        break;
+                    case R.id.settingsButton:
+                        Log.v(TAG,"Pressed settings button");
+                        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
+//                        Intent intent = new Intent(MainActivity.this, TimeActivity.class);
+//                        startActivity(intent);
+
                         // TODO - Do something
                         break;
                     // TODO - Handle other items
@@ -162,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        Log.v(TAG,"onOptionsItemSelected item " + item.getItemId());
+//        Log.v(TAG,"onOptionsItemSelected item " + item.getItemId());
 
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
@@ -175,7 +187,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.settingsButton) {
+            Log.v(TAG,"Pressed settings button");
             return true;
         }
 
@@ -186,6 +199,53 @@ public class MainActivity extends AppCompatActivity {
         mPageModel[0] = new PageModel(PageModel.PageType.LEFT);
         mPageModel[1] = new PageModel(PageModel.PageType.CURRENT);
         mPageModel[2] = new PageModel(PageModel.PageType.RIGHT);
+    }
+
+    //drawer stuff
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    private class MyPagerAdaper extends PagerAdapter {
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public int getCount() {
+            // we only need three pages
+            return 3;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Log.v(TAG,"Instantiating page:" + position);
+            View view = (View) mInflater.inflate(R.layout.fragment_main,container, false);
+            mPageModel[position].setView(view);
+            container.addView(view);
+            return view;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object obj) {
+            return view == obj;
+        }
     }
 
     public ViewPager.OnPageChangeListener getPageChangeListener(){
@@ -207,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.v(TAG,"onPageScrolled log pos:"+position+ ", offset: "+ positionOffset +", pixelOffset" +positionOffsetPixels);
+//                Log.v(TAG,"onPageScrolled log pos:"+position+ ", offset: "+ positionOffset +", pixelOffset" +positionOffsetPixels);
 
                 if(positionOffset > 0.5 ){
                     if(position == 1){
@@ -256,50 +316,22 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private class MyPagerAdaper extends PagerAdapter {
-
-        @Override
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
+    private class DayAdapter extends FragmentStatePagerAdapter{
+        public DayAdapter(FragmentManager fm) {
+            super(fm);
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
+        public Fragment getItem(int position) {
+//            switch (position)  {
+//                case
+//            }
+            return new DayFragment();
         }
 
         @Override
         public int getCount() {
-            // we only need three pages
-            return 3;
+            return 7;
         }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Log.v(TAG,"Instantiating item pos:" + position);
-            View view = (View) mInflater.inflate(R.layout.fragment_main,container, false);
-            mPageModel[position].setView(view);
-            container.addView(view);
-            return view;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object obj) {
-            return view == obj;
-        }
-    }
-
-    //drawer stuff
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
     }
 }

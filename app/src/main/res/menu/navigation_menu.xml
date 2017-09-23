@@ -17,7 +17,7 @@
     <item android:title="Sub items">
         <menu>
             <item
-                android:id="@+id/nav_example_sub_item_1"
+                android:id="@+id/settingsButton"
                 android:title="Settings" />
         </menu>
     </item>
