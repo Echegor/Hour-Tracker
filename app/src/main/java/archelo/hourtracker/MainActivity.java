@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
         // we dont want any smoothscroll. This enables us to switch the page
         // without the user notifiying this
         viewPager.setCurrentItem(PAGE_MIDDLE, false);
-        viewPager.addOnPageChangeListener(getPageChangeListener());
+        final ViewPager.OnPageChangeListener pageListener = getPageChangeListener();
+        viewPager.addOnPageChangeListener(pageListener);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -100,10 +101,12 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
                         viewPager.setAdapter(adapter);
+                        viewPager.addOnPageChangeListener(pageListener);
                         break;
                     case R.id.settingsButton:
                         Log.v(TAG,"Pressed settings button");
                         viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
+                        viewPager.removeOnPageChangeListener(pageListener);
 //                        Intent intent = new Intent(MainActivity.this, TimeActivity.class);
 //                        startActivity(intent);
 

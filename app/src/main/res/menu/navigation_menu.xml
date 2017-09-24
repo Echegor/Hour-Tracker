@@ -5,20 +5,20 @@
         <item
             android:id="@+id/nav_home"
             android:title="Home"
-            android:icon="@drawable/ic_info_black_24dp"/>
+            android:icon="@mipmap/ic_home_black_24dp"/>
 
         <item
-            android:id="@+id/nav_example_item_1"
-            android:title="Example Item #1"
-            android:icon="@drawable/ic_sync_black_24dp"
-        />
+            android:id="@+id/settingsButton"
+            android:title="Settings"
+            android:icon="@android:drawable/ic_menu_manage" />
     </group>
 
-    <item android:title="Sub items">
+    <item android:title="Views">
         <menu>
             <item
-                android:id="@+id/settingsButton"
-                android:title="Settings" />
+                android:id="@+id/weekItem"
+                android:title="Week" />
+            />
         </menu>
     </item>
 </menu>
