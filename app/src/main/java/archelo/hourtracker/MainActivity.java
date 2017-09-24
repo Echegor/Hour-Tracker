@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.container);
         viewPager.setAdapter(adapter);
+        viewPager.removeViewInLayout(findViewById(R.id.tabLayout));
         // we dont want any smoothscroll. This enables us to switch the page
         // without the user notifiying this
         viewPager.setCurrentItem(PAGE_MIDDLE, false);
@@ -101,7 +102,16 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
                         viewPager.setAdapter(adapter);
+                        viewPager.removeViewInLayout(findViewById(R.id.tabLayout));
                         viewPager.addOnPageChangeListener(pageListener);
+                        break;
+                    case R.id.dayItem:
+                        Log.v(TAG,"Pressed settings button");
+                        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
+                        viewPager.removeOnPageChangeListener(pageListener);
+                        View view = (View) mInflater.inflate(R.layout.tab_layout,viewPager,false);
+                        viewPager.addView(view,-1);
+//                        viewPager.
                         break;
                     case R.id.settingsButton:
                         Log.v(TAG,"Pressed settings button");
@@ -277,15 +287,15 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                    if(positionOffset > 0.5 ){
+                if(positionOffset > 0.5 ){
                     if(position == 1){
-                        Log.v(TAG,"Swiped right, setting actionbar text to: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
+                        Log.v(TAG,"onPageScrolled: Swiped right, setting actionbar text to: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
                         MainActivity.actionBarText.setText("Week: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
                     }
                 }// left swipe
                 else {
                     if(position == 0){
-                        Log.v(TAG,"Swiped left, setting actionbar text to: "+mPageModel[PAGE_LEFT].getCurrentWeekAsString());
+                        Log.v(TAG,"onPageScrolled: Swiped left, setting actionbar text to: "+mPageModel[PAGE_LEFT].getCurrentWeekAsString());
                         MainActivity.actionBarText.setText("Week: "+mPageModel[PAGE_LEFT].getCurrentWeekAsString());
                     }
                 }
@@ -317,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                         mPageModel[PAGE_MIDDLE].refreshView();
                         mPageModel[PAGE_RIGHT].refreshView();
                     }
-                    //TODO fix ficlkering
+                    //TODO fix fast swipes
                     viewPager.setCurrentItem(PAGE_MIDDLE, false);
                 }
             }
@@ -325,16 +335,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class DayAdapter extends FragmentStatePagerAdapter{
+        private String TAG = "DayAdapter.class";
         public DayAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
+            Log.v(TAG,"Getting position "+position);
 //            switch (position)  {
 //                case
 //            }
             return new DayFragment();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch(position){
+                case 0:
+                    return "S";
+                case 1:
+                    return "M";
+                case 2:
+                    return "T";
+                case 3:
+                    return "W";
+                case 4:
+                    return "T";
+                case 5:
+                    return "F";
+                case 6:
+                    return "S";
+            }
+            return "Title Here";
         }
 
         @Override

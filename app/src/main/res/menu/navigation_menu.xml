@@ -16,8 +16,12 @@
     <item android:title="Views">
         <menu>
             <item
-                android:id="@+id/weekItem"
-                android:title="Week" />
+                android:id="@+id/dayItem"
+                android:title="Day" />
+            />
+            <item
+            android:id="@+id/weekItem"
+            android:title="Week" />
             />
         </menu>
     </item>
