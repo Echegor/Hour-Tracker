@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBar actionBar;
 
     private String[] mPlanetTitles;
-    private DrawerLayout mDrawerLayout;
+    public static DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -269,7 +270,11 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 //                Log.v(TAG,"onPageScrolled log pos:"+position+ ", offset: "+ positionOffset +", pixelOffset" +positionOffsetPixels);
 
-                if(positionOffset > 0.5 ){
+                if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
+                    return;
+                }
+
+                    if(positionOffset > 0.5 ){
                     if(position == 1){
                         Log.v(TAG,"Swiped right, setting actionbar text to: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
                         MainActivity.actionBarText.setText("Week: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
