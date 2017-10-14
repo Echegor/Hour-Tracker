@@ -26,5 +26,10 @@
 			android:layout_height="match_parent"
 			android:layout_width="match_parent"
             android:layout_weight="1"/>
+
+		<NumberPicker
+			android:id="@+id/number_picker"
+			android:layout_width="match_parent"
+			android:layout_height="180dp" />
 	</LinearLayout>
 </LinearLayout>

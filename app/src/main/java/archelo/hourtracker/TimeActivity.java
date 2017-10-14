@@ -12,6 +12,7 @@ import archelo.hourtracker.wheel.widget.adapters.NumericWheelAdapter;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.NumberPicker;
 
 public class TimeActivity extends Activity {
 	// Time changed flag
@@ -25,6 +26,12 @@ public class TimeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.time_layout);
+
+		NumberPicker picker = (NumberPicker)  findViewById(R.id.number_picker);
+		String[] data = new String[]{"Berlin", "Moscow", "Tokyo", "Paris"};
+		picker.setMinValue(0);
+		picker.setMaxValue(data.length-1);
+		picker.setDisplayedValues(data);
 	
 		final WheelView hours = (WheelView) findViewById(R.id.hour);
 		hours.setViewAdapter(new NumericWheelAdapter(this, 1, 12));
