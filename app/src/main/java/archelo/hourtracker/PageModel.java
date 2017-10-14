@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import archelo.hourtracker.wheel.widget.WheelView;
+//import archelo.hourtracker.wheel.widget.WheelView;
 
 import static archelo.hourtracker.DbHelperContract.DbEntry.*;
 
@@ -263,45 +263,45 @@ public class PageModel implements View.OnTouchListener {
 
             //TODO: use get item view from each wheel view. Also, try to access each element and eliminate the centerDrawable from wheel view.
             TimeDialog dialog = new TimeDialog(rootView.getContext()){
-                @Override
-                public void onOKPressed(WheelView hours, WheelView mins, WheelView ampm) {
-                    super.onOKPressed(hours, mins, ampm);
-                    int hour = hours.getCurrentItem()+1;
-                    int minute = mins.getCurrentItem();
-                    int hourAMPM = ampm.getCurrentItem();
-
-                    Log.v(TAG,"hour: " + hour +", minute: " + minute +", ampm: "+hourAMPM);
-                    String hourS = "";
-                    String minuteS = "";
-                    String ampmS = "";
-                    if(hour<10){
-                        hourS = "0"+hour;
-                    }
-                    else{
-                        hourS = ""+hour;
-                    }
-
-                    if(minute<10){
-                        minuteS = "0"+minute;
-                    }
-                    else{
-                        minuteS = ""+minute;
-                    }
-
-                    if(hourAMPM == 0){
-                        ampmS = "AM";
-                    }
-                    else{
-                        ampmS = "PM";
-                    }
-
-                    String time = hourS + ":" + minuteS +" " +ampmS;
-
-                    ((EditText) view).setText(time);
-//                        TODO Implment better search. Best thing I can think of is a hashtable that has key and value and then value as key.
-                    evaluateTimeDifference();
-                    insertTimesIntoDb();
-                }
+//                @Override
+//                public void onOKPressed(WheelView hours, WheelView mins, WheelView ampm) {
+//            super.onOKPressed(hours, mins, ampm);
+//            int hour = hours.getCurrentItem()+1;
+//            int minute = mins.getCurrentItem();
+//            int hourAMPM = ampm.getCurrentItem();
+//
+//            Log.v(TAG,"hour: " + hour +", minute: " + minute +", ampm: "+hourAMPM);
+//            String hourS = "";
+//            String minuteS = "";
+//            String ampmS = "";
+//            if(hour<10){
+//                hourS = "0"+hour;
+//            }
+//            else{
+//                hourS = ""+hour;
+//            }
+//
+//            if(minute<10){
+//                minuteS = "0"+minute;
+//            }
+//            else{
+//                minuteS = ""+minute;
+//            }
+//
+//            if(hourAMPM == 0){
+//                ampmS = "AM";
+//            }
+//            else{
+//                ampmS = "PM";
+//            }
+//
+//            String time = hourS + ":" + minuteS +" " +ampmS;
+//
+//            ((EditText) view).setText(time);
+////                        TODO Implment better search. Best thing I can think of is a hashtable that has key and value and then value as key.
+//            evaluateTimeDifference();
+//            insertTimesIntoDb();
+//        }
             };
 
 

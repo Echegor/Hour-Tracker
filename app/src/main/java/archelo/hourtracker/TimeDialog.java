@@ -10,12 +10,6 @@ import android.widget.NumberPicker;
 import java.util.Calendar;
 import java.util.Locale;
 
-import archelo.hourtracker.wheel.widget.OnWheelChangedListener;
-import archelo.hourtracker.wheel.widget.OnWheelClickedListener;
-import archelo.hourtracker.wheel.widget.OnWheelScrollListener;
-import archelo.hourtracker.wheel.widget.WheelView;
-import archelo.hourtracker.wheel.widget.adapters.ArrayWheelAdapter;
-import archelo.hourtracker.wheel.widget.adapters.NumericWheelAdapter;
 
 /**
  * Created by Archelo on 9/9/2017.
@@ -94,9 +88,9 @@ public class TimeDialog extends Dialog {
         picker.setMaxValue(data.length-1);
         picker.setDisplayedValues(data);
     }
-    public void onOKPressed(WheelView hours, WheelView mins, final WheelView ampm){
-        dismiss();
-    }
+//    public void onOKPressed(WheelView hours, WheelView mins, final WheelView ampm){
+//        dismiss();
+//    }
 //
 //    public void onCancelPressed(WheelView hours, WheelView mins, final WheelView ampm){
 //        dismiss();
