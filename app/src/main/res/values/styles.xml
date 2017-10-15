@@ -25,8 +25,7 @@
 
     <style name="DefaultNumberPickerTheme" parent="AppTheme">
         <item name="colorControlNormal">@color/transparent</item>
-        <item name = "android:textColorPrimary">#2f6fef</item>
-        <item name = "android:fontFamily">serif</item>
+        <item name = "android:textColorPrimary">#042d81</item>
         <item name = "android:textSize">20sp</item>
     </style>
 
