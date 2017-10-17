@@ -18,20 +18,33 @@
         android:paddingBottom="10dp"
         android:background="?android:attr/selectableItemBackground">
 
-        <NumberPicker
+        <archelo.hourtracker.NumberPicker
             android:id="@+id/hour"
+            android:descendantFocusability="blocksDescendants"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:theme="@style/DefaultNumberPickerTheme"
             android:layout_weight="1" />
-        <NumberPicker
+        <TextView
+            android:id="@+id/colon"
+            android:layout_height="match_parent"
+            android:layout_width="5dp"
+            android:maxWidth="5dp"
+            android:minWidth="5dp"
+            android:gravity="center"
+            android:theme="@style/DefaultNumberPickerTheme"
+            android:text=":"
+             />
+        <archelo.hourtracker.NumberPicker
             android:id="@+id/mins"
+            android:descendantFocusability="blocksDescendants"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:theme="@style/DefaultNumberPickerTheme"
             android:layout_weight="1" />
-        <NumberPicker
+        <archelo.hourtracker.NumberPicker
             android:id="@+id/ampm"
+            android:descendantFocusability="blocksDescendants"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:theme="@style/DefaultNumberPickerTheme"
