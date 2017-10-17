@@ -2,11 +2,18 @@ package archelo.hourtracker;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 
@@ -15,11 +22,22 @@ import java.util.Locale;
  */
 
 public class DayFragment extends Fragment {
-    // Time changed flag
-    private boolean timeChanged = false;
-
-    // Time scrolled flag
-    private boolean timeScrolled = false;
+    private final static String[] hour = new String[]{"01","02","03","04","05","06","07","08","09","10","11","12"};
+    private final static String[] minutes = new String[]{"00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"};
+    private final static String[] ampmData = new String[]{"AM","PM"};
+    private final static int STARTPICKER = 0;
+    private final static int ENDPICKER = 1;
+    private final static BigDecimal wage = new BigDecimal(30);
+    private TextView startTime;
+    private TextView endTime;
+    private TextView hoursWorked;
+    private TextView moneyEarned;
+    private NumberPicker hourPicker;
+    private NumberPicker minutePicker;
+    private NumberPicker ampmPicker;
+    private NumberPicker hourPickerTwo;
+    private NumberPicker minutePickerTwo;
+    private NumberPicker ampmPickerTwo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,75 +45,87 @@ public class DayFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         View view = inflater.inflate(R.layout.time_layout, container, false);
-//        final WheelView hours = (WheelView) view.findViewById(R.id.hour);
-//        hours.setViewAdapter(new NumericWheelAdapter(getContext(), 1, 12));
-//        hours.setCyclic(true);
-//
-//        final WheelView mins = (WheelView) view.findViewById(R.id.mins);
-//        mins.setViewAdapter(new NumericWheelAdapter(getContext(), 0, 59, "%02d"));
-//        mins.setCyclic(true);
-//
-//        final WheelView ampm = (WheelView) view.findViewById(R.id.ampm);
-//        ArrayWheelAdapter<String> ampmAdapter =
-//                new ArrayWheelAdapter<String>(getContext(), new String[] {"AM", "PM"});
-//        ampmAdapter.setItemResource(R.layout.wheel_text_item);
-//        ampmAdapter.setItemTextResource(R.id.text);
-//        ampm.setViewAdapter(ampmAdapter);
+        View pickerOne = view.findViewById(R.id.pickerOne);
+        View pickerTwo = view.findViewById(R.id.pickerTwo);
 
-//		final TimePicker picker = (TimePicker) findViewById(R.id.time);
-//		picker.setIs24HourView(true);
+        startTime = (TextView) view.findViewById(R.id.startTime);
+        endTime = (TextView) view.findViewById(R.id.endTime);
+        hoursWorked = (TextView) view.findViewById(R.id.hoursWorked);
+        moneyEarned = (TextView) view.findViewById(R.id.moneyEarned);
 
 
+        hourPicker = (NumberPicker) pickerOne.findViewById(R.id.hour);
+        minutePicker = (NumberPicker) pickerOne.findViewById(R.id.mins);
+        ampmPicker = (NumberPicker) pickerOne.findViewById(R.id.ampm);
+
+        hourPickerTwo = (NumberPicker) pickerTwo.findViewById(R.id.hour);
+        minutePickerTwo = (NumberPicker) pickerTwo.findViewById(R.id.mins);
+        ampmPickerTwo = (NumberPicker) pickerTwo.findViewById(R.id.ampm);
+
+        initializePicker(hourPicker,0,hour.length-1,hour);
+        initializePicker(minutePicker,0,minutes.length -1,minutes);
+        initializePicker(ampmPicker,0,ampmData.length -1,ampmData);
+
+        initializePicker(hourPickerTwo,0,hour.length-1,hour);
+        initializePicker(minutePickerTwo,0,minutes.length -1,minutes);
+        initializePicker(ampmPickerTwo,0,ampmData.length -1,ampmData);
 
         Calendar calendar = Calendar.getInstance(Locale.US);
-//        hours.setCurrentItem(calendar.get(Calendar.HOUR));
-//        mins.setCurrentItem(calendar.get(Calendar.MINUTE));
-//        ampm.setCurrentItem(calendar.get(Calendar.AM_PM));
-//
-////		picker.setCurrentHour(curHours);
-////		picker.setCurrentMinute(curMinutes);
-//
-//        // add listeners
-//        addChangingListener(mins, "min");
-//        addChangingListener(hours, "hour");
-//
-//        OnWheelChangedListener wheelListener = new OnWheelChangedListener() {
-//            public void onChanged(WheelView wheel, int oldValue, int newValue) {
-//                if (!timeScrolled) {
-//                    timeChanged = true;
-////					picker.setCurrentHour(hours.getCurrentItem());
-////					picker.setCurrentMinute(mins.getCurrentItem());
-//                    timeChanged = false;
-//                }
-//            }
-//        };
-//        hours.addChangingListener(wheelListener);
-//        mins.addChangingListener(wheelListener);
-//
-//        OnWheelClickedListener click = new OnWheelClickedListener() {
-//            public void onItemClicked(WheelView wheel, int itemIndex) {
-//                wheel.setCurrentItem(itemIndex, true);
-//            }
-//        };
-//        hours.addClickingListener(click);
-//        mins.addClickingListener(click);
-//
-//        OnWheelScrollListener scrollListener = new OnWheelScrollListener() {
-//            public void onScrollingStarted(WheelView wheel) {
-//                timeScrolled = true;
-//            }
-//            public void onScrollingFinished(WheelView wheel) {
-//                timeScrolled = false;
-//                timeChanged = true;
-////				picker.setCurrentHour(hours.getCurrentItem());
-////				picker.setCurrentMinute(mins.getCurrentItem());
-//                timeChanged = false;
-//            }
-//        };
-//
-//        hours.addScrollingListener(scrollListener);
-//        mins.addScrollingListener(scrollListener);
-//        // Inflate the layout for this fragment
+
+        hourPicker.setValue(calendar.get(Calendar.HOUR));
+        minutePicker.setValue(calendar.get(Calendar.MINUTE));
+        ampmPicker.setValue(calendar.get(Calendar.AM_PM));
+
+        hourPickerTwo.setValue(calendar.get(Calendar.HOUR));
+        minutePickerTwo.setValue(calendar.get(Calendar.MINUTE));
+        ampmPickerTwo.setValue(calendar.get(Calendar.AM_PM));
+
+        startTime.setText(getTimeForPicker(STARTPICKER));
+        endTime.setText(getTimeForPicker(ENDPICKER));
+
+        String sTime = getTimeForPicker(STARTPICKER);
+        String eTime = getTimeForPicker(ENDPICKER);
+
+        BigDecimal bd = calculateHoursWorked(sTime,eTime);
+        hoursWorked.setText(bd.toPlainString());
+        BigDecimal money = wage.multiply(bd);
+        moneyEarned.setText("$" + money.toPlainString());
+
+
+        NumberPicker.OnValueChangeListener startListener = new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                String sTime = getTimeForPicker(STARTPICKER);
+                String eTime = getTimeForPicker(ENDPICKER);
+                startTime.setText(sTime);
+                BigDecimal bd = calculateHoursWorked(sTime,eTime);
+                hoursWorked.setText(bd.toPlainString());
+                BigDecimal money = wage.multiply(bd);
+                moneyEarned.setText("$" + money.toPlainString());
+            }
+        };
+
+        NumberPicker.OnValueChangeListener endListener = new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                String sTime = getTimeForPicker(STARTPICKER);
+                String eTime = getTimeForPicker(ENDPICKER);
+                endTime.setText(eTime);
+                BigDecimal bd = calculateHoursWorked(sTime,eTime);
+                hoursWorked.setText(bd.toPlainString());
+                BigDecimal money = wage.multiply(bd);
+                moneyEarned.setText("$" + money.toPlainString());
+            }
+        };
+
+        hourPicker.setOnValueChangedListener(startListener);
+        minutePicker.setOnValueChangedListener(startListener);
+        ampmPicker.setOnValueChangedListener(startListener);
+
+        hourPickerTwo.setOnValueChangedListener(endListener);
+        minutePickerTwo.setOnValueChangedListener(endListener);
+        ampmPickerTwo.setOnValueChangedListener(endListener);
+
         return view;
     }
 
@@ -105,11 +135,50 @@ public class DayFragment extends Fragment {
 
     }
 
-//    private void addChangingListener(final WheelView wheel, final String label) {
-//        wheel.addChangingListener(new OnWheelChangedListener() {
-//            public void onChanged(WheelView wheel, int oldValue, int newValue) {
-//                //wheel.setLabel(newValue != 1 ? label + "s" : label);
-//            }
-//        });
-//    }
+    public String getTimeForPicker(int picker){
+        if(picker == STARTPICKER){
+            return hour[hourPicker.getValue()] + ":" + minutes[minutePicker.getValue()] + " " + ampmData[ampmPicker.getValue()];
+        }
+        else if(picker == ENDPICKER){
+            return hour[hourPickerTwo.getValue()] + ":" + minutes[(minutePickerTwo.getValue())] + " " + ampmData[ampmPickerTwo.getValue()];
+        }
+        else{
+            return "";
+        }
+    }
+
+
+    public void initializePicker(NumberPicker picker,int minValue, int maxValue , String [] data){
+        picker.setMinValue(minValue);
+        picker.setMaxValue(maxValue);
+        picker.setDisplayedValues(data);
+    }
+
+    public BigDecimal calculateHoursWorked(String startTime, String endTime) {
+        DateFormat format = new SimpleDateFormat("hh:mm a");
+        try{
+            Date time_1 = format.parse(startTime);
+            Date time_2 = format.parse(endTime);
+            long timeStart = time_1.getTime();
+            long timeEnd = time_2.getTime();
+
+            Long timeDiff;
+            if(timeStart > timeEnd){
+                timeDiff = (timeEnd+60*24*60*1000) - timeStart;
+            }
+            else{
+                timeDiff = timeEnd - timeStart;
+            }
+            return milliToHours(timeDiff);
+        }
+        catch(ParseException pe){
+          pe.printStackTrace();
+        }
+        return new BigDecimal(0);
+    }
+
+    public BigDecimal milliToHours(Long d){
+        BigDecimal big = new BigDecimal(d.toString());
+        return big.divide(new BigDecimal(60*60000),2,BigDecimal.ROUND_HALF_UP);
+    }
 }

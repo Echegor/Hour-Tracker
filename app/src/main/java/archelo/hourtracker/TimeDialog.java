@@ -30,7 +30,7 @@ public class TimeDialog extends Dialog {
 
     public TimeDialog(Context context){
         super(context);
-        setContentView(R.layout.time_picker);
+        setContentView(R.layout.time_picker_dialog);
         NumberPicker hourPicker = (NumberPicker) findViewById(R.id.hour);
         NumberPicker minutePicker = (NumberPicker) findViewById(R.id.mins);
         NumberPicker ampmPicker = (NumberPicker) findViewById(R.id.ampm);

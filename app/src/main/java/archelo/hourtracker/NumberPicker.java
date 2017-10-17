@@ -64,6 +64,7 @@ public class NumberPicker extends LinearLayout {
     private final SparseArray<String> mSelectorIndexToStringCache = new SparseArray<>();
     private final int[] mSelectorIndices = new int[SELECTOR_WHEEL_ITEM_COUNT];
     private Paint mSelectorWheelPaint;
+    private Paint mSelectedItemPaint;
     private int mSelectorElementHeight;
     private int mInitialScrollOffset = Integer.MIN_VALUE;
     private int mCurrentScrollOffset;
@@ -160,6 +161,17 @@ public class NumberPicker extends LinearLayout {
         paint.setColor(color);
         mSelectorWheelPaint = paint;
 
+        Paint selectedPaint = new Paint();
+        selectedPaint.setAntiAlias(true);
+        selectedPaint.setTextAlign(Align.CENTER);
+//        selectedPaint.setUnderlineText(true);
+        selectedPaint.setFakeBoldText(true);
+        selectedPaint.setTextSize(56);
+        selectedPaint.setTypeface(mInputText.getTypeface());
+        selectedPaint.setColor(getResources().getColor(R.color.colorAccent));
+
+        mSelectedItemPaint = selectedPaint;
+
         mFlingScroller = new Scroller(getContext(), null, true);
         mAdjustScroller = new Scroller(getContext(), new DecelerateInterpolator(2.5f));
 
@@ -168,7 +180,7 @@ public class NumberPicker extends LinearLayout {
 
     public void setTextColor(int color) {
         mInputText.setTextColor(color);
-        mSelectorWheelPaint.setColor(color);
+        //mSelectorWheelPaint.setColor(color);
     }
 
     public void setSelectorColor(int color) {
@@ -650,15 +662,23 @@ public class NumberPicker extends LinearLayout {
         int[] selectorIndices = mSelectorIndices;
         for (int i = 0; i < selectorIndices.length; i++) {
             int selectorIndex = selectorIndices[i];
+
             String scrollSelectorValue = mSelectorIndexToStringCache.get(selectorIndex);
             // Do not draw the middle item if input is visible since the input
             // is shown only if the wheel is static and it covers the middle
             // item. Otherwise, if the user starts editing the text via the
             // IME he may see a dimmed version of the old value intermixed
             // with the new one.
-            if (i != SELECTOR_MIDDLE_ITEM_INDEX || mInputText.getVisibility() != VISIBLE) {
+
+
+            if( i == SELECTOR_MIDDLE_ITEM_INDEX){
+                canvas.drawText(scrollSelectorValue, x, y, mSelectedItemPaint);
+            }
+            else{
                 canvas.drawText(scrollSelectorValue, x, y, mSelectorWheelPaint);
             }
+
+
             y += mSelectorElementHeight;
         }
 
@@ -827,7 +847,6 @@ public class NumberPicker extends LinearLayout {
     }
 
     private int getWrappedSelectorIndex(int selectorIndex) {
-        Log.v("Number Picker " ,"Getting wrapped selector index");
         if (selectorIndex > mMaxValue) {
             return mMinValue + (selectorIndex - mMaxValue) % (mMaxValue - mMinValue) - 1;
         } else if (selectorIndex < mMinValue) {
@@ -837,7 +856,6 @@ public class NumberPicker extends LinearLayout {
     }
 
     private void incrementSelectorIndices(int[] selectorIndices) {
-        Log.v("Number Picker " ,"Increasing selector indices");
         System.arraycopy(selectorIndices, 1, selectorIndices, 0, selectorIndices.length - 1);
         int nextScrollSelectorIndex = selectorIndices[selectorIndices.length - 2] + 1;
         if (mWrapSelectorWheel && nextScrollSelectorIndex > mMaxValue) {
@@ -861,7 +879,6 @@ public class NumberPicker extends LinearLayout {
         SparseArray<String> cache = mSelectorIndexToStringCache;
         String scrollSelectorValue = cache.get(selectorIndex);
 
-        Log.v("Number picker","scrollselectorvalue " + scrollSelectorValue);
         if (scrollSelectorValue != null) {
             return;
         }
@@ -875,7 +892,6 @@ public class NumberPicker extends LinearLayout {
                 scrollSelectorValue = formatNumber(selectorIndex);
             }
         }
-        Log.v("Number picker","scrollselectorvalue put" + scrollSelectorValue);
         cache.put(selectorIndex, scrollSelectorValue);
     }
 
@@ -884,14 +900,14 @@ public class NumberPicker extends LinearLayout {
     }
 
     private boolean updateInputTextView() {
-        String text = (mDisplayedValues == null) ? formatNumber(mValue) : mDisplayedValues[mValue - mMinValue];
-        if (!TextUtils.isEmpty(text) && !text.equals(mInputText.getText().toString())) {
-            Log.v("Nunber picker" , "Updating text " + mInputText.getText());
-            mInputText.setText(text);
-            updateView();
-            return true;
-        }
-        return false;
+//        String text = (mDisplayedValues == null) ? formatNumber(mValue) : mDisplayedValues[mValue - mMinValue];
+//        if (!TextUtils.isEmpty(text) && !text.equals(mInputText.getText().toString())) {
+//            mInputText.setText(text);
+//
+//            return true;
+//        }
+//        return false;
+        return true;
     }
 
     private void notifyChange(int previous, int current) {
@@ -970,12 +986,6 @@ public class NumberPicker extends LinearLayout {
             return true;
         }
         return false;
-    }
-
-    private void updateView() {
-        mInputText.setTextSize(48);
-        mInputText.setTextColor(Color.parseColor("#bf0d0d"));
-        invalidate();
     }
 
     class PressedStateHelper implements Runnable {
