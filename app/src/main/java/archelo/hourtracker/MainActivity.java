@@ -1,7 +1,5 @@
 package archelo.hourtracker;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -63,19 +60,20 @@ public class MainActivity extends AppCompatActivity {
 //        Intent intent = new Intent(this, TimeActivity.class);
 //        startActivity(intent);
 
-        initPageModel();
+//        initPageModel();
 
         mInflater = getLayoutInflater();
-        final MyPagerAdaper adapter = new MyPagerAdaper();
+//        final MyPagerAdaper adapter = new MyPagerAdaper();
 
         viewPager = (ViewPager) findViewById(R.id.container);
-        viewPager.setAdapter(adapter);
-        viewPager.removeViewInLayout(findViewById(R.id.tabLayout));
+        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
+//        viewPager.setAdapter(adapter);
+//        viewPager.removeViewInLayout(findViewById(R.id.tabLayout));
         // we dont want any smoothscroll. This enables us to switch the page
-        // without the user notifiying this
-        viewPager.setCurrentItem(PAGE_MIDDLE, false);
-        final ViewPager.OnPageChangeListener pageListener = getPageChangeListener();
-        viewPager.addOnPageChangeListener(pageListener);
+        // without the user  this
+//        viewPager.setCurrentItem(PAGE_MIDDLE, false);
+//        final ViewPager.OnPageChangeListener pageListener = getPageChangeListener();
+//        viewPager.addOnPageChangeListener(pageListener);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -93,40 +91,40 @@ public class MainActivity extends AppCompatActivity {
 
         mNavigationView = (NavigationView) findViewById(R.id.left_drawer);
 
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-//                Log.v(TAG,"You clicked on the item");
-                mDrawerLayout.closeDrawers();
-                menuItem.setChecked(true);
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_home:
-                        viewPager.setAdapter(adapter);
-                        viewPager.removeViewInLayout(findViewById(R.id.tabLayout));
-                        viewPager.addOnPageChangeListener(pageListener);
-                        break;
-                    case R.id.dayItem:
-                        Log.v(TAG,"Pressed settings button");
-                        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
-                        viewPager.removeOnPageChangeListener(pageListener);
-                        View view = (View) mInflater.inflate(R.layout.tab_layout,viewPager,false);
-                        viewPager.addView(view,-1);
-//                        viewPager.
-                        break;
-                    case R.id.settingsButton:
-                        Log.v(TAG,"Pressed settings button");
-                        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
-                        viewPager.removeOnPageChangeListener(pageListener);
-//                        Intent intent = new Intent(MainActivity.this, TimeActivity.class);
-//                        startActivity(intent);
-
-                        // TODO - Do something
-                        break;
-                    // TODO - Handle other items
-                }
-                return true;
-            }
-        });
+//        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(MenuItem menuItem) {
+////                Log.v(TAG,"You clicked on the item");
+//                mDrawerLayout.closeDrawers();
+//                menuItem.setChecked(true);
+//                switch (menuItem.getItemId()) {
+//                    case R.id.nav_home:
+//                        viewPager.setAdapter(adapter);
+//                        viewPager.removeViewInLayout(findViewById(R.id.tabLayout));
+//                        viewPager.addOnPageChangeListener(pageListener);
+//                        break;
+//                    case R.id.dayItem:
+//                        Log.v(TAG,"Pressed settings button");
+//                        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
+//                        viewPager.removeOnPageChangeListener(pageListener);
+////                        View view = (View) mInflater.inflate(R.layout.tab_layout,viewPager,false);
+////                        viewPager.addView(view,-1);
+////                        viewPager.
+//                        break;
+//                    case R.id.settingsButton:
+//                        Log.v(TAG,"Pressed settings button");
+//                        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
+//                        viewPager.removeOnPageChangeListener(pageListener);
+////                        Intent intent = new Intent(MainActivity.this, TimeActivity.class);
+////                        startActivity(intent);
+//
+//                        // TODO - Do something
+//                        break;
+//                    // TODO - Handle other items
+//                }
+//                return true;
+//            }
+//        });
 
 
 
@@ -159,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        View toolBarView  = getLayoutInflater().inflate(R.layout.action_bar_main, toolbar);
-        actionBarText = toolBarView.findViewById(R.id.weekSearchfield);
+//        View toolBarView  = getLayoutInflater().inflate(R.layout.action_bar_main, toolbar);
+//        actionBarText = toolBarView.findViewById(R.id.weekSearchfield);
 
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -209,11 +207,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initPageModel() {
-        mPageModel[0] = new PageModel(PageModel.PageType.LEFT);
-        mPageModel[1] = new PageModel(PageModel.PageType.CURRENT);
-        mPageModel[2] = new PageModel(PageModel.PageType.RIGHT);
-    }
+//    private void initPageModel() {
+//        mPageModel[0] = new PageModel(PageModel.PageType.LEFT);
+//        mPageModel[1] = new PageModel(PageModel.PageType.CURRENT);
+//        mPageModel[2] = new PageModel(PageModel.PageType.RIGHT);
+//    }
 
     //drawer stuff
     @Override
@@ -229,110 +227,110 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
     }
 
-    private class MyPagerAdaper extends PagerAdapter {
+//    private class MyPagerAdaper extends PagerAdapter {
+//
+//        @Override
+//        public int getItemPosition(Object object) {
+//            return POSITION_NONE;
+//        }
+//
+//        @Override
+//        public void destroyItem(ViewGroup container, int position, Object object) {
+//            container.removeView((View) object);
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            // we only need three pages
+//            return 3;
+//        }
+//
+//        @Override
+//        public Object instantiateItem(ViewGroup container, int position) {
+//            Log.v(TAG,"Instantiating page:" + position);
+//            View view = (View) mInflater.inflate(R.layout.fragment_main,container, false);
+//            mPageModel[position].setView(view);
+//            container.addView(view);
+//            return view;
+//        }
+//
+//        @Override
+//        public boolean isViewFromObject(View view, Object obj) {
+//            return view == obj;
+//        }
+//    }
 
-        @Override
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-        @Override
-        public int getCount() {
-            // we only need three pages
-            return 3;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Log.v(TAG,"Instantiating page:" + position);
-            View view = (View) mInflater.inflate(R.layout.fragment_main,container, false);
-            mPageModel[position].setView(view);
-            container.addView(view);
-            return view;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object obj) {
-            return view == obj;
-        }
-    }
-
-    public ViewPager.OnPageChangeListener getPageChangeListener(){
-        return new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageSelected(int position) {
-                mSelectedPageIndex = position;
-            }
-
-            /**
-             * This method will be invoked when the current page is scrolled, either as part
-             * of a programmatically initiated smooth scroll or a user initiated touch scroll.
-             *
-             * @param position Position index of the first page currently being displayed.
-             *                 Page position+1 will be visible if positionOffset is nonzero.
-             * @param positionOffset Value from [0, 1) indicating the offset from the page at position.
-             * @param positionOffsetPixels Value in pixels indicating the offset from position.
-             */
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                Log.v(TAG,"onPageScrolled log pos:"+position+ ", offset: "+ positionOffset +", pixelOffset" +positionOffsetPixels);
-
-                if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
-                    return;
-                }
-
-                if(positionOffset > 0.5 ){
-                    if(position == 1){
-                        Log.v(TAG,"onPageScrolled: Swiped right, setting actionbar text to: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
-                        MainActivity.actionBarText.setText("Week: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
-                    }
-                }// left swipe
-                else {
-                    if(position == 0){
-                        Log.v(TAG,"onPageScrolled: Swiped left, setting actionbar text to: "+mPageModel[PAGE_LEFT].getCurrentWeekAsString());
-                        MainActivity.actionBarText.setText("Week: "+mPageModel[PAGE_LEFT].getCurrentWeekAsString());
-                    }
-                }
-
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    // user swiped to right direction --> left page
-                    if (mSelectedPageIndex == PAGE_LEFT) {
-                        Log.v(TAG,"Swiped Left");
-                        // moving each page content one page to the left
-                        mPageModel[PAGE_LEFT].doLeftSwipe();
-                        mPageModel[PAGE_MIDDLE].doLeftSwipe();
-                        mPageModel[PAGE_RIGHT].doLeftSwipe();
-
-
-                        // user swiped to left direction --> right page
-                    } else if (mSelectedPageIndex == PAGE_RIGHT) {
-                        Log.v(TAG,"Swiped Right");
-                        mPageModel[PAGE_LEFT].doRightSwipe();
-                        mPageModel[PAGE_MIDDLE].doRightSwipe();
-                        mPageModel[PAGE_RIGHT].doRightSwipe();
-                    }
-                    else {
-                        mPageModel[PAGE_LEFT].refreshView();
-                        mPageModel[PAGE_MIDDLE].refreshView();
-                        mPageModel[PAGE_RIGHT].refreshView();
-                    }
-                    //TODO fix fast swipes
-                    viewPager.setCurrentItem(PAGE_MIDDLE, false);
-                }
-            }
-        };
-    }
+//    public ViewPager.OnPageChangeListener getPageChangeListener(){
+//        return new ViewPager.OnPageChangeListener() {
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                mSelectedPageIndex = position;
+//            }
+//
+//            /**
+//             * This method will be invoked when the current page is scrolled, either as part
+//             * of a programmatically initiated smooth scroll or a user initiated touch scroll.
+//             *
+//             * @param position Position index of the first page currently being displayed.
+//             *                 Page position+1 will be visible if positionOffset is nonzero.
+//             * @param positionOffset Value from [0, 1) indicating the offset from the page at position.
+//             * @param positionOffsetPixels Value in pixels indicating the offset from position.
+//             */
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+////                Log.v(TAG,"onPageScrolled log pos:"+position+ ", offset: "+ positionOffset +", pixelOffset" +positionOffsetPixels);
+//
+//                if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
+//                    return;
+//                }
+//
+//                if(positionOffset > 0.5 ){
+//                    if(position == 1){
+//                        Log.v(TAG,"onPageScrolled: Swiped right, setting actionbar text to: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
+//                        MainActivity.actionBarText.setText("Week: "+mPageModel[PAGE_RIGHT].getCurrentWeekAsString());
+//                    }
+//                }// left swipe
+//                else {
+//                    if(position == 0){
+//                        Log.v(TAG,"onPageScrolled: Swiped left, setting actionbar text to: "+mPageModel[PAGE_LEFT].getCurrentWeekAsString());
+//                        MainActivity.actionBarText.setText("Week: "+mPageModel[PAGE_LEFT].getCurrentWeekAsString());
+//                    }
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//                if (state == ViewPager.SCROLL_STATE_IDLE) {
+//                    // user swiped to right direction --> left page
+//                    if (mSelectedPageIndex == PAGE_LEFT) {
+//                        Log.v(TAG,"Swiped Left");
+//                        // moving each page content one page to the left
+//                        mPageModel[PAGE_LEFT].doLeftSwipe();
+//                        mPageModel[PAGE_MIDDLE].doLeftSwipe();
+//                        mPageModel[PAGE_RIGHT].doLeftSwipe();
+//
+//
+//                        // user swiped to left direction --> right page
+//                    } else if (mSelectedPageIndex == PAGE_RIGHT) {
+//                        Log.v(TAG,"Swiped Right");
+//                        mPageModel[PAGE_LEFT].doRightSwipe();
+//                        mPageModel[PAGE_MIDDLE].doRightSwipe();
+//                        mPageModel[PAGE_RIGHT].doRightSwipe();
+//                    }
+//                    else {
+//                        mPageModel[PAGE_LEFT].refreshView();
+//                        mPageModel[PAGE_MIDDLE].refreshView();
+//                        mPageModel[PAGE_RIGHT].refreshView();
+//                    }
+//                    //TODO fix fast swipes
+//                    viewPager.setCurrentItem(PAGE_MIDDLE, false);
+//                }
+//            }
+//        };
+//    }
 
     private class DayAdapter extends FragmentStatePagerAdapter{
         private String TAG = "DayAdapter.class";

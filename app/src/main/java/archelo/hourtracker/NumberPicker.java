@@ -790,8 +790,6 @@ public class NumberPicker extends LinearLayout {
         invalidate();
     }
 
-
-    // What you were doing: trying to figure out how to change selected item font size and color.
     private void initializeSelectorWheel() {
         initializeSelectorWheelIndices();
         int[] selectorIndices = mSelectorIndices;
