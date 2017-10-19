@@ -14,6 +14,7 @@
 		android:orientation="horizontal">
 
 		<TextView
+			android:textStyle="bold"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
@@ -25,6 +26,7 @@
 
 		<TextView
 			android:id="@+id/startTime"
+			android:textStyle="bold"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
@@ -45,6 +47,7 @@
 		android:orientation="horizontal">
 
 		<TextView
+			android:textStyle="bold"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
@@ -55,6 +58,7 @@
 			android:text="@string/startTime"/>
 
 		<TextView
+			android:textStyle="bold"
 			android:id="@+id/endTime"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -75,6 +79,7 @@
 		android:orientation="horizontal">
 
 		<TextView
+			android:textStyle="bold"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
@@ -85,6 +90,7 @@
 			android:text="@string/hours_worked"/>
 
         <TextView
+			android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center|start"
@@ -105,6 +111,7 @@
         android:orientation="horizontal">
 
         <TextView
+			android:textStyle="bold"
             android:id="@+id/hoursWorked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -116,6 +123,7 @@
             />
 
         <TextView
+			android:textStyle="bold"
             android:id="@+id/moneyEarned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
