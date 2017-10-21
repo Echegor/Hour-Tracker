@@ -67,7 +67,6 @@ public class PageModel implements View.OnTouchListener {
     }
 
     public void refreshView(){
-        refreshDate();
         refreshViews();
     }
 
@@ -192,12 +191,8 @@ public class PageModel implements View.OnTouchListener {
                 moveDateToNextWeek();
                 break;
         }
-        refreshDate();
     }
 
-    public void refreshDate(){
-        MainActivity.actionBarText.setText("Week: "+getDateAsString(currentDate));
-    }
 
     public void evaluateTimeDifference(){
         String start;

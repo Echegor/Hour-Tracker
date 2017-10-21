@@ -39,6 +39,7 @@ public class DayFragment extends Fragment {
     private NumberPicker minutePickerTwo;
     private NumberPicker ampmPickerTwo;
 
+    //TODO checkout textswitcher to see how it looks.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
