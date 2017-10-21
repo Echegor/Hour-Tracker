@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class DayAdapter extends FragmentStatePagerAdapter{
         private String TAG = "DayAdapter.class";
-        public DayAdapter(FragmentManager fm) {
+        DayAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 7;
+            return 1;
         }
     }
 }

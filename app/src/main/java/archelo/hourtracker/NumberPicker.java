@@ -81,7 +81,7 @@ public class NumberPicker extends LinearLayout {
     private int mMaximumFlingVelocity;
     private boolean mWrapSelectorWheel;
     private int mSolidColor;
-//    private Paint mSelectionDivider;
+    private Paint mSelectionDivider;
     private int mSelectionDividerHeight;
     private int mScrollState = OnScrollListener.SCROLL_STATE_IDLE;
     private boolean mIngonreMoveEvents;
@@ -111,8 +111,8 @@ public class NumberPicker extends LinearLayout {
 
     private void init() {
         mSolidColor = 0;
-//        mSelectionDivider = new Paint();
-//        mSelectionDivider.setColor(getResources().getColor(android.R.color.holo_blue_light));
+        mSelectionDivider = new Paint();
+        mSelectionDivider.setColor(getResources().getColor(android.R.color.holo_blue_light));
 
         mSelectionDividerHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, UNSCALED_DEFAULT_SELECTION_DIVIDER_HEIGHT, getResources().getDisplayMetrics());
         mSelectionDividersDistance = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, UNSCALED_DEFAULT_SELECTION_DIVIDERS_DISTANCE, getResources().getDisplayMetrics());
@@ -180,11 +180,11 @@ public class NumberPicker extends LinearLayout {
 
     public void setTextColor(int color) {
         mInputText.setTextColor(color);
-        //mSelectorWheelPaint.setColor(color);
+        mSelectorWheelPaint.setColor(color);
     }
 
     public void setSelectorColor(int color) {
-//        mSelectionDivider.setColor(color);
+        mSelectionDivider.setColor(color);
     }
 
     public NumberPicker(Context context) {
@@ -682,13 +682,9 @@ public class NumberPicker extends LinearLayout {
             y += mSelectorElementHeight;
         }
 
-        int topOfTopDivider = mTopSelectionDividerTop;
-        int bottomOfTopDivider = topOfTopDivider + mSelectionDividerHeight;
-//        canvas.drawRect(0, topOfTopDivider, getRight(), bottomOfTopDivider, mSelectionDivider);
+//        canvas.drawRect(0, getTop(), getRight(), getTop() + mSelectionDividerHeight, mSelectionDivider);
 
-        int bottomOfBottomDivider = mBottomSelectionDividerBottom;
-        int topOfBottomDivider = bottomOfBottomDivider - mSelectionDividerHeight;
-//        canvas.drawRect(0, topOfBottomDivider, getRight(), bottomOfBottomDivider, mSelectionDivider);
+//        canvas.drawRect(0, getBottom()  , getRight(), getBottom() + mSelectionDividerHeight, mSelectionDivider);
     }
 
     private int makeMeasureSpec(int measureSpec, int maxSize) {
@@ -806,7 +802,7 @@ public class NumberPicker extends LinearLayout {
 
     private void initializeFadingEdges() {
         setVerticalFadingEdgeEnabled(true);
-        setFadingEdgeLength((getBottom() - getTop() - mTextSize) / 2);
+        setFadingEdgeLength((getBottom()  - getTop() - mTextSize) / 2);
     }
 
     private void onScrollerFinished(Scroller scroller) {
