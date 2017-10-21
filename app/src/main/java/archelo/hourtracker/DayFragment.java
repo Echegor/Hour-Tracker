@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Locale;
 
 
+
 /**
  * Created by Archelo on 9/23/2017.
  */
@@ -32,6 +33,7 @@ public class DayFragment extends Fragment {
     private TextView endTime;
     private TextView hoursWorked;
     private TextView moneyEarned;
+    private TextView currentDate;
     private NumberPicker hourPicker;
     private NumberPicker minutePicker;
     private NumberPicker ampmPicker;
@@ -46,6 +48,10 @@ public class DayFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         View view = inflater.inflate(R.layout.time_layout, container, false);
+        currentDate = (TextView) view.findViewById(R.id.currentDate);
+        Calendar calendar = Calendar.getInstance(Locale.US);
+        
+        currentDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
         View pickerOne = view.findViewById(R.id.pickerOne);
         View pickerTwo = view.findViewById(R.id.pickerTwo);
 
@@ -71,7 +77,6 @@ public class DayFragment extends Fragment {
         initializePicker(minutePickerTwo,0,minutes.length -1,minutes);
         initializePicker(ampmPickerTwo,0,ampmData.length -1,ampmData);
 
-        Calendar calendar = Calendar.getInstance(Locale.US);
 
         hourPicker.setValue(calendar.get(Calendar.HOUR));
         minutePicker.setValue(calendar.get(Calendar.MINUTE));
