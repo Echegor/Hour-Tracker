@@ -50,7 +50,7 @@ public class DayFragment extends Fragment {
         View view = inflater.inflate(R.layout.time_layout, container, false);
         currentDate = (TextView) view.findViewById(R.id.currentDate);
         Calendar calendar = Calendar.getInstance(Locale.US);
-        
+
         currentDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
         View pickerOne = view.findViewById(R.id.pickerOne);
         View pickerTwo = view.findViewById(R.id.pickerTwo);
