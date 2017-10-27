@@ -1,11 +1,14 @@
 package archelo.hourtracker;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -33,7 +36,7 @@ public class DayFragment extends Fragment {
     private TextView endTime;
     private TextView hoursWorked;
     private TextView moneyEarned;
-    private TextView currentDate;
+    private Button currentDate;
     private NumberPicker hourPicker;
     private NumberPicker minutePicker;
     private NumberPicker ampmPicker;
@@ -47,9 +50,37 @@ public class DayFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        final Calendar calendar = Calendar.getInstance(Locale.US);
         View view = inflater.inflate(R.layout.time_layout, container, false);
-        currentDate = (TextView) view.findViewById(R.id.currentDate);
-        Calendar calendar = Calendar.getInstance(Locale.US);
+        currentDate = (Button) view.findViewById(R.id.currentDate);
+
+        final DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+
+//                myCalendar.set(Calendar.YEAR, year);
+//                myCalendar.set(Calendar.MONTH, monthOfYear);
+//                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//                updateLabel();
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, monthOfYear, dayOfMonth);
+
+                currentDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
+            }
+
+        };
+        currentDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                new DatePickerDialog(getActivity(),listener , calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+
 
         currentDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
         View pickerOne = view.findViewById(R.id.pickerOne);
