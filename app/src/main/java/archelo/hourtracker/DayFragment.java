@@ -76,7 +76,9 @@ public class DayFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                new DatePickerDialog(getActivity(),listener , calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),R.style.PauseDialog,listener , calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                datePickerDialog.show();
             }
         });
 
