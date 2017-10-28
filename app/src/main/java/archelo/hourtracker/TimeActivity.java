@@ -1,12 +1,8 @@
 package archelo.hourtracker;
 
-import java.util.Calendar;
-import java.util.Locale;
-
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.NumberPicker;
 
 public class TimeActivity extends Activity {
 	// Time changed flag
@@ -19,7 +15,7 @@ public class TimeActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.time_layout);
+		setContentView(R.layout.tab_layout);
 	
 //		final WheelView hours = (WheelView) findViewById(R.id.hour);
 //		hours.setViewAdapter(new NumericWheelAdapter(this, 1, 12));

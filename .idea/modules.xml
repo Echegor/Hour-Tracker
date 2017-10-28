@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Hour-Tracker.iml" filepath="$PROJECT_DIR$/Hour-Tracker.iml" />
+      <module fileurl="file://C:\Users\Archelo\AndroidStudioProjects\HourTracker\Hour-Tracker.iml" filepath="C:\Users\Archelo\AndroidStudioProjects\HourTracker\Hour-Tracker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HourTracker.iml" filepath="$PROJECT_DIR$/HourTracker.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

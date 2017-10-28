@@ -2,7 +2,10 @@ package archelo.hourtracker;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +28,7 @@ import java.util.Locale;
  * Created by Archelo on 9/23/2017.
  */
 
-public class DayFragment extends Fragment {
+public class TimeFragment extends Fragment {
     private final static String[] hour = new String[]{"01","02","03","04","05","06","07","08","09","10","11","12"};
     private final static String[] minutes = new String[]{"00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"};
     private final static String[] ampmData = new String[]{"AM","PM"};
@@ -51,8 +54,9 @@ public class DayFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         final Calendar calendar = Calendar.getInstance(Locale.US);
-        View view = inflater.inflate(R.layout.time_layout, container, false);
+        View view = inflater.inflate(R.layout.time_fragment, container, false);
         currentDate = (Button) view.findViewById(R.id.currentDate);
+
 
         final DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
 
@@ -211,7 +215,7 @@ public class DayFragment extends Fragment {
             return milliToHours(timeDiff);
         }
         catch(ParseException pe){
-          pe.printStackTrace();
+            pe.printStackTrace();
         }
         return new BigDecimal(0);
     }
