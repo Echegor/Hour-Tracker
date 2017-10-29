@@ -31,7 +31,6 @@ public class TabFragment extends Fragment {
     private TextView endTime;
     private TextView hoursWorked;
     private TextView moneyEarned;
-    private Button currentDate;
     private NumberPicker hourPicker;
     private NumberPicker minutePicker;
     private NumberPicker ampmPicker;
@@ -47,34 +46,36 @@ public class TabFragment extends Fragment {
 
         final Calendar calendar = Calendar.getInstance(Locale.US);
         View view = inflater.inflate(R.layout.tab_layout, container, false);
-        currentDate = (Button) view.findViewById(R.id.currentDate);
 
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Start Time"));
-        tabLayout.addTab(tabLayout.newTab().setText("End Time"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
 
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
-        final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), tabLayout.getTabCount());
+        final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), 2);
         viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setupWithViewPager(viewPager);
+//        tabLayout.getTabAt(0).setIcon(R.drawable.ic_date_range_black_24dp);
+//        tabLayout.getTabAt(1).setIcon(R.drawable.ic_date_range_black_24dp);
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                viewPager.setCurrentItem(tab.getPosition());
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
 
         return view;
     }

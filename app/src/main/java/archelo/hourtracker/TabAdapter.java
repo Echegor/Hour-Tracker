@@ -32,6 +32,18 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
+    public CharSequence getPageTitle(int position) {
+        switch (position) {
+            case 0:
+                return "Start Time";
+            case 1:
+                return "End Time";
+            default:
+                return null;
+        }
+    }
+
+    @Override
     public int getCount() {
         return mNumOfTabs;
     }

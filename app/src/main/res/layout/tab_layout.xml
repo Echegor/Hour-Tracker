@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     android:id="@+id/main_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -18,21 +18,66 @@
         <!--android:minHeight="?attr/actionBarSize"-->
         <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
         <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
+    <!--<android.support.v4.view.ViewPager-->
+        <!--android:id="@+id/pager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+        <!--<android.support.design.widget.TabLayout-->
+            <!--android:id="@+id/tab_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="top" />-->
+
+    <!--</android.support.v4.view.ViewPager>-->
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
         android:background="?attr/colorPrimary"
-        android:elevation="6dp"
         android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        />
+<!--android:background="@android:color/white"-->
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/tab_layout"/>
+        android:layout_height="wrap_content"
+        >
 
-</RelativeLayout>
+
+    </android.support.v4.view.ViewPager>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            android:text="@string/hours_worked"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start"
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            android:text="@string/earned"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

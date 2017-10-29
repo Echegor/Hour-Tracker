@@ -48,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(intent);
 
         mInflater = getLayoutInflater();
-        viewPager = (ViewPager) findViewById(R.id.container);
-        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
+
+//        viewPager = (ViewPager) findViewById(R.id.container);
+//        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -161,46 +162,4 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
     }
 
-
-    private class DayAdapter extends FragmentStatePagerAdapter{
-        private String TAG = "DayAdapter.class";
-        DayAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            Log.v(TAG,"Getting position "+position);
-//            switch (position)  {
-//                case
-//            }
-            return new TabFragment();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch(position){
-                case 0:
-                    return "S";
-                case 1:
-                    return "M";
-                case 2:
-                    return "T";
-                case 3:
-                    return "W";
-                case 4:
-                    return "T";
-                case 5:
-                    return "F";
-                case 6:
-                    return "S";
-            }
-            return "Title Here";
-        }
-
-        @Override
-        public int getCount() {
-            return 1;
-        }
-    }
 }
