@@ -34,6 +34,8 @@ public class TimeFragment extends Fragment {
     private final static String[] ampmData = new String[]{"AM","PM"};
     private final static BigDecimal wage = new BigDecimal(30);
     private TextView startTime;
+    private TextView moneyEarned;
+    private TextView hoursWorked;
     private NumberPicker hourPicker;
     private NumberPicker minutePicker;
     private NumberPicker ampmPicker;
@@ -41,15 +43,16 @@ public class TimeFragment extends Fragment {
 
     //TODO checkout textswitcher to see how it looks.
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        moneyEarned = getActivity().findViewById(R.id.moneyEarned);
+        hoursWorked = getActivity().findViewById(R.id.hoursWorked);
 
         final Calendar calendar = Calendar.getInstance(Locale.US);
         Log.v("Inflating","Time fragment");
         View view = inflater.inflate(R.layout.time_fragment, container, false);
         currentDate = (Button) view.findViewById(R.id.currentDate);
-
 
         final DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
 
@@ -98,12 +101,13 @@ public class TimeFragment extends Fragment {
         startTime.setText(getTimeForPicker());
 
         String sTime = getTimeForPicker();
+        String eTime = getEndTime();
 
 //        BigDecimal bd = calculateHoursWorked(sTime,sTime);
 //        hoursWorked.setText(bd.toPlainString());
 //        BigDecimal money = wage.multiply(bd);
 //        moneyEarned.setText("$" + money.toPlainString());
-//TODO: http://halfapped.com/entry/communicating-between-tabs
+//TODO: http://halfapped.com/entry/communicating-between-tabs --fragment to activity communication
 
         NumberPicker.OnValueChangeListener startListener = new NumberPicker.OnValueChangeListener() {
             @Override
@@ -118,10 +122,14 @@ public class TimeFragment extends Fragment {
             }
         };
 
-        hourPicker.setOnValueChangedListener(startListener);
-        minutePicker.setOnValueChangedListener(startListener);
-        ampmPicker.setOnValueChangedListener(startListener);
+        addOnValueChangedListener(startListener);
         return view;
+    }
+
+    public void addOnValueChangedListener(NumberPicker.OnValueChangeListener listener){
+        hourPicker.setOnValueChangedListener(listener);
+        minutePicker.setOnValueChangedListener(listener);
+        ampmPicker.setOnValueChangedListener(listener);
     }
 
     @Override
@@ -130,7 +138,20 @@ public class TimeFragment extends Fragment {
 
     }
 
+//    @Override
+//    public void onViewCreated(View view, Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//        view.findViewById(R.id.yourId).setOnClickListener(this);
+//
+//        // or
+//        getActivity().findViewById(R.id.yourId).setOnClickListener(this);
+//    }
+
     public String getTimeForPicker(){
+        return hour[hourPicker.getValue()] + ":" + minutes[minutePicker.getValue()] + " " + ampmData[ampmPicker.getValue()];
+    }
+
+    public String getEndTime(){
         return hour[hourPicker.getValue()] + ":" + minutes[minutePicker.getValue()] + " " + ampmData[ampmPicker.getValue()];
     }
 
