@@ -1,5 +1,6 @@
 package archelo.hourtracker;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -21,7 +23,7 @@ import java.util.Locale;
  * Created by Archelo on 9/23/2017.
  */
 
-public class TabFragment extends Fragment {
+public class TabFragment extends Fragment implements NumberPicker.OnValueChangeListener {
 
     //TODO checkout textswitcher to see how it looks.
     @Override
@@ -37,29 +39,45 @@ public class TabFragment extends Fragment {
         viewPager.setAdapter(adapter);
 
         final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
-//        tabLayout.getTabAt(0).setIcon(R.drawable.ic_date_range_black_24dp);
-//        tabLayout.getTabAt(1).setIcon(R.drawable.ic_date_range_black_24dp);
-//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                viewPager.setCurrentItem(tab.getPosition());
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//
-//            }
-//        });
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                Log.v("TabFragment","onViewAttachedToWindow");
+            }
 
-        Log.v("Created","view");
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+
+            }
+        });
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.v("TabFragment","onTabSelected");
+                TimeFragment fragmentOne = adapter.getFragmentOne();
+                TimeFragment fragmentTwo = adapter.getFragmentTwo();
+
+
+//                if(tab.getPosition() == 0){
+//
+//                } else {
+//
+//                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         return view;
     }
@@ -76,4 +94,8 @@ public class TabFragment extends Fragment {
         Log.v("Created","startr");
     }
 
+    @Override
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+        Log.v("TabFragment","Fired onValueChange");
+    }
 }

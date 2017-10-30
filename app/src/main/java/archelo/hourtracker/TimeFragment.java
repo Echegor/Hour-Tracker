@@ -40,6 +40,8 @@ public class TimeFragment extends Fragment {
     private NumberPicker minutePicker;
     private NumberPicker ampmPicker;
     private Button currentDate;
+    private String otherTime;
+    private int position;
 
     //TODO checkout textswitcher to see how it looks.
     @Override
@@ -48,9 +50,10 @@ public class TimeFragment extends Fragment {
 
         moneyEarned = getActivity().findViewById(R.id.moneyEarned);
         hoursWorked = getActivity().findViewById(R.id.hoursWorked);
+        position = getArguments().getInt("position");
 
         final Calendar calendar = Calendar.getInstance(Locale.US);
-        Log.v("Inflating","Time fragment");
+        Log.v("Inflating","Time fragment: " + position);
         View view = inflater.inflate(R.layout.time_fragment, container, false);
         currentDate = (Button) view.findViewById(R.id.currentDate);
 
@@ -122,7 +125,16 @@ public class TimeFragment extends Fragment {
             }
         };
 
-        addOnValueChangedListener(startListener);
+        //addOnValueChangedListener(startListener);
+        TabFragment frag = (TabFragment) getFragmentManager().findFragmentById(R.id.fragment_place);
+        addOnValueChangedListener(frag);
+        //TabFragment frag = (TabFragment) getParentFragment();
+        if(frag != null){
+            Log.v("TimeFragment","Found TabFragment");
+        }
+        else{
+            Log.v("TimeFragment","did not find TabFragment");
+        }
         return view;
     }
 
@@ -130,6 +142,10 @@ public class TimeFragment extends Fragment {
         hourPicker.setOnValueChangedListener(listener);
         minutePicker.setOnValueChangedListener(listener);
         ampmPicker.setOnValueChangedListener(listener);
+    }
+
+    public void setTime(){
+
     }
 
     @Override

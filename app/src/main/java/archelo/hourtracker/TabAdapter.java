@@ -1,5 +1,6 @@
 package archelo.hourtracker;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -9,7 +10,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 
 public class TabAdapter extends FragmentStatePagerAdapter {
-    int mNumOfTabs;
+    private TimeFragment fragmentOne;
+    private TimeFragment fragmentTwo;
+    private int mNumOfTabs;
 
     public TabAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
@@ -18,17 +21,31 @@ public class TabAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        Bundle bundle = new Bundle();
+
 
         switch (position) {
             case 0:
-                TimeFragment tab1 = new TimeFragment();
-                return tab1;
+                bundle.putInt("position",0);
+                fragmentOne = new TimeFragment();
+                fragmentOne.setArguments(bundle);
+                return fragmentOne;
             case 1:
-                TimeFragment tab2 = new TimeFragment();
-                return tab2;
+                bundle.putInt("position",1);
+                fragmentTwo = new TimeFragment();
+                fragmentTwo.setArguments(bundle);
+                return fragmentTwo;
             default:
                 return null;
         }
+    }
+
+    public TimeFragment getFragmentOne(){
+        return fragmentOne;
+    }
+
+    public TimeFragment getFragmentTwo(){
+        return fragmentTwo;
     }
 
     @Override
