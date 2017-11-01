@@ -13,8 +13,14 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 
@@ -23,7 +29,12 @@ import java.util.Locale;
  * Created by Archelo on 9/23/2017.
  */
 
-public class TabFragment extends Fragment implements NumberPicker.OnValueChangeListener {
+public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListener {
+    private String mStartTime;
+    private String mStopTime;
+    private TextView moneyEarned;
+    private TextView hoursWorked;
+    private final static BigDecimal wage = new BigDecimal(30);
 
     //TODO checkout textswitcher to see how it looks.
     @Override
@@ -31,8 +42,13 @@ public class TabFragment extends Fragment implements NumberPicker.OnValueChangeL
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Calendar calendar = Calendar.getInstance(Locale.US);
+        //final Calendar calendar = Calendar.getInstance(Locale.US);
+
+
         View view = inflater.inflate(R.layout.tab_layout, container, false);
+
+        moneyEarned = (TextView)view.findViewById(R.id.moneyEarned);
+        hoursWorked = (TextView)view.findViewById(R.id.hoursWorked);
 
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
         final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), 2);
@@ -59,13 +75,7 @@ public class TabFragment extends Fragment implements NumberPicker.OnValueChangeL
                 Log.v("TabFragment","onTabSelected");
                 TimeFragment fragmentOne = adapter.getFragmentOne();
                 TimeFragment fragmentTwo = adapter.getFragmentTwo();
-
-
 //                if(tab.getPosition() == 0){
-//
-//                } else {
-//
-//                }
             }
 
             @Override
@@ -82,20 +92,67 @@ public class TabFragment extends Fragment implements NumberPicker.OnValueChangeL
         return view;
     }
 
-    @Override
-    public void onActivityCreated (Bundle savedInstanceState){
-        super.onActivityCreated(savedInstanceState);
-        Log.v("Created","activity");
+    public void setStartTime(String start){
+        mStartTime = start;
+    }
+
+    public void setStopTime(String stop){
+        mStartTime = stop;
+    }
+
+
+    public BigDecimal calculateHoursWorked(String startTime, String endTime) {
+        DateFormat format = new SimpleDateFormat("hh:mm a");
+        try{
+            Date time_1 = format.parse(startTime);
+            Date time_2 = format.parse(endTime);
+            long timeStart = time_1.getTime();
+            long timeEnd = time_2.getTime();
+
+            Long timeDiff;
+            if(timeStart > timeEnd){
+                timeDiff = (timeEnd+60*24*60*1000) - timeStart;
+            }
+            else{
+                timeDiff = timeEnd - timeStart;
+            }
+            return milliToHours(timeDiff);
+        }
+        catch(ParseException pe){
+            pe.printStackTrace();
+        }
+        return new BigDecimal(0);
+    }
+
+    public BigDecimal milliToHours(Long d){
+        BigDecimal big = new BigDecimal(d.toString());
+        return big.divide(new BigDecimal(60*60000),2,BigDecimal.ROUND_HALF_UP);
+    }
+
+    public void refreshTimeViews(String start, String end){
+        BigDecimal bd = calculateHoursWorked(start,end);
+        hoursWorked.setText(bd.toPlainString());
+        BigDecimal money = wage.multiply(bd);
+        moneyEarned.setText("$" + money.toPlainString());
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Log.v("Created","startr");
-    }
+    public void onTimeSet(String time, int id) {
+        Log.v("TabFragment","pos " + id +", time: " +time);
+        switch (id){
+            case 0:
+                mStartTime = time;
+                if(mStopTime != null){
+                    refreshTimeViews(mStartTime,mStopTime);
+                }
+                break;
+            case 1:
+                mStopTime = time;
+                if(mStartTime != null){
+                    refreshTimeViews(mStartTime,mStopTime);
+                }
+                break;
+        }
 
-    @Override
-    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        Log.v("TabFragment","Fired onValueChange");
     }
 }

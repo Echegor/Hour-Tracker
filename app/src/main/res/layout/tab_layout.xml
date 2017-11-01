@@ -72,6 +72,7 @@
             android:paddingTop="10dp"
             android:text="@string/earned"
             android:textAlignment="center"
+            android:textColor="@color/money"
             android:textSize="16sp"
             android:textStyle="bold" />
 
