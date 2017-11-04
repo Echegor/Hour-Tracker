@@ -1,7 +1,9 @@
 package archelo.hourtracker;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,13 +19,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private LayoutInflater mInflater;
     // we save each page in a model
     public TextView actionBarText;
     private ActionBar actionBar;
@@ -31,10 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mNavigationView;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    public static ViewPager viewPager;
 
 
     //TODO Add a simple settings actvity.
@@ -43,14 +42,6 @@ public class MainActivity extends AppCompatActivity {
         Log.v(TAG,"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_main);
-
-//        Intent intent = new Intent(this, TimeActivity.class);
-//        startActivity(intent);
-
-        mInflater = getLayoutInflater();
-
-//        viewPager = (ViewPager) findViewById(R.id.container);
-//        viewPager.setAdapter(new DayAdapter(getSupportFragmentManager()));
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +57,32 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         mNavigationView = (NavigationView) findViewById(R.id.left_drawer);
+
+        //return true if the event is consumed
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Log.v(TAG,"Drawer navigation item pressed");
+//                mNavigationView.setItem
+                int id = item.getItemId();
+                mNavigationView.setCheckedItem(id);
+                switch(id){
+                    case R.id.nav_home:
+                        Log.v(TAG,"Pressed home button");
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                        return true;
+                    case R.id.settingsButton:
+                        Log.v(TAG,"Pressed settings button");
+                        Intent intentt = new Intent(getApplicationContext(), SettingsActivity.class);
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                        startActivity(intentt);
+                        return true;
+                }
+                return false;
+            }
+        });
 
 
 
@@ -131,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-
+        Log.v(TAG,"Pressed on Option Item selected");
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
@@ -140,10 +157,11 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.settingsButton) {
-            Log.v(TAG,"Pressed settings button");
-            return true;
-        }
+//      This is handled by the navigation drawer
+//        if (id == R.id.settingsButton) {
+//            Log.v(TAG,"Pressed settings button");
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -161,5 +179,25 @@ public class MainActivity extends AppCompatActivity {
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
+
+//    /** Swaps fragments in the main content view */
+//    private void selectItem(int position) {
+//        // Create a new fragment and specify the planet to show based on position
+////        Fragment fragment = new PlanetFragment();
+////        Bundle args = new Bundle();
+////        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+////        fragment.setArguments(args);
+////
+////        // Insert the fragment by replacing any existing fragment
+////        FragmentManager fragmentManager = getFragmentManager();
+////        fragmentManager.beginTransaction()
+////                .replace(R.id.content_frame, fragment)
+////                .commit();
+//
+//        // Highlight the selected item, update the title, and close the drawer
+//        mDrawerList.setItemChecked(position, true);
+////        setTitle(mPlanetTitles[position]);
+//        mDrawerLayout.closeDrawer(mDrawerList);
+//    }
 
 }
