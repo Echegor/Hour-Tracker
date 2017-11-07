@@ -1,6 +1,7 @@
 package archelo.hourtracker;
 
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -34,13 +35,19 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     private String mStopTime;
     private TextView moneyEarned;
     private TextView hoursWorked;
-    private final static BigDecimal wage = new BigDecimal(30);
+    private BigDecimal wage;
 
     //TODO checkout textswitcher to see how it looks.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        String w = settings.getString("wage","DEFAULT");
+        Log.v("TabFragment","wage is : " + w);
+        wage = new BigDecimal(w);
+//        wage = new BigDecimal();
 
         //final Calendar calendar = Calendar.getInstance(Locale.US);
 
@@ -79,14 +86,9 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
+            public void onTabUnselected(TabLayout.Tab tab) {}
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
         return view;

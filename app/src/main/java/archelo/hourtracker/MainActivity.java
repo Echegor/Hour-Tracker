@@ -1,6 +1,8 @@
 package archelo.hourtracker;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,20 +14,29 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    public static final String PREFS_NAME = "MyPrefsFile";
 
     // we save each page in a model
     public TextView actionBarText;
@@ -33,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private ActionBarDrawerToggle mDrawerToggle;
+    private String wage;
 
 
 
@@ -122,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
         }
+        checkForFirstTime();
     }
 
 
@@ -132,6 +145,89 @@ public class MainActivity extends AppCompatActivity {
         //this is what inflate the overflow menu
 //        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    public void checkForFirstTime(){
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+        if (settings.getBoolean("my_first_time", true)) {
+            //the app is being launched for first time, do something
+            Log.d(TAG, "First time running app");
+
+            // first time task
+            getWage();
+            // record the fact that the app has been started at least once
+            settings.edit().putBoolean("my_first_time", false).apply();
+        }
+
+    }
+
+    public void getWage(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter your wage:");
+
+// Set up the input
+        final EditText input = new EditText(this);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        //TODO remove commas
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        input.setGravity(Gravity.CENTER);
+        input.setFilters(new InputFilter[] {new MoneyValueFilter()});
+
+        builder.setView(input);
+
+// Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                saveWage(input.getText().toString());
+            }
+        });
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+
+        builder.show();
+
+    }
+
+    public void saveWage(String wage){
+        Log.v(TAG,"Wage entered: " + wage);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        settings.edit().putString("wage", wage).apply();
+    }
+    @Override
+    public void onBackPressed() {
+
+        int count = getFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Closing Activity")
+                    .setMessage("Are you sure you want leave?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        } else {
+            getFragmentManager().popBackStack();
+        }
+
+    }
+
+    public void finish(){
+        super.onBackPressed();
     }
 
     @Override

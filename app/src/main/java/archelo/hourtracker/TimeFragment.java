@@ -104,6 +104,7 @@ public class TimeFragment extends Fragment {
         String time = getTimeForPicker();
         startTime.setText(time);
 
+        //TODO make numbers change APM PM section
         NumberPicker.OnValueChangeListener valueChangeListener = new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
