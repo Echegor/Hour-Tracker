@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     private TextView moneyEarned;
     private TextView hoursWorked;
     private BigDecimal wage;
+    private Animation slideOutBottom;
 
     //TODO checkout textswitcher to see how it looks.
     @Override
@@ -50,6 +53,25 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 //        wage = new BigDecimal();
 
         //final Calendar calendar = Calendar.getInstance(Locale.US);
+        slideOutBottom  = AnimationUtils.loadAnimation(getContext(), R.anim.out_bottom);
+        slideOutBottom.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+// Update the text here
+                Animation slideInTop = AnimationUtils.loadAnimation(getContext(), R.anim.in_top);
+                hoursWorked.startAnimation(slideInTop);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
 
 
         View view = inflater.inflate(R.layout.tab_layout, container, false);
@@ -133,6 +155,8 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 
     public void refreshTimeViews(String start, String end){
         BigDecimal bd = calculateHoursWorked(start,end);
+        //TODO get animation if you really want to
+        //hoursWorked.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
         hoursWorked.setText(bd.toPlainString());
         BigDecimal money = wage.multiply(bd);
         moneyEarned.setText("$" + money.toPlainString());
