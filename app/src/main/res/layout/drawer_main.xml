@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     >
 
-    <include layout="@layout/activity_main"/>
+    <include layout="@layout/old_main"/>
 
     <!-- The navigation drawer -->
     <!--       android:background="@color/colorPrimaryDark"-->
@@ -24,5 +24,5 @@
         android:dividerHeight="0dp"
 
         app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/navigation_menu"/>
+        app:menu="@menu/old_nav"/>
 </android.support.v4.widget.DrawerLayout>

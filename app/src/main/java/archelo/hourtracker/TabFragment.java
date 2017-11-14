@@ -1,6 +1,5 @@
 package archelo.hourtracker;
 
-import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -12,20 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-
 
 
 /**
@@ -46,7 +38,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        SharedPreferences settings = getActivity().getSharedPreferences(OldMain.PREFS_NAME, 0);
         String w = settings.getString("wage","DEFAULT");
         Log.v("TabFragment","wage is : " + w);
         wage = new BigDecimal(w);
