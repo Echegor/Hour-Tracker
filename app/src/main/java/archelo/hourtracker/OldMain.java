@@ -1,9 +1,12 @@
 package archelo.hourtracker;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -20,6 +23,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -27,6 +33,11 @@ public class OldMain extends AppCompatActivity {
 
     private static final String TAG = "OldMain";
     public static final String PREFS_NAME = "MyPrefsFile";
+    public static final String EXTRA_CIRCULAR_REVEAL_X = "EXTRA_CIRCULAR_REVEAL_X";
+    public static final String EXTRA_CIRCULAR_REVEAL_Y = "EXTRA_CIRCULAR_REVEAL_Y";
+    View rootLayout;
+    private int revealX;
+    private int revealY;
 
     // we save each page in a model
     public TextView actionBarText;
@@ -45,88 +56,143 @@ public class OldMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_main);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
+        final Intent intent = getIntent();
+
+        rootLayout = findViewById(R.id.drawer_layout);
+
+        if (savedInstanceState == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && intent.hasExtra(EXTRA_CIRCULAR_REVEAL_X) && intent.hasExtra(EXTRA_CIRCULAR_REVEAL_Y)) {
+            rootLayout.setVisibility(View.INVISIBLE);
+
+            revealX = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_X, 0);
+            revealY = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_Y, 0);
+
+
+            ViewTreeObserver viewTreeObserver = rootLayout.getViewTreeObserver();
+            if (viewTreeObserver.isAlive()) {
+                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Log.v(TAG,"Revealing activity");
+                        revealActivity(revealX, revealY);
+                        rootLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
+            }
+        } else {
+            rootLayout.setVisibility(View.VISIBLE);
+        }
+
+//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        //disables left swipe.
+//        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//
+//        mNavigationView = (NavigationView) findViewById(R.id.left_drawer);
+//
+//        //return true if the event is consumed
+//        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 //            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Luis needs to figure out what to do with this", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                Log.v(TAG,"Drawer navigation item pressed");
+////                mNavigationView.setItem
+//                int id = item.getItemId();
+//                mNavigationView.setCheckedItem(id);
+//                switch(id){
+//                    case R.id.nav_home:
+//                        Log.v(TAG,"Pressed home button");
+//                        Intent intent = new Intent(getApplicationContext(), OldMain.class);
+//                        startActivity(intent);
+//                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//                        return true;
+//                    case R.id.settingsButton:
+//                        Log.v(TAG,"Pressed settings button");
+//                        Intent intentt = new Intent(getApplicationContext(), SettingsActivity.class);
+//                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//                        startActivity(intentt);
+//                        return true;
+//                }
+//                return false;
 //            }
 //        });
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //disables left swipe.
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        mNavigationView = (NavigationView) findViewById(R.id.left_drawer);
-
-        //return true if the event is consumed
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Log.v(TAG,"Drawer navigation item pressed");
-//                mNavigationView.setItem
-                int id = item.getItemId();
-                mNavigationView.setCheckedItem(id);
-                switch(id){
-                    case R.id.nav_home:
-                        Log.v(TAG,"Pressed home button");
-                        Intent intent = new Intent(getApplicationContext(), OldMain.class);
-                        startActivity(intent);
-                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                        return true;
-                    case R.id.settingsButton:
-                        Log.v(TAG,"Pressed settings button");
-                        Intent intentt = new Intent(getApplicationContext(), SettingsActivity.class);
-                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                        startActivity(intentt);
-                        return true;
-                }
-                return false;
-            }
-        });
 
 
 
+//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        mDrawerToggle = new ActionBarDrawerToggle(
+//                this,                  /* host Activity */
+//                mDrawerLayout,         /* DrawerLayout object */
+//                R.string.drawer_open,  /* "open drawer" description */
+//                R.string.drawer_close  /* "close drawer" description */
+//        ) {
+//
+//            /** Called when a drawer has settled in a completely closed state. */
+//            public void onDrawerClosed(View view) {
+//                super.onDrawerClosed(view);
+////                actionBar.setTitle("BYEBYE");
+//                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//            }
+//
+//            /** Called when a drawer has settled in a completely open state. */
+//            public void onDrawerOpened(View drawerView) {
+//                super.onDrawerOpened(drawerView);
+////                actionBar.setTitle("WAssup");
+//
+//            }
+//        };
+//
+//        // Set the drawer toggle as the DrawerListener
+//        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
-        ) {
 
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-//                actionBar.setTitle("BYEBYE");
-                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            }
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-//                actionBar.setTitle("WAssup");
-
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeButtonEnabled(true);
-        }
-        checkForFirstTime();
+//        actionBar = getSupportActionBar();
+//        if(actionBar != null){
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setHomeButtonEnabled(true);
+//        }
+//        checkForFirstTime();
     }
 
+    protected void revealActivity(int x, int y) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            float finalRadius = (float) (Math.max(rootLayout.getWidth(), rootLayout.getHeight()) * 1.1);
+
+            // create the animator for this view (the start radius is zero)
+            Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, x, y, 0, finalRadius);
+            circularReveal.setDuration(400);
+            circularReveal.setInterpolator(new AccelerateInterpolator());
+
+            // make the view visible and start the animation
+            rootLayout.setVisibility(View.VISIBLE);
+            circularReveal.start();
+        } else {
+            finish();
+        }
+    }
+
+    protected void unRevealActivity() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            finish();
+        } else {
+            float finalRadius = (float) (Math.max(rootLayout.getWidth(), rootLayout.getHeight()) * 1.1);
+            Animator circularReveal = ViewAnimationUtils.createCircularReveal(
+                    rootLayout, revealX, revealY, finalRadius, 0);
+
+            circularReveal.setDuration(400);
+            circularReveal.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    rootLayout.setVisibility(View.INVISIBLE);
+                    finish();
+                }
+            });
+
+
+            circularReveal.start();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -204,7 +270,7 @@ public class OldMain extends AppCompatActivity {
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            finish();
+                            unRevealActivity();
                         }
 
                     })
@@ -216,9 +282,9 @@ public class OldMain extends AppCompatActivity {
 
     }
 
-    public void finish(){
-        super.onBackPressed();
-    }
+//    public void finish(){
+//        super.onBackPressed();
+//    }
 
     @Override
     protected void onDestroy() {
@@ -263,7 +329,7 @@ public class OldMain extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+//        mDrawerToggle.syncState();
     }
 
 //    /** Swaps fragments in the main content view */

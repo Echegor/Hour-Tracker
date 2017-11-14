@@ -41,7 +41,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
         SharedPreferences settings = getActivity().getSharedPreferences(OldMain.PREFS_NAME, 0);
         String w = settings.getString("wage","DEFAULT");
         Log.v("TabFragment","wage is : " + w);
-        wage = new BigDecimal(w);
+//        wage = new BigDecimal(w);
 //        wage = new BigDecimal();
 
         //final Calendar calendar = Calendar.getInstance(Locale.US);
@@ -146,12 +146,12 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     }
 
     public void refreshTimeViews(String start, String end){
-        BigDecimal bd = calculateHoursWorked(start,end);
-        //TODO get animation if you really want to
-        //hoursWorked.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-        hoursWorked.setText(bd.toPlainString());
-        BigDecimal money = wage.multiply(bd);
-        moneyEarned.setText("$" + money.toPlainString());
+//        BigDecimal bd = calculateHoursWorked(start,end);
+//        //TODO get animation if you really want to
+//        //hoursWorked.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+//        hoursWorked.setText(bd.toPlainString());
+//        BigDecimal money = wage.multiply(bd);
+//        moneyEarned.setText("$" + money.toPlainString());
     }
 
     @Override

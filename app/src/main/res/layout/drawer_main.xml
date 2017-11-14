@@ -4,11 +4,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
+    android:background="@color/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
-    <include layout="@layout/old_main"/>
+    <!--<include layout="@layout/old_main"/>-->
 
     <!-- The navigation drawer -->
     <!--       android:background="@color/colorPrimaryDark"-->
