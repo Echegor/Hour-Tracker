@@ -9,6 +9,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -18,6 +21,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.transition.Transition;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,7 +43,8 @@ public class OldMain extends AppCompatActivity {
     View rootLayout;
     private int revealX;
     private int revealY;
-
+    int height;
+    int width;
     // we save each page in a model
     public TextView actionBarText;
     private ActionBar actionBar;
@@ -46,7 +52,10 @@ public class OldMain extends AppCompatActivity {
     private NavigationView mNavigationView;
     private ActionBarDrawerToggle mDrawerToggle;
     private String wage;
-
+    int duration = 300;
+    Transition sharedElementEnterTransition;
+    Transition.TransitionListener mTransitionListener;
+    FloatingActionButton mFab;
 
 
     //TODO Add a simple settings actvity.
@@ -60,27 +69,47 @@ public class OldMain extends AppCompatActivity {
 
         rootLayout = findViewById(R.id.drawer_layout);
 
-        if (savedInstanceState == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && intent.hasExtra(EXTRA_CIRCULAR_REVEAL_X) && intent.hasExtra(EXTRA_CIRCULAR_REVEAL_Y)) {
-            rootLayout.setVisibility(View.INVISIBLE);
+        getWindow().setEnterTransition(null);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        height = displayMetrics.heightPixels;
+        width = displayMetrics.widthPixels;
+       // mFab = (FloatingActionButton) findViewById(R.id.next_fab);
 
-            revealX = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_X, 0);
-            revealY = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_Y, 0);
+      //  mConstraintLayout = (ConstraintLayout) findViewById(R.id.);
+
+        sharedElementEnterTransition = getWindow().getSharedElementEnterTransition();
 
 
-            ViewTreeObserver viewTreeObserver = rootLayout.getViewTreeObserver();
-            if (viewTreeObserver.isAlive()) {
-                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        Log.v(TAG,"Revealing activity");
-                        revealActivity(revealX, revealY);
-                        rootLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-                });
+        mTransitionListener = new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+
             }
-        } else {
-            rootLayout.setVisibility(View.VISIBLE);
-        }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                setAnim(rootLayout, true);
+                setFab(mFab, false);
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+
+            }
+        };
+
+        sharedElementEnterTransition.addListener(mTransitionListener);
 
 //        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        //disables left swipe.
@@ -155,42 +184,107 @@ public class OldMain extends AppCompatActivity {
 //        checkForFirstTime();
     }
 
-    protected void revealActivity(int x, int y) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            float finalRadius = (float) (Math.max(rootLayout.getWidth(), rootLayout.getHeight()) * 1.1);
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void setAnim(final View myView, boolean isShow) {
+        // previously invisible view
 
-            // create the animator for this view (the start radius is zero)
-            Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, x, y, 0, finalRadius);
-            circularReveal.setDuration(400);
-            circularReveal.setInterpolator(new AccelerateInterpolator());
+// get the center for the clipping circle
+        int cx = mFab.getWidth() / 2;
+        int cy = mFab.getHeight() / 2;
 
+// get the final radius for the clipping circle
+        float finalRadius = (float) Math.hypot(width, height);
+
+        int[] startingLocation = new int[2];
+        mFab.getLocationInWindow(startingLocation);
+
+// create the animator for this view (the start radius is zero)
+        Animator anim;
+        if (isShow) {
+            anim =
+                    ViewAnimationUtils.createCircularReveal(myView, (int) (mFab.getX() + cx), (int) (mFab.getY() + cy), 0, finalRadius);
             // make the view visible and start the animation
-            rootLayout.setVisibility(View.VISIBLE);
-            circularReveal.start();
+            myView.setVisibility(View.VISIBLE);
         } else {
-            finish();
+            anim =
+                    ViewAnimationUtils.createCircularReveal(myView, (int) (mFab.getX() + cx), (int) (mFab.getY() + cy), finalRadius, 0);
+            anim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    myView.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
         }
+
+        anim.setDuration(duration);
+        anim.start();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    void setFab(final View myView, boolean isShow) {
+
+// get the center for the clipping circle
+        int cx = myView.getWidth() / 2;
+        int cy = myView.getHeight() / 2;
+
+// get the initial radius for the clipping circle
+        float initialRadius = (float) Math.hypot(cx, cy);
+        Animator anim;
+        if (isShow) {
+// create the animation (the final radius is zero)
+            anim =
+                    ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, initialRadius);
+// make the view invisible when the animation is done
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    myView.setVisibility(View.VISIBLE);
+                    finishAfterTransition();
+                }
+            });
+            anim.setDuration(duration);
+        } else {
+            anim =
+                    ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
+// make the view invisible when the animation is done
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    myView.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
+// start the animation
+        anim.start();
+
     }
 
     protected void unRevealActivity() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            finish();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sharedElementEnterTransition.removeListener(mTransitionListener);
+            setAnim(rootLayout, false);
+            setFab(mFab, true);
         } else {
-            float finalRadius = (float) (Math.max(rootLayout.getWidth(), rootLayout.getHeight()) * 1.1);
-            Animator circularReveal = ViewAnimationUtils.createCircularReveal(
-                    rootLayout, revealX, revealY, finalRadius, 0);
 
-            circularReveal.setDuration(400);
-            circularReveal.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    rootLayout.setVisibility(View.INVISIBLE);
-                    finish();
-                }
-            });
+            super.onBackPressed();
 
-
-            circularReveal.start();
         }
     }
 

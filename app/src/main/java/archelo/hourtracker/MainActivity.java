@@ -2,6 +2,7 @@ package archelo.hourtracker;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -45,10 +46,18 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                fab.getLocationOnScreen(location);
-                location[0]+=width/2;
-                location[1]+=height/2;
-                presentActivity(view,location);
+                Intent intent = new Intent(MainActivity.this, TimeCollector.class);
+                ActivityOptions options = null;
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+
+                    options = ActivityOptions.makeSceneTransitionAnimation(
+                            MainActivity.this,
+                            android.util.Pair.create((View) fab, "bg"));
+                }
+                startActivity(intent, options.toBundle());
+//                overridePendingTransition(0, 0);
             }
         });
 
