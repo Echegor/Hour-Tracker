@@ -255,6 +255,13 @@ public class OldMain extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         settings.edit().putString("wage", wage).apply();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        overridePendingTransition(0, 0); // this removes the back animation
+    }
+
     @Override
     public void onBackPressed() {
 

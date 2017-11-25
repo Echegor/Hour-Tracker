@@ -3,12 +3,15 @@ package archelo.hourtracker;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,7 +25,7 @@ import android.view.ViewAnimationUtils;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    public static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +34,11 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Drawable draw = fab.getDrawable();
+        final int height = draw.getIntrinsicHeight();
+        final int width = draw.getIntrinsicWidth();
+
+
         final int[] location = new int[2];
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -38,6 +46,8 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 fab.getLocationOnScreen(location);
+                location[0]+=width/2;
+                location[1]+=height/2;
                 presentActivity(view,location);
             }
         });
@@ -65,6 +75,10 @@ public class MainActivity extends AppCompatActivity
 //        finish();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
