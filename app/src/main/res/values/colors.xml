@@ -2,8 +2,8 @@
 <resources>
     <color name="colorPrimary">#bf360c</color>
     <color name="colorPrimaryDark">#870000</color>
+    <color name="midnight_blue">#0277bd</color>
     <color name="colorAccent">#f9683a</color>
     <color name="transparent">#00ffffff</color>\
     <color name="money">#216C2A</color>
-
 </resources>

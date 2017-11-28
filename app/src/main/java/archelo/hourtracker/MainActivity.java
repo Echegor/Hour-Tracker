@@ -70,19 +70,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    public void presentActivity(View view, int [] location) {
-        ActivityOptionsCompat options = ActivityOptionsCompat.
-                makeSceneTransitionAnimation(this, view, "transition");
-        int revealX = (int) (view.getX() + view.getWidth() / 2);
-        int revealY = (int) (view.getY() + view.getHeight() / 2);
-
-        Intent intent = new Intent(this, OldMain.class);
-        intent.putExtra(OldMain.EXTRA_CIRCULAR_REVEAL_X, location[0]);
-        intent.putExtra(OldMain.EXTRA_CIRCULAR_REVEAL_Y, location[1]);
-            startActivity(intent);
-//        startActivity(this, intent, options.toBundle());
-//        finish();
-    }
 
     @Override
     public void onStart() {
@@ -98,26 +85,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-//    protected void unRevealActivity() {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            finish();
-//        } else {
-//            float finalRadius = (float) (Math.max(rootLayout.getWidth(), rootLayout.getHeight()) * 1.1);
-//            Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, revealX, revealY, finalRadius, 0);
-//
-//            circularReveal.setDuration(400);
-//            circularReveal.addListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    rootLayout.setVisibility(View.INVISIBLE);
-//                    finish();
-//                }
-//            });
-//
-//
-//            circularReveal.start();
-//        }
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

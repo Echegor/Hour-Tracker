@@ -166,7 +166,7 @@ public class NumberPicker extends LinearLayout {
         selectedPaint.setTextAlign(Align.CENTER);
 //        selectedPaint.setUnderlineText(true);
         selectedPaint.setFakeBoldText(true);
-        selectedPaint.setTextSize(56);
+        selectedPaint.setTextSize(80);
         selectedPaint.setTypeface(mInputText.getTypeface());
         selectedPaint.setColor(getResources().getColor(R.color.colorAccent));
 

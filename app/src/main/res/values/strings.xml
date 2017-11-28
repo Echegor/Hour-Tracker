@@ -15,6 +15,9 @@
     <string name="title_activity_settings">Settings</string>
     <string name="drawer_open">Opened drawer</string>
     <string name="drawer_close">Closed drawer</string>
+    <string name="add_break">Add Break?</string>
+    <string name="save">Save</string>
+    <string name="next">Next</string>
 
     <!-- Strings related to Settings -->
 

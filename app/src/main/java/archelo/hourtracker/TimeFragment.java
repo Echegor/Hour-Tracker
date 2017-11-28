@@ -157,7 +157,7 @@ public class TimeFragment extends Fragment {
         picker.setDisplayedValues(data);
     }
 
-
+    //you were fixing time views
 
     private void notifyChange(String time, int id) {
 

@@ -6,14 +6,17 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Transition;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 
 public class TimeCollector extends AppCompatActivity {
+    private static String TAG = "TimeCollector";
     int height;
     int width;
     FloatingActionButton mFab;
@@ -21,20 +24,6 @@ public class TimeCollector extends AppCompatActivity {
     int duration = 300;
     Transition sharedElementEnterTransition;
     Transition.TransitionListener mTransitionListener;
-
-    @Override
-    public void onBackPressed() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            sharedElementEnterTransition.removeListener(mTransitionListener);
-            setAnim(mConstraintLayout, false);
-            setFab(mFab, true);
-        } else {
-
-            super.onBackPressed();
-
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -87,6 +76,32 @@ public class TimeCollector extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG,"Back wsa pressed");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        TabFragment tab = (TabFragment) fragmentManager.findFragmentById(R.id.fragment_place);
+        if(tab != null && tab.onBackPressed()){
+            Log.d(TAG,"Fragment has handled back press");
+            return;
+        }
+        else{
+            handleBackPressed();
+        }
+
+    }
+
+    public void handleBackPressed(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sharedElementEnterTransition.removeListener(mTransitionListener);
+            setAnim(mConstraintLayout, false);
+            setFab(mFab, true);
+        } else {
+
+            super.onBackPressed();
+
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void setAnim(final View myView, boolean isShow) {

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -25,17 +26,21 @@ import java.util.Date;
  */
 
 public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListener {
+    private String TAG = "TabFragment";
     private String mStartTime;
     private String mStopTime;
     private TextView moneyEarned;
     private TextView hoursWorked;
     private BigDecimal wage;
     private Animation slideOutBottom;
+    private Button nextButton;
+    private Button saveButton;
+    private ViewPager viewPager;
 
     //TODO checkout textswitcher to see how it looks.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         SharedPreferences settings = getActivity().getSharedPreferences(OldMain.PREFS_NAME, 0);
@@ -71,7 +76,10 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
         moneyEarned = (TextView)view.findViewById(R.id.moneyEarned);
         hoursWorked = (TextView)view.findViewById(R.id.hoursWorked);
 
-        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+        saveButton = view.findViewById(R.id.save_button);
+        nextButton = view.findViewById(R.id.next_button);
+
+        viewPager = (ViewPager) view.findViewById(R.id.pager);
         final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), 2);
         viewPager.setAdapter(adapter);
 
@@ -79,21 +87,17 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View view) {
-                Log.v("TabFragment","onViewAttachedToWindow");
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View view) {
-
-            }
-        });
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.v("TabFragment","onTabSelected");
+                if(tab.getPosition() == 1){
+                    nextButton.setVisibility(View.GONE);
+                    saveButton.setVisibility(View.VISIBLE);
+                }else{
+                    nextButton.setVisibility(View.VISIBLE);
+                    saveButton.setVisibility(View.GONE);
+                }
                 TimeFragment fragmentOne = adapter.getFragmentOne();
                 TimeFragment fragmentTwo = adapter.getFragmentTwo();
 //                if(tab.getPosition() == 0){
@@ -103,6 +107,22 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             public void onTabUnselected(TabLayout.Tab tab) {}
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
+        });
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"Pressed Next Button");
+                viewPager.setCurrentItem(1);
+//                nextButton.setVisibility(View.GONE);
+//                saveButton.setVisibility(View.VISIBLE);
+            }
+        });
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"Pressed Save Button");
+            }
         });
 
         return view;
@@ -154,6 +174,19 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 //        moneyEarned.setText("$" + money.toPlainString());
     }
 
+
+    public boolean onBackPressed(){
+        if(viewPager.getCurrentItem() == 1){
+            viewPager.setCurrentItem(0);
+//            nextButton.setVisibility(View.VISIBLE);
+//            saveButton.setVisibility(View.GONE);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     @Override
     public void onTimeSet(String time, int id) {
         Log.v("TabFragment","pos " + id +", time: " +time);
@@ -173,4 +206,6 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
         }
 
     }
+
+
 }
