@@ -2,11 +2,13 @@ package archelo.hourtracker;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Transition;
@@ -81,13 +83,28 @@ public class TimeCollector extends AppCompatActivity {
         Log.d(TAG,"Back wsa pressed");
         FragmentManager fragmentManager = getSupportFragmentManager();
         TabFragment tab = (TabFragment) fragmentManager.findFragmentById(R.id.fragment_place);
-        if(tab != null && tab.onBackPressed()){
+        if(tab != null ){
             Log.d(TAG,"Fragment has handled back press");
+            if(!tab.onBackPressed())
+                new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Discard Changes")
+                    .setMessage("Are you sure you want leave?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            handleBackPressed();
+                        }
+
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
             return;
         }
-        else{
-            handleBackPressed();
-        }
+
+        handleBackPressed();
+
 
     }
 
@@ -193,5 +210,13 @@ public class TimeCollector extends AppCompatActivity {
 // start the animation
         anim.start();
 
+    }
+
+    @Override
+    public void onResume(){
+        Log.d(TAG,"onResume");
+        super.onResume();
+        mConstraintLayout.setVisibility(View.VISIBLE);
+        mFab.setVisibility(View.GONE);
     }
 }
