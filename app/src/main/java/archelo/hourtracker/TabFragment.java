@@ -1,5 +1,7 @@
 package archelo.hourtracker;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,9 +22,8 @@ import android.widget.TextView;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.NumberFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -38,8 +39,8 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     public static final String SECOND_MINUTE = "SECOND_MINUTE";
     public static final String SECOND_AMPM = "SECOND_AMPM";
     private String TAG = "TabFragment";
-    private String mStartTime;
-    private String mStopTime;
+    private Calendar mStartTime;
+    private Calendar mStopTime;
     private TextView moneyEarned;
     private TextView hoursWorked;
     private BigDecimal wage;
@@ -57,7 +58,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
         Log.d(TAG,"onCreateView performed with bundle " + (savedInstanceState == null ? "null" : savedInstanceState.toString()));
 
         SharedPreferences settings = getActivity().getSharedPreferences(OldMain.PREFS_NAME, 0);
-        String w = settings.getString("wage","0.00");
+        String w = settings.getString("wage","0");
         Log.v("TabFragment","wage is : " + w);
         wage = new BigDecimal(w);
 
@@ -131,7 +132,8 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             public void onClick(View view) {
                 Log.d(TAG,"Pressed Save Button");
                 performSave(view);
-
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
             }
         });
 
@@ -164,53 +166,27 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 
         super.onSaveInstanceState(outstate);
     }
-    public void setStartTime(String start){
-        mStartTime = start;
-    }
 
     public void performSave(View view){
-        // make snackbar
-        Snackbar mSnackbar = Snackbar.make(view, R.string.saved, Snackbar.LENGTH_LONG);
-// get snackbar view
-        View mView = mSnackbar.getView();
-// get textview inside snackbar view
-        TextView mTextView = (TextView) mView.findViewById(android.support.design.R.id.snackbar_text);
-//                mTextView.setAllCaps(true);
-// set text to center
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-            mTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        else
-            mTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-// show the snackbar
-        mSnackbar.show();
-    }
-
-    public void setStopTime(String stop){
-        mStartTime = stop;
+        //this is where database wries occur
     }
 
 
-    public BigDecimal calculateHoursWorked(String startTime, String endTime) {
-        DateFormat format = new SimpleDateFormat("hh:mm a");
-        try{
-            Date time_1 = format.parse(startTime);
-            Date time_2 = format.parse(endTime);
-            long timeStart = time_1.getTime();
-            long timeEnd = time_2.getTime();
 
-            Long timeDiff;
-            if(timeStart > timeEnd){
-                timeDiff = (timeEnd+60*24*60*1000) - timeStart;
-            }
-            else{
-                timeDiff = timeEnd - timeStart;
-            }
-            return milliToHours(timeDiff);
+    public BigDecimal calculateHoursWorked(Calendar startTime, Calendar endTime) {
+        Date time_1 = startTime.getTime();
+        Date time_2 = endTime.getTime();
+        long timeStart = time_1.getTime();
+        long timeEnd = time_2.getTime();
+
+        Long timeDiff;
+        if(timeStart > timeEnd){
+            timeDiff = (timeEnd+60*24*60*1000) - timeStart;
         }
-        catch(ParseException pe){
-            pe.printStackTrace();
+        else{
+            timeDiff = timeEnd - timeStart;
         }
-        return new BigDecimal(0);
+        return milliToHours(timeDiff);
     }
 
     public BigDecimal milliToHours(Long d){
@@ -218,13 +194,15 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
         return big.divide(new BigDecimal(60*60000),2,BigDecimal.ROUND_HALF_UP);
     }
 
-    public void refreshTimeViews(String start, String end){
+    //TODO getcurrencyInstance might now work for every currency.
+    public void refreshTimeViews(Calendar start, Calendar end){
         BigDecimal bd = calculateHoursWorked(start,end);
         //TODO get animation if you really want to
         //hoursWorked.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
         hoursWorked.setText(bd.toPlainString());
         BigDecimal money = wage.multiply(bd,mathContext);
-        moneyEarned.setText("$" + money.toPlainString());
+        moneyEarned.setText(NumberFormat.getCurrencyInstance().format(money));
+       // Log.d(TAG,"hours worked: " + bd.toPlainString() + ", money: " + money.toPlainString());
     }
 
 
@@ -239,17 +217,17 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     }
 
     @Override
-    public void onTimeSet(String time, int id) {
-        Log.v("TabFragment","pos " + id +", time: " +time);
+    public void onTimeSet(int id, Calendar calendar) {
+       // Log.v("TabFragment","pos " + id +", calendar " + calendar.getTime());
         switch (id){
             case 0:
-                mStartTime = time;
+                mStartTime = calendar;
                 if(mStopTime != null){
                     refreshTimeViews(mStartTime,mStopTime);
                 }
                 break;
             case 1:
-                mStopTime = time;
+                mStopTime = calendar;
                 if(mStartTime != null){
                     refreshTimeViews(mStartTime,mStopTime);
                 }

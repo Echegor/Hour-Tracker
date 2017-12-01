@@ -1,12 +1,14 @@
 package archelo.hourtracker;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ public class TimeFragment extends Fragment {
     private final static String[] hour = new String[]{"01","02","03","04","05","06","07","08","09","10","11","12"};
     private final static String[] minutes = new String[]{"00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"};
     private final static String[] ampmData = new String[]{"AM","PM"};
+    private final static String TAG = "TimeFragment";
     private TextView startTime;
     private NumberPicker hourPicker;
     private NumberPicker minutePicker;
@@ -40,10 +43,11 @@ public class TimeFragment extends Fragment {
     private Button currentDate;
     private OnTimeSetListener mOnTimeSetListener;
     private int position;
+    private Calendar lastCalendar;
 
     //TODO checkout textswitcher to see how it looks.
     public interface OnTimeSetListener {
-        void onTimeSet(String time, int id);
+        void onTimeSet(int id, Calendar calendar);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +56,7 @@ public class TimeFragment extends Fragment {
         position = getArguments().getInt("position");
 
         final Calendar calendar = Calendar.getInstance(Locale.US);
+        lastCalendar = calendar;
         Log.v("Inflating","Time fragment: " + position);
         View view = inflater.inflate(R.layout.time_fragment, container, false);
         currentDate = (Button) view.findViewById(R.id.currentDate);
@@ -61,10 +66,15 @@ public class TimeFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, monthOfYear, dayOfMonth);
+                Log.d(TAG,"OndateSet year: " + year + ", month: " + monthOfYear + ", day" + dayOfMonth);
+                if(lastCalendar == null){
+                    lastCalendar = Calendar.getInstance();
+                }
+                lastCalendar.set(year, monthOfYear, dayOfMonth);
+                updateCalendarTime();
 
-                currentDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
+                currentDate.setText(DateFormat.getDateInstance().format(lastCalendar.getTime()));
+                notifyChange(position,lastCalendar);
             }
 
         };
@@ -99,41 +109,85 @@ public class TimeFragment extends Fragment {
         minutePicker.setValue(calendar.get(Calendar.MINUTE));
         ampmPicker.setValue(calendar.get(Calendar.AM_PM));
 
+        updateViews();
 
-        String time = getTimeForPicker();
-        startTime.setText(time);
-
-        //TODO make numbers change APM PM section
-        NumberPicker.OnValueChangeListener valueChangeListener = new NumberPicker.OnValueChangeListener() {
+        //There isn't a 00 hour. This means that index 0 corresponds to hour 1.
+        NumberPicker.OnValueChangeListener hourChangeListener = new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                String sTime = getTimeForPicker();
-//                String eTime = getTimeForPicker();
-                startTime.setText(sTime);
-                notifyChange(sTime,position);
+               // Log.d(TAG,"hour Change old value " + oldVal + ", new value "+newVal);
+                if(oldVal == 10 && newVal == 11 || oldVal == 11 && newVal ==10){
+                    flipAMPM();
+                }
+                updateViews();
 
             }
         };
 
+        NumberPicker.OnValueChangeListener minuteChangeListener = new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                updateViews();
+
+            }
+        };
+
+        NumberPicker.OnValueChangeListener ampmChangeListener = new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                updateViews();
+            }
+        };
+
+        //This is to notify the parent tab fragment that the time has been set using notify change.
         TabFragment frag = (TabFragment) getFragmentManager().findFragmentById(R.id.fragment_place);
-//        if(position == 0){
-//            frag.setStartTime(time);
-//        }
-//        else{
-//            frag.setStopTime(time);
-//        }
 
         addOnTimeSetListener(frag);
-        addOnValueChangedListener(valueChangeListener);
-        notifyChange(time,position);
+
+        hourPicker.setOnValueChangedListener(hourChangeListener);
+        minutePicker.setOnValueChangedListener(minuteChangeListener);
+        ampmPicker.setOnValueChangedListener(ampmChangeListener);
+
+        notifyChange(position,lastCalendar);
 
         return view;
     }
 
-    public void addOnValueChangedListener(NumberPicker.OnValueChangeListener listener){
-        hourPicker.setOnValueChangedListener(listener);
-        minutePicker.setOnValueChangedListener(listener);
-        ampmPicker.setOnValueChangedListener(listener);
+    //Do not use Hour oft the day. I thought it was hour in 12 hour format. Instead,
+    //I tried setting the time to 24 hour format, but adding more than 12 hours, sets the day ahead.
+    public void updateCalendarTime(){
+       // Log.d(TAG,"Previous calendar time for pos " + position + " " + lastCalendar.getTime());
+        int hour = hourPicker.getValue();
+        int ampm = ampmPicker.getValue();
+        int minute = minutePicker.getValue();
+
+        lastCalendar.set(Calendar.MINUTE,minute);
+        if (hour != 11){
+            lastCalendar.set(Calendar.HOUR,hour +1);
+        }
+        else{
+            lastCalendar.set(Calendar.HOUR,0);
+        }
+        lastCalendar.set(Calendar.AM_PM,ampm);
+        lastCalendar.set(Calendar.SECOND,0);
+
+       // Log.d(TAG,"Updated calendar time for pos " + position + " " + lastCalendar.getTime());
+    }
+    public void updateViews(){
+        updateCalendarTime();
+        startTime.setText(getTimeForPicker());
+        notifyChange(position,lastCalendar);
+    }
+
+    public void flipAMPM(){
+        switch(ampmPicker.getValue()){
+            case 0:
+                ampmPicker.setValue(1);
+                break;
+            case 1:
+                ampmPicker.setValue(0);
+                break;
+        }
     }
 
     public void addOnTimeSetListener(OnTimeSetListener listener){
@@ -149,14 +203,17 @@ public class TimeFragment extends Fragment {
     public String getHour(){
         return hour[hourPicker.getValue()];
     }
+
     public String getMinute(){
         return minutes[minutePicker.getValue()];
     }
+
     public String getAMPM(){
         return ampmData[ampmPicker.getValue()];
     }
+
     public String getTimeForPicker(){
-        return getHour() + ":" + getMinute() + " " + getAMPM();
+        return DateFormat.getTimeInstance(DateFormat.SHORT).format(lastCalendar.getTime());
     }
 
     public void initializePicker(NumberPicker picker,int minValue, int maxValue , String [] data){
@@ -167,10 +224,10 @@ public class TimeFragment extends Fragment {
 
     //you were fixing time views
 
-    private void notifyChange(String time, int id) {
+    private void notifyChange(int id, Calendar calendar) {
 
         if (mOnTimeSetListener != null) {
-            mOnTimeSetListener.onTimeSet(time,id);
+            mOnTimeSetListener.onTimeSet(id,calendar);
         }
     }
 }
