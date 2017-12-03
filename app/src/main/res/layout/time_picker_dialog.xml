@@ -6,32 +6,9 @@
     android:orientation="vertical"
     android:minWidth="300dp"
     android:minHeight="150dp"
+    android:id="@+id/time_picker_dialog"
     android:background="?android:attr/dividerVertical">
     <!--android:layout_gravity="center_horizontal"-->
-    <include layout="@layout/time_picker" ></include>
+    <include layout="@layout/time_picker" android:id="@+id/time_picker"/>
 
-    <View style="@style/Divider"/>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:weightSum="2"
-
-        android:background="?android:attr/dividerHorizontal"
-        style="@android:style/ButtonBar">
-        <Button
-            android:id="@+id/timeDialogCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_weight="1"/>
-        <Button
-            android:id="@+id/timeDialogOK"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ok"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_weight="1"/>
-
-    </LinearLayout>
 </LinearLayout>

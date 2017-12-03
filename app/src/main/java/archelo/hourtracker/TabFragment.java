@@ -2,6 +2,7 @@ package archelo.hourtracker;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +19,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CheckedTextView;
+import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -49,6 +54,13 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     private Button saveButton;
     private ViewPager viewPager;
     private MathContext mathContext;
+    private CheckedTextView checkedTextView;
+    private EditText notebook;
+    private SeekBarHint seekBar;
+    private SeekBar.OnSeekBarChangeListener seekBarListener;
+    private BigDecimal hoursDecimal;
+    private BigDecimal moneyDecimal;
+    private BigDecimal minutesForBreak;
 
     //TODO checkout textswitcher to see how it looks.
     @Override
@@ -61,35 +73,39 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
         String w = settings.getString("wage","0");
         Log.v("TabFragment","wage is : " + w);
         wage = new BigDecimal(w);
-
+        hoursDecimal = new BigDecimal("0.00");
+        moneyDecimal = new BigDecimal("0.00");
+        minutesForBreak = new BigDecimal("0");
         mathContext = new MathContext(2, RoundingMode.HALF_UP);
         //final Calendar calendar = Calendar.getInstance(Locale.US);
-        slideOutBottom  = AnimationUtils.loadAnimation(getContext(), R.anim.out_bottom);
-        slideOutBottom.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-// Update the text here
-                Animation slideInTop = AnimationUtils.loadAnimation(getContext(), R.anim.in_top);
-                hoursWorked.startAnimation(slideInTop);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+//        slideOutBottom  = AnimationUtils.loadAnimation(getContext(), R.anim.out_bottom);
+//        slideOutBottom.setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//// Update the text here
+//                Animation slideInTop = AnimationUtils.loadAnimation(getContext(), R.anim.in_top);
+//                hoursWorked.startAnimation(slideInTop);
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
 
 
         View view = inflater.inflate(R.layout.tab_layout, container, false);
 
         moneyEarned = (TextView)view.findViewById(R.id.moneyEarned);
         hoursWorked = (TextView)view.findViewById(R.id.hoursWorked);
-
+        notebook = (EditText) view.findViewById(R.id.notebook);
+        checkedTextView = (CheckedTextView) view.findViewById(R.id.add_break_check);
+        seekBar = (SeekBarHint) view.findViewById(R.id.breakSeekBar);
         saveButton = view.findViewById(R.id.save_button);
         nextButton = view.findViewById(R.id.next_button);
 
@@ -137,8 +153,50 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             }
         });
 
+        checkedTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"Pressed checkbox");
+                checkedTextView.toggle();
+                if(checkedTextView.isChecked()){
+                    applyBreakSubtraction();
+                    seekBar.setOnSeekBarChangeListener(seekBarListener);
+                }else{
+                    seekBar.setOnSeekBarChangeListener(null);
+                    refreshHoursWorked();
+                    refreshMoney();
+                }
+            }
+        });
+        seekBarListener = new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                applyBreakSubtraction();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        };
+        seekBar.setOnSeekBarChangeListener(null);
         return view;
     }
+
+    public void applyBreakSubtraction(){
+        minutesForBreak = new BigDecimal(seekBar.getProgress());
+        BigDecimal hoursForBreak = minutesForBreak.divide(new BigDecimal("60"),mathContext);
+        BigDecimal result = hoursDecimal.subtract(hoursForBreak,mathContext);
+        BigDecimal money = wage.multiply(result,mathContext);
+        refreshHoursWorked(result);
+        refreshMoney(money);
+    }
+
 
 
     @Override
@@ -196,13 +254,32 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 
     //TODO getcurrencyInstance might now work for every currency.
     public void refreshTimeViews(Calendar start, Calendar end){
-        BigDecimal bd = calculateHoursWorked(start,end);
+        hoursDecimal = calculateHoursWorked(start,end);
+        moneyDecimal = wage.multiply(hoursDecimal,mathContext);
         //TODO get animation if you really want to
         //hoursWorked.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-        hoursWorked.setText(bd.toPlainString());
-        BigDecimal money = wage.multiply(bd,mathContext);
-        moneyEarned.setText(NumberFormat.getCurrencyInstance().format(money));
+        if(checkedTextView.isChecked()){
+            applyBreakSubtraction();
+        }else{
+            refreshHoursWorked();
+            refreshMoney();
+        }
        // Log.d(TAG,"hours worked: " + bd.toPlainString() + ", money: " + money.toPlainString());
+    }
+
+    public void refreshMoney(){
+        moneyEarned.setText(NumberFormat.getCurrencyInstance().format(moneyDecimal));
+    }
+
+    public void refreshMoney(BigDecimal bd){
+        moneyEarned.setText(NumberFormat.getCurrencyInstance().format(bd));
+    }
+
+    public void refreshHoursWorked(){
+        hoursWorked.setText(NumberFormat.getNumberInstance().format(hoursDecimal));
+    }
+    public void refreshHoursWorked(BigDecimal bd){
+        hoursWorked.setText(NumberFormat.getNumberInstance().format(bd));
     }
 
 
@@ -234,6 +311,12 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
                 break;
         }
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        notebook.clearFocus();
     }
 
 

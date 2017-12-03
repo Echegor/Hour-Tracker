@@ -1,80 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout"
+    android:id="@+id/tabScroller"
+    android:fillViewport="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical"
-    tools:context=".OldMain">
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <archelo.hourtracker.MeasuredViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </archelo.hourtracker.MeasuredViewPager>
-    <Button
-        android:id="@+id/add_break"
-        android:layout_gravity="end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_break"
-        android:drawableStart="@drawable/ic_airline_seat_recline_normal_black_48px"
-        />
+    android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        android:layout_height="fill_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        tools:context=".OldMain">
 
-
-        <TextView
-            android:id="@+id/hoursWorked"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:paddingTop="10dp"
-            android:text="@string/hours_worked"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/moneyEarned"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        <archelo.hourtracker.MeasuredViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </archelo.hourtracker.MeasuredViewPager>
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|start"
-            android:layout_weight="1"
-            android:paddingTop="10dp"
-            android:text="@string/earned"
-            android:textAlignment="center"
-            android:textColor="@color/money"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:focusableInTouchMode="true">
+            <CheckedTextView
+                android:id="@+id/add_break_check"
+                android:layout_alignParentEnd="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:text="@string/add_break"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 
+                android:drawableStart="@drawable/ic_airline_seat_recline_normal_black_48px"
+                />
+            <archelo.hourtracker.SeekBarHint
+                android:id="@+id/breakSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/add_break_check"/>
+
+            <android.support.v7.widget.GridLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/breakSeekBar"
+                app:rowCount="2"
+                app:columnCount="2">
+
+
+                <TextView
+                    android:id="@+id/hourText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hours_worked"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill_horizontal"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/moneyText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/earned"
+                    android:textAlignment="center"
+                    android:textColor="@color/money"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_gravity="fill_horizontal"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:id="@+id/hoursWorked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hours_worked"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_gravity="fill_horizontal"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:id="@+id/moneyEarned"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/earned"
+                    android:textAlignment="center"
+                    android:textColor="@color/money"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_gravity="fill_horizontal"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"/>
+
+
+            </android.support.v7.widget.GridLayout>
+            <TextView
+                android:id="@+id/noteLabel"
+                android:text="@string/notes"
+                android:layout_below="@id/grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/notebook"
+                android:layout_below="@id/noteLabel"
+                android:hint="@string/notebook_hint"
+                android:inputType="textMultiLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/save_button"
+                android:visibility="gone"
+                android:text="@string/save"
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/next_button"
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content"
+                android:text="@string/next"
+                android:drawableEnd="@drawable/ic_arrow_forward_black_24dp"
+                />
+
+        </RelativeLayout>
 
     </LinearLayout>
-    <Button
-        android:id="@+id/save_button"
-        android:visibility="gone"
-        android:text="@string/save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/next_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/next"
-        android:drawableEnd="@drawable/ic_arrow_forward_black_24dp"
-        />
-</LinearLayout>
+
+</ScrollView>

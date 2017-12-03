@@ -199,8 +199,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TIME && resultCode == Activity.RESULT_OK) {
-            // make snackbar
-            Snackbar mSnackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.saved, Snackbar.LENGTH_LONG);
+            //Using coordinator layout to keep snack message above hidden buttons
+            Snackbar mSnackbar = Snackbar.make(this.findViewById(R.id.CoordinatorLayout_main), R.string.saved, Snackbar.LENGTH_LONG);
 // get snackbar view
             View mView = mSnackbar.getView();
 // get textview inside snackbar view
