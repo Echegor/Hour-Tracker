@@ -32,6 +32,9 @@ import java.util.Locale;
  */
 
 public class TimeFragment extends Fragment {
+    public static final String FIRST_HOUR = "FIRST_HOUR";
+    public static final String FIRST_MINUTE = "FIRST_MINUTE";
+    public static final String FIRST_AMPM = "FIRST_AMPM";
     public final static String[] hour = new String[]{"01","02","03","04","05","06","07","08","09","10","11","12"};
     public final static String[] minutes = new String[]{"00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"};
     public final static String[] ampmData = new String[]{"AM","PM"};
@@ -105,9 +108,17 @@ public class TimeFragment extends Fragment {
         initializePicker(ampmPicker,0,ampmData.length -1,ampmData);
 
 
-        hourPicker.setValue(calendar.get(Calendar.HOUR));
-        minutePicker.setValue(calendar.get(Calendar.MINUTE));
-        ampmPicker.setValue(calendar.get(Calendar.AM_PM));
+        if(savedInstanceState != null){
+            hourPicker.setValue(savedInstanceState.getInt(FIRST_HOUR,calendar.get(Calendar.HOUR)));
+            minutePicker.setValue(savedInstanceState.getInt(FIRST_MINUTE,calendar.get(Calendar.MINUTE)));
+            ampmPicker.setValue(savedInstanceState.getInt(FIRST_AMPM,calendar.get(Calendar.AM_PM)));
+        }
+        else{
+            hourPicker.setValue(calendar.get(Calendar.HOUR));
+            minutePicker.setValue(calendar.get(Calendar.MINUTE));
+            ampmPicker.setValue(calendar.get(Calendar.AM_PM));
+        }
+
 
         updateViews();
 
@@ -222,6 +233,17 @@ public class TimeFragment extends Fragment {
         picker.setDisplayedValues(data);
     }
 
+
+    //Save the current position of the picker.
+    @Override
+    public void onSaveInstanceState(Bundle outstate){
+        Log.d(TAG,"Saving TimeFragment " + position);
+        outstate.putInt(FIRST_HOUR,hourPicker.getValue());
+        outstate.putInt(FIRST_MINUTE,minutePicker.getValue());
+        outstate.putInt(FIRST_AMPM,ampmPicker.getValue());
+
+        super.onSaveInstanceState(outstate);
+    }
     //you were fixing time views
 
     private void notifyChange(int id, Calendar calendar) {

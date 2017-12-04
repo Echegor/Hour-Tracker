@@ -37,12 +37,6 @@ import java.util.Date;
  */
 
 public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListener {
-    public static final String FIRST_HOUR = "FIRST_HOUR";
-    public static final String FIRST_MINUTE = "FIRST_MINUTE";
-    public static final String FIRST_AMPM = "FIRST_AMPM";
-    public static final String SECOND_HOUR = "SECOND_HOUR";
-    public static final String SECOND_MINUTE = "SECOND_MINUTE";
-    public static final String SECOND_AMPM = "SECOND_AMPM";
     private String TAG = "TabFragment";
     private Calendar mStartTime;
     private Calendar mStopTime;
@@ -198,32 +192,32 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     }
 
 
-
-    @Override
-    public void onSaveInstanceState(Bundle outstate){
-        Log.d(TAG,"onSaveInstanceState");
-        if(viewPager != null){
-            TabAdapter adapter = (TabAdapter) viewPager.getAdapter();
-            TimeFragment fragmentOne = adapter.getFragmentOne();
-            TimeFragment fragmentTwo = adapter.getFragmentTwo();
-
-            if(fragmentOne != null && fragmentTwo != null){
-                Log.d(TAG,"Saving TimeFragments");
-                outstate.putString(FIRST_HOUR,fragmentOne.getHour());
-                outstate.putString(FIRST_MINUTE,fragmentOne.getMinute());
-                outstate.putString(FIRST_AMPM,fragmentOne.getAMPM());
-
-                outstate.putString(SECOND_HOUR,fragmentTwo.getHour());
-                outstate.putString(SECOND_MINUTE,fragmentTwo.getMinute());
-                outstate.putString(SECOND_AMPM,fragmentTwo.getAMPM());
-            }
-        }
-        else{
-            Log.d(TAG,"Null viewpager. Failed to save bundle");
-        }
-
-        super.onSaveInstanceState(outstate);
-    }
+//
+//    @Override
+//    public void onSaveInstanceState(Bundle outstate){
+//        Log.d(TAG,"onSaveInstanceState");
+//        if(viewPager != null){
+//            TabAdapter adapter = (TabAdapter) viewPager.getAdapter();
+//            TimeFragment fragmentOne = adapter.getFragmentOne();
+//            TimeFragment fragmentTwo = adapter.getFragmentTwo();
+//
+//            if(fragmentOne != null && fragmentTwo != null){
+//                Log.d(TAG,"Saving TimeFragments");
+//                outstate.putString(FIRST_HOUR,fragmentOne.getHour());
+//                outstate.putString(FIRST_MINUTE,fragmentOne.getMinute());
+//                outstate.putString(FIRST_AMPM,fragmentOne.getAMPM());
+//
+//                outstate.putString(SECOND_HOUR,fragmentTwo.getHour());
+//                outstate.putString(SECOND_MINUTE,fragmentTwo.getMinute());
+//                outstate.putString(SECOND_AMPM,fragmentTwo.getAMPM());
+//            }
+//        }
+//        else{
+//            Log.d(TAG,"Null viewpager. Failed to save bundle");
+//        }
+//
+//        super.onSaveInstanceState(outstate);
+//    }
 
     public void performSave(View view){
         //this is where database wries occur
