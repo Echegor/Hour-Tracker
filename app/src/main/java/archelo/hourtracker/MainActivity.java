@@ -298,6 +298,9 @@ public class MainActivity extends AppCompatActivity
                     //mAdapter.notifyDataSetChanged();
                     Log.d(TAG,"Refreshing data set");
                     mAdapter.notifyItemInserted(mItems.size() - 1);
+                    //TODO scroll on item add
+                    //I flipped the two
+//                    mAdapter.notifyItemInserted(0);
 
                 }
             }
