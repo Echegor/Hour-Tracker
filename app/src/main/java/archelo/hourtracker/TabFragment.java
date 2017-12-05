@@ -2,8 +2,10 @@ package archelo.hourtracker;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -192,7 +194,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     }
 
 
-//
+//     Removed at this data is saved under timefragment, where it belongs.
 //    @Override
 //    public void onSaveInstanceState(Bundle outstate){
 //        Log.d(TAG,"onSaveInstanceState");
@@ -219,8 +221,25 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 //        super.onSaveInstanceState(outstate);
 //    }
 
+    //this is where database writes occur
+    //in order to make
     public void performSave(View view){
-        //this is where database wries occur
+//        try{
+//
+//        }
+        Log.d(TAG,"Saving entry");
+        DbHelper database = new DbHelper(view.getContext());
+        SQLiteDatabase db = database.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DbHelperContract.DbEntry.COLUMN_NAME_START_TIME,mStartTime.getTimeInMillis());
+        values.put(DbHelperContract.DbEntry.COLUMN_NAME_END_TIME,mStopTime.getTimeInMillis());
+        values.put(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_DURATION,seekBar.getProgress());
+        values.put(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_TICKED,(checkedTextView.isChecked() ? 1 : 0));
+        values.put(DbHelperContract.DbEntry.COLUMN_NAME_NOTES,notebook.getText().toString());
+        values.put(DbHelperContract.DbEntry.COLUMN_NAME_SAVED_DATE,System.currentTimeMillis());
+
+        db.insertWithOnConflict(DbHelperContract.DbEntry.TABLE_NAME, null, values,SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
     }
 
 
