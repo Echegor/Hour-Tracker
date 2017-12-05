@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
@@ -102,6 +103,10 @@ public class MainActivity extends AppCompatActivity
         mItems = getTimeEntries();
         mAdapter = new HourCardAdapter(mItems);
         mRecyclerView.setAdapter(mAdapter);
+
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter)mAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(mRecyclerView);
 
         checkForFirstTime();
     }
@@ -295,9 +300,9 @@ public class MainActivity extends AppCompatActivity
                     mItems.add(entry);
 
                     //slower performace. Removed
-                    //mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
                     Log.d(TAG,"Refreshing data set");
-                    mAdapter.notifyItemInserted(mItems.size() - 1);
+//                    mAdapter.notifyItemInserted(mItems.size() - 1);
                     //TODO scroll on item add
                     //I flipped the two
 //                    mAdapter.notifyItemInserted(0);

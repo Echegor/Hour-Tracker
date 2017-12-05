@@ -9,13 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Archelo on 12/4/2017.
  */
 
-public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEntryViewHolder> {
+public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEntryViewHolder> implements ItemTouchHelperAdapter {
     private List<TimeEntry> myDataset;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -72,6 +73,28 @@ public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEn
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    //from adapter
+    @Override
+    public void onItemDismiss(int position) {
+        myDataset.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(myDataset, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(myDataset, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+//        return true;
     }
 }
 

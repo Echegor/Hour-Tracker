@@ -10,6 +10,7 @@ import java.util.Date;
 public class TimeEntry implements Serializable {
     public static final String CLASS_NAME = "TIME_ENTRY";
     private static final long serialVersionUID = 7526471155622776148L;
+    private int id;
     private Date startTime;
     private Date endTime;
     private Date dateCreated;
@@ -18,7 +19,8 @@ public class TimeEntry implements Serializable {
     private int breakDuration;
     private int breakValue;
 
-    public TimeEntry(long startTime, long endTime, int breakDuration, int isBreakSubtracted, String notes, long dateCreated){
+    public TimeEntry(int id, long startTime, long endTime, int breakDuration, int isBreakSubtracted, String notes, long dateCreated){
+        this.id = id;
         this.breakValue = isBreakSubtracted;
         this.startTime = new Date(startTime);
         this.endTime = new Date(endTime);
@@ -55,5 +57,9 @@ public class TimeEntry implements Serializable {
 
     public int getBreakValue() {
         return breakValue;
+    }
+
+    public int getId() {
+        return id;
     }
 }
