@@ -1,7 +1,10 @@
 package archelo.hourtracker;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,26 +22,31 @@ import java.util.List;
 
 public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEntryViewHolder> implements ItemTouchHelperAdapter {
     private List<TimeEntry> myDataset;
+    private Context context;
+    private final static String TAG = "HourCardAdapter";
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class TimeEntryViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         CardView cv;
-        TextView personName;
-        TextView personAge;
+        TextView hoursWorkedField;
+        TextView moneyEarnedField;
+        TextView dateSavedField;
         public TimeEntryViewHolder(View itemview) {
             super(itemview);
             cv = (CardView)itemView.findViewById(R.id.cv);
-            personName = (TextView)itemView.findViewById(R.id.person_name);
-            personAge = (TextView)itemView.findViewById(R.id.person_age);
+            hoursWorkedField = (TextView)itemView.findViewById(R.id.hoursWorkedField);
+            moneyEarnedField = (TextView)itemView.findViewById(R.id.moneyEarnedField);
+            dateSavedField = (TextView)itemView.findViewById(R.id.dateSavedField);
 //            personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HourCardAdapter(List<TimeEntry> myDataset) {
+    public HourCardAdapter(List<TimeEntry> myDataset , Context context) {
         this.myDataset = myDataset;
+        this.context = context;
     }
 
     // Create new views (invoked by the layout manager)
@@ -56,10 +65,22 @@ public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEn
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 //        holder.mTextView.setText(mDataset[position]);
-        String startTime = DateFormat.getDateTimeInstance().format(myDataset.get(position).getStartTime());
-        String endTime = DateFormat.getDateTimeInstance().format(myDataset.get(position).getEndTime());
-        holder.personName.setText(startTime);
-        holder.personAge.setText(endTime);
+        String dateCreated = DateFormat.getDateTimeInstance().format(myDataset.get(position).getDateCreated());
+//        String startTime = DateFormat.getDateTimeInstance().format(myDataset.get(position).getStartTime());
+//        String endTime = DateFormat.getDateTimeInstance().format(myDataset.get(position).getEndTime());
+        String hoursWorked = NumberFormat.getNumberInstance().format(myDataset.get(position).getHoursWorked());
+        String moneyEarned = NumberFormat.getNumberInstance().format(myDataset.get(position).getMoneyEarned());
+//        String hoursWorkedField
+//
+//        TextView hoursWorkedField;
+//        TextView moneyEarnedField;
+//        TextView dateSavedField;
+//
+//
+        holder.hoursWorkedField.setText(hoursWorked);
+        holder.moneyEarnedField.setText(moneyEarned);
+        holder.dateSavedField.setText(dateCreated);
+//        holder.personAge.setText(endTime);
 //        personViewHolder.personPhoto.setImageResource(persons.get(i).photoId);
 
     }
@@ -78,6 +99,7 @@ public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEn
     //from adapter
     @Override
     public void onItemDismiss(int position) {
+        removeItemFromDb(position);
         myDataset.remove(position);
         notifyItemRemoved(position);
     }
@@ -95,6 +117,31 @@ public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEn
         }
         notifyItemMoved(fromPosition, toPosition);
 //        return true;
+    }
+
+    public void removeItemFromDb(int position){
+        DbHelper database = null;
+        SQLiteDatabase db = null;
+        try{
+            long itemID = myDataset.get(position).getId();
+            Log.d(TAG,"deleting item " + itemID);
+            String whereClause = "_id=?";
+            String[] whereArgs = new String[] {Long.toString(itemID)};
+            database = new DbHelper(context);
+            db = database.getWritableDatabase();
+            db.delete(DbHelperContract.DbEntry.TABLE_NAME, whereClause, whereArgs);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally{
+            if(database != null){
+                database.close();
+            }
+            if(db != null){
+                db.close();
+            }
+        }
     }
 }
 

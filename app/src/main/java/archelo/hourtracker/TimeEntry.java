@@ -1,6 +1,7 @@
 package archelo.hourtracker;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Date;
 public class TimeEntry implements Serializable {
     public static final String CLASS_NAME = "TIME_ENTRY";
     private static final long serialVersionUID = 7526471155622776148L;
-    private int id;
+    private long id;
     private Date startTime;
     private Date endTime;
     private Date dateCreated;
@@ -18,8 +19,10 @@ public class TimeEntry implements Serializable {
     private boolean isBreakSubtracted;
     private int breakDuration;
     private int breakValue;
+    private BigDecimal moneyEarned;
+    private BigDecimal hoursWorked;
 
-    public TimeEntry(int id, long startTime, long endTime, int breakDuration, int isBreakSubtracted, String notes, long dateCreated){
+    public TimeEntry(long id, long startTime, long endTime, int breakDuration, int isBreakSubtracted, String notes, long dateCreated, BigDecimal moneyEarned, BigDecimal hoursWorked){
         this.id = id;
         this.breakValue = isBreakSubtracted;
         this.startTime = new Date(startTime);
@@ -28,6 +31,8 @@ public class TimeEntry implements Serializable {
         this.notes = (notes == null ? "" : notes);
         this.isBreakSubtracted = isBreakSubtracted > 0 || isBreakSubtracted < 0;
         this.breakDuration = breakDuration;
+        this.moneyEarned = moneyEarned;
+        this.hoursWorked = hoursWorked;
     }
 
     public Date getStartTime() {
@@ -59,7 +64,19 @@ public class TimeEntry implements Serializable {
         return breakValue;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id){
+        this.id = id;
+    }
+
+    public BigDecimal getMoneyEarned() {
+        return moneyEarned;
+    }
+
+    public BigDecimal getHoursWorked() {
+        return hoursWorked;
     }
 }

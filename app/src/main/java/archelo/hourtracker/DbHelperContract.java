@@ -20,6 +20,8 @@ public class DbHelperContract {
         public static final String COLUMN_NAME_BREAK_TICKED = "COLUMN_NAME_BREAK_TICKED";
         public static final String COLUMN_NAME_NOTES = "COLUMN_NAME_NOTES";
         public static final String COLUMN_NAME_SAVED_DATE = "COLUMN_NAME_SAVED_DATE";
+        public static final String COLUMN_NAME_HOURS_WORKED = "COLUMN_NAME_HOURS_WORKED";
+        public static final String COLUMN_NAME_MONEY_EARNED = "COLUMN_NAME_MONEY_EARNED";
 
         public static final String SQL_CREATE_TABLE =
                 "CREATE TABLE IF NOT EXISTS "
@@ -30,6 +32,8 @@ public class DbHelperContract {
                         + COLUMN_NAME_BREAK_DURATION + " INTEGER NOT NULL, "
                         + COLUMN_NAME_BREAK_TICKED + " INTEGER NOT NULL, "
                         + COLUMN_NAME_SAVED_DATE + " INTEGER NOT NULL, "
+                        + COLUMN_NAME_HOURS_WORKED + " INTEGER NOT NULL, "
+                        + COLUMN_NAME_MONEY_EARNED + " INTEGER NOT NULL, "
                         + COLUMN_NAME_NOTES + " TEXT NOT NULL); ";
 
         public static final String SQL_DELETE_ENTRIES =
@@ -42,6 +46,8 @@ public class DbHelperContract {
                 COLUMN_NAME_BREAK_DURATION,
                 COLUMN_NAME_BREAK_TICKED,
                 COLUMN_NAME_NOTES,
+                COLUMN_NAME_HOURS_WORKED,
+                COLUMN_NAME_MONEY_EARNED,
                 COLUMN_NAME_SAVED_DATE
         };
     }

@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -100,7 +101,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 
         moneyEarned = (TextView)view.findViewById(R.id.moneyEarned);
         hoursWorked = (TextView)view.findViewById(R.id.hoursWorked);
-        notebook = (EditText) view.findViewById(R.id.notebook);
+        notebook = (TextInputEditText) view.findViewById(R.id.notebook);
         checkedTextView = (CheckedTextView) view.findViewById(R.id.add_break_check);
         seekBar = (SeekBarHint) view.findViewById(R.id.breakSeekBar);
         saveButton = view.findViewById(R.id.save_button);
@@ -144,16 +145,19 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"Pressed Save Button");
-                TimeEntry entry = new TimeEntry(
+                TimeEntry entry = new TimeEntry(0,
                         mStartTime.getTimeInMillis(),
                         mStopTime.getTimeInMillis(),
                         seekBar.getProgress(),
                         (checkedTextView.isChecked() ? 1 : 0),
                         notebook.getText().toString(),
-                        System.currentTimeMillis());
+                        System.currentTimeMillis(),
+                        moneyDecimal,
+                        hoursDecimal);
 
-                performSave(view,entry);
+                entry.setId(performSave(view,entry));
 
+                Log.d(TAG,"Creatd item "+ entry.getId());
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(TimeEntry.CLASS_NAME, entry); //second param is Serializable
                 getActivity().setResult(Activity.RESULT_OK,returnIntent);
@@ -235,12 +239,13 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 
     //this is where database writes occur
     //in order to make
-    public void performSave(View view, TimeEntry entry){
+    public long performSave(View view, TimeEntry entry){
         DbHelper database = null;
+        SQLiteDatabase db = null;
         try{
             Log.d(TAG,"Saving entry");
             database = new DbHelper(view.getContext());
-            SQLiteDatabase db = database.getWritableDatabase();
+            db = database.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_START_TIME,entry.getStartTime().getTime());
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_END_TIME,entry.getEndTime().getTime());
@@ -248,9 +253,10 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_TICKED,entry.getBreakValue());
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_NOTES,entry.getNotes());
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_SAVED_DATE,entry.getDateCreated().getTime());
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_HOURS_WORKED,entry.getMoneyEarned().scaleByPowerOfTen(2).intValue());
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_MONEY_EARNED,entry.getMoneyEarned().scaleByPowerOfTen(2).intValue());
 
-            db.insertWithOnConflict(DbHelperContract.DbEntry.TABLE_NAME, null, values,SQLiteDatabase.CONFLICT_REPLACE);
-            db.close();
+            return db.insertWithOnConflict(DbHelperContract.DbEntry.TABLE_NAME, null, values,SQLiteDatabase.CONFLICT_REPLACE);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -259,8 +265,11 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             if(database != null){
                 database.close();
             }
+            if(db != null){
+                db.close();
+            }
         }
-
+    return -1;
     }
 
 

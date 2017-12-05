@@ -38,6 +38,7 @@ import android.view.ViewAnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,9 +52,12 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView.Adapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private List<TimeEntry> mItems;
+    private boolean itemsRefreshed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        itemsRefreshed = true;
+        Log.v(TAG,"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -101,7 +105,7 @@ public class MainActivity extends AppCompatActivity
 
         // specify an adapter (see also next example)
         mItems = getTimeEntries();
-        mAdapter = new HourCardAdapter(mItems);
+        mAdapter = new HourCardAdapter(mItems,this);
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter)mAdapter);
@@ -111,6 +115,16 @@ public class MainActivity extends AppCompatActivity
         checkForFirstTime();
     }
 
+
+    //ensure that if the recycler view has been refreshed, it is not refreshed again
+    @Override
+    public void onPause(){
+        super.onPause();
+        itemsRefreshed = false;
+    }
+
+    //A clever trick is done to store money. Multiply by 100 and store as int. The other approach would be to store as string. I read online
+    //it was recommended to do it as integer and I do not know why.
     public List<TimeEntry> getTimeEntries(){
         Log.v(TAG,"Fetching items from db");
         DbHelper database = new DbHelper(this);
@@ -134,21 +148,27 @@ public class MainActivity extends AppCompatActivity
                 null                                 // The sort order
         )) {
             if (cursor.moveToFirst()) {
+                int idIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry._ID);
                 int startTimeIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_START_TIME);
                 int endTimeIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_END_TIME);
                 int breakDurationIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_DURATION);
                 int breakTickedIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_TICKED);
                 int notesIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_NOTES);
                 int savedDateIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_SAVED_DATE);
+                int hoursWorkedIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_HOURS_WORKED);
+                int moneyEarnedIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_MONEY_EARNED);
 
                 do {
                     TimeEntry entry = new TimeEntry(
+                            cursor.getLong(idIndex),
                             cursor.getLong(startTimeIndex),
                             cursor.getLong(endTimeIndex),
                             cursor.getInt(breakDurationIndex),
                             cursor.getInt(breakTickedIndex),
                             cursor.getString(notesIndex),
-                            cursor.getLong(savedDateIndex)
+                            cursor.getLong(savedDateIndex),
+                            new BigDecimal(cursor.getInt(hoursWorkedIndex)).scaleByPowerOfTen(-2),
+                            new BigDecimal(cursor.getInt(moneyEarnedIndex)).scaleByPowerOfTen(-2)
                             );
                     list.add(entry);
 
@@ -279,6 +299,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v(TAG, "onActivityResult");
         if (requestCode == REQUEST_TIME && resultCode == Activity.RESULT_OK) {
             //Using coordinator layout to keep snack message above hidden buttons
             Snackbar mSnackbar = Snackbar.make(this.findViewById(R.id.CoordinatorLayout_main), R.string.saved, Snackbar.LENGTH_LONG);
@@ -293,9 +314,10 @@ public class MainActivity extends AppCompatActivity
             else
                 mTextView.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                TimeEntry entry= (TimeEntry)getIntent().getSerializableExtra(TimeEntry.CLASS_NAME); //Obtaining data
+            Bundle extras = data.getExtras();
+            if (extras != null && !itemsRefreshed) {
+                TimeEntry entry= (TimeEntry) extras.getSerializable(TimeEntry.CLASS_NAME); //Obtaining data
+                //Log.d(TAG,"Is object null? " + String.valueOf(entry));
                 if(entry != null){
                     mItems.add(entry);
 
