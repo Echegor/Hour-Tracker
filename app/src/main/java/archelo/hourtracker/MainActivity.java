@@ -7,6 +7,8 @@ import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -16,6 +18,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
@@ -33,11 +37,19 @@ import android.view.ViewAnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public static final int ARRAY_LIST_SIZE = 50; //for optimization
     public static final String TAG = "MainActivity";
     public static final String PREFS_NAME = "MyPrefsFile";
     private static final int REQUEST_TIME = 0;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
+    private List<TimeEntry> mItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +59,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,9 +86,75 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        mItems = getTimeEntries();
+        mAdapter = new HourCardAdapter(mItems);
+        mRecyclerView.setAdapter(mAdapter);
+
         checkForFirstTime();
     }
 
+    public List<TimeEntry> getTimeEntries(){
+        Log.v(TAG,"Fetching items from db");
+        DbHelper database = new DbHelper(this);
+        SQLiteDatabase db = database.getReadableDatabase();
+
+        ArrayList<TimeEntry> list = new ArrayList<>(ARRAY_LIST_SIZE);
+// Filter results WHERE "title" = 'My Title'
+//        String selection = COLUMN_NAME_WEEK_DATE_START + " = ?";
+//        String[] selectionArgs = { getDateAsString(currentDate) };
+
+//        String sortOrder =
+//                COLUMN_NAME_SUBTITLE + " DESC";
+
+        try (Cursor cursor = db.query(
+                DbHelperContract.DbEntry.TABLE_NAME,                     // The table to query
+                DbHelperContract.DbEntry.DEFAULT_PROJECTION,             // The columns to return
+                null,                                // The columns for the WHERE clause (selection)
+                null,                            // The values for the WHERE clause (selectionArgs)
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        )) {
+            if (cursor.moveToFirst()) {
+                int startTimeIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_START_TIME);
+                int endTimeIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_END_TIME);
+                int breakDurationIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_DURATION);
+                int breakTickedIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_TICKED);
+                int notesIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_NOTES);
+                int savedDateIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry.COLUMN_NAME_SAVED_DATE);
+
+                do {
+                    TimeEntry entry = new TimeEntry(
+                            cursor.getLong(startTimeIndex),
+                            cursor.getLong(endTimeIndex),
+                            cursor.getInt(breakDurationIndex),
+                            cursor.getInt(breakTickedIndex),
+                            cursor.getString(notesIndex),
+                            cursor.getLong(savedDateIndex)
+                            );
+                    list.add(entry);
+
+                } while (cursor.moveToNext());
+            }
+
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     @Override
     public void onStart() {
@@ -211,6 +287,20 @@ public class MainActivity extends AppCompatActivity
                 mTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             else
                 mTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                TimeEntry entry= (TimeEntry)getIntent().getSerializableExtra(TimeEntry.CLASS_NAME); //Obtaining data
+                if(entry != null){
+                    mItems.add(entry);
+
+                    //slower performace. Removed
+                    //mAdapter.notifyDataSetChanged();
+                    Log.d(TAG,"Refreshing data set");
+                    mAdapter.notifyItemInserted(mItems.size() - 1);
+
+                }
+            }
 // show the snackbar
             mSnackbar.show();
         }

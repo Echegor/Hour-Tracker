@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -143,8 +144,19 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"Pressed Save Button");
-                performSave(view);
-                getActivity().setResult(Activity.RESULT_OK);
+                TimeEntry entry = new TimeEntry(
+                        mStartTime.getTimeInMillis(),
+                        mStopTime.getTimeInMillis(),
+                        seekBar.getProgress(),
+                        (checkedTextView.isChecked() ? 1 : 0),
+                        notebook.getText().toString(),
+                        System.currentTimeMillis());
+
+                performSave(view,entry);
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(TimeEntry.CLASS_NAME, entry); //second param is Serializable
+                getActivity().setResult(Activity.RESULT_OK,returnIntent);
                 getActivity().finish();
             }
         });
@@ -223,23 +235,32 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 
     //this is where database writes occur
     //in order to make
-    public void performSave(View view){
-//        try{
-//
-//        }
-        Log.d(TAG,"Saving entry");
-        DbHelper database = new DbHelper(view.getContext());
-        SQLiteDatabase db = database.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DbHelperContract.DbEntry.COLUMN_NAME_START_TIME,mStartTime.getTimeInMillis());
-        values.put(DbHelperContract.DbEntry.COLUMN_NAME_END_TIME,mStopTime.getTimeInMillis());
-        values.put(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_DURATION,seekBar.getProgress());
-        values.put(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_TICKED,(checkedTextView.isChecked() ? 1 : 0));
-        values.put(DbHelperContract.DbEntry.COLUMN_NAME_NOTES,notebook.getText().toString());
-        values.put(DbHelperContract.DbEntry.COLUMN_NAME_SAVED_DATE,System.currentTimeMillis());
+    public void performSave(View view, TimeEntry entry){
+        DbHelper database = null;
+        try{
+            Log.d(TAG,"Saving entry");
+            database = new DbHelper(view.getContext());
+            SQLiteDatabase db = database.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_START_TIME,entry.getStartTime().getTime());
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_END_TIME,entry.getEndTime().getTime());
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_DURATION,entry.getBreakDuration());
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_TICKED,entry.getBreakValue());
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_NOTES,entry.getNotes());
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_SAVED_DATE,entry.getDateCreated().getTime());
 
-        db.insertWithOnConflict(DbHelperContract.DbEntry.TABLE_NAME, null, values,SQLiteDatabase.CONFLICT_REPLACE);
-        db.close();
+            db.insertWithOnConflict(DbHelperContract.DbEntry.TABLE_NAME, null, values,SQLiteDatabase.CONFLICT_REPLACE);
+            db.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally{
+            if(database != null){
+                database.close();
+            }
+        }
+
     }
 
 
