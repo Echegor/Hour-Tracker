@@ -253,9 +253,10 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_BREAK_TICKED,entry.getBreakValue());
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_NOTES,entry.getNotes());
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_SAVED_DATE,entry.getDateCreated().getTime());
-            values.put(DbHelperContract.DbEntry.COLUMN_NAME_HOURS_WORKED,entry.getMoneyEarned().scaleByPowerOfTen(2).intValue());
-            values.put(DbHelperContract.DbEntry.COLUMN_NAME_MONEY_EARNED,entry.getMoneyEarned().scaleByPowerOfTen(2).intValue());
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_HOURS_WORKED,entry.getScaledHours());
+            values.put(DbHelperContract.DbEntry.COLUMN_NAME_MONEY_EARNED,entry.getScaledMoney());
 
+            Log.d(TAG,"Saving " + values.toString());
             return db.insertWithOnConflict(DbHelperContract.DbEntry.TABLE_NAME, null, values,SQLiteDatabase.CONFLICT_REPLACE);
         }
         catch(Exception e){

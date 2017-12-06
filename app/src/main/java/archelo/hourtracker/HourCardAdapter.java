@@ -33,12 +33,16 @@ public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEn
         TextView hoursWorkedField;
         TextView moneyEarnedField;
         TextView dateSavedField;
+        TextView startTimeLabel;
+        TextView endTimeLabel;
         public TimeEntryViewHolder(View itemview) {
             super(itemview);
             cv = (CardView)itemView.findViewById(R.id.cv);
             hoursWorkedField = (TextView)itemView.findViewById(R.id.hoursWorkedField);
             moneyEarnedField = (TextView)itemView.findViewById(R.id.moneyEarnedField);
             dateSavedField = (TextView)itemView.findViewById(R.id.dateSavedField);
+            startTimeLabel = (TextView)itemView.findViewById(R.id.startTimeLabel);
+            endTimeLabel = (TextView)itemView.findViewById(R.id.endTimeLabel);
 //            personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
         }
     }
@@ -66,10 +70,10 @@ public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEn
         // - replace the contents of the view with that element
 //        holder.mTextView.setText(mDataset[position]);
         String dateCreated = DateFormat.getDateTimeInstance().format(myDataset.get(position).getDateCreated());
-//        String startTime = DateFormat.getDateTimeInstance().format(myDataset.get(position).getStartTime());
-//        String endTime = DateFormat.getDateTimeInstance().format(myDataset.get(position).getEndTime());
+        String startTime = DateFormat.getTimeInstance().format(myDataset.get(position).getStartTime());
+        String endTime = DateFormat.getTimeInstance().format(myDataset.get(position).getEndTime());
         String hoursWorked = NumberFormat.getNumberInstance().format(myDataset.get(position).getHoursWorked());
-        String moneyEarned = NumberFormat.getNumberInstance().format(myDataset.get(position).getMoneyEarned());
+        String moneyEarned = NumberFormat.getCurrencyInstance().format(myDataset.get(position).getMoneyEarned());
 //        String hoursWorkedField
 //
 //        TextView hoursWorkedField;
@@ -79,6 +83,8 @@ public class HourCardAdapter extends RecyclerView.Adapter<HourCardAdapter.TimeEn
 //
         holder.hoursWorkedField.setText(hoursWorked);
         holder.moneyEarnedField.setText(moneyEarned);
+        holder.startTimeLabel.setText(startTime);
+        holder.endTimeLabel.setText(endTime);
         holder.dateSavedField.setText(dateCreated);
 //        holder.personAge.setText(endTime);
 //        personViewHolder.personPhoto.setImageResource(persons.get(i).photoId);

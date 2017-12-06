@@ -79,4 +79,13 @@ public class TimeEntry implements Serializable {
     public BigDecimal getHoursWorked() {
         return hoursWorked;
     }
+
+    public int getScaledMoney(){
+        return moneyEarned.scaleByPowerOfTen(2).intValue();
+    }
+
+    public int getScaledHours(){
+        return hoursWorked.scaleByPowerOfTen(2).intValue();
+    }
+
 }

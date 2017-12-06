@@ -167,8 +167,8 @@ public class MainActivity extends AppCompatActivity
                             cursor.getInt(breakTickedIndex),
                             cursor.getString(notesIndex),
                             cursor.getLong(savedDateIndex),
-                            new BigDecimal(cursor.getInt(hoursWorkedIndex)).scaleByPowerOfTen(-2),
-                            new BigDecimal(cursor.getInt(moneyEarnedIndex)).scaleByPowerOfTen(-2)
+                            new BigDecimal(cursor.getInt(moneyEarnedIndex)).scaleByPowerOfTen(-2),
+                            new BigDecimal(cursor.getInt(hoursWorkedIndex)).scaleByPowerOfTen(-2)
                             );
                     list.add(entry);
 
