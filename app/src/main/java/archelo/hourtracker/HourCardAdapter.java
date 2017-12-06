@@ -53,10 +53,6 @@ public class HourCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-
-
-    // Create new views (invoked by the layout manager)
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG,"onCreateViewHolder "+viewType);
@@ -102,6 +98,8 @@ public class HourCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             view.sparkAdapter.notifyDataSetChanged();
         }
         else{
+            //positions start at 0 but the first one is bound to the sparkline.
+            --position;
             HourCardAdapter.TimeEntryViewHolder viewHolder = (HourCardAdapter.TimeEntryViewHolder ) holder;
             String dateCreated = DateFormat.getDateTimeInstance().format(myDataset.get(position).getDateCreated());
             String startTime = DateFormat.getTimeInstance().format(myDataset.get(position).getStartTime());
@@ -130,7 +128,7 @@ public class HourCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return myDataset.size();
+        return myDataset.size() + 1;
     }
 
     @Override
@@ -141,7 +139,10 @@ public class HourCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     //from adapter
     @Override
     public void onItemDismiss(int position) {
-        removeItemFromDb(position);
+        if(position != 0){
+            removeItemFromDb(--position);
+        }
+
         myDataset.remove(position);
         notifyItemRemoved(position);
         fireItemEvents(position);

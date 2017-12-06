@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
-        mLayoutManager.setReverseLayout(true);
-        mLayoutManager.setStackFromEnd(true);
+//        mLayoutManager.setReverseLayout(true);
+//        mLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
@@ -144,8 +144,8 @@ public class MainActivity extends AppCompatActivity
 //        String selection = COLUMN_NAME_WEEK_DATE_START + " = ?";
 //        String[] selectionArgs = { getDateAsString(currentDate) };
 
-//        String sortOrder =
-//                COLUMN_NAME_SUBTITLE + " DESC";
+        String sortOrder =
+                DbHelperContract.DbEntry.COLUMN_NAME_SAVED_DATE + " DESC";
 
         try (Cursor cursor = db.query(
                 DbHelperContract.DbEntry.TABLE_NAME,                     // The table to query
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity
                 null,                            // The values for the WHERE clause (selectionArgs)
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
-                null                                 // The sort order
+                sortOrder                                 // The sort order
         )) {
             if (cursor.moveToFirst()) {
                 int idIndex = cursor.getColumnIndexOrThrow(DbHelperContract.DbEntry._ID);
