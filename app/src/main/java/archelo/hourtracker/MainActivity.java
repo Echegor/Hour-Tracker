@@ -38,6 +38,8 @@ import android.view.ViewAnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.robinhood.spark.SparkView;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity
     public static final String PREFS_NAME = "MyPrefsFile";
     private static final int REQUEST_TIME = 0;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private HourCardAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private List<TimeEntry> mItems;
     private boolean itemsRefreshed;
@@ -112,6 +114,13 @@ public class MainActivity extends AppCompatActivity
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(mRecyclerView);
 
+
+//        mAdapter.addNewItemEvent(new HourCardAdapter.ItemEvent() {
+//            @Override
+//            public void onItemRemoved(int itemID) {
+//                sparkAdapter.notifyDataSetChanged();
+//            }
+//        });
         checkForFirstTime();
     }
 

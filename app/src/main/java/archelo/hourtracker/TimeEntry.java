@@ -88,4 +88,8 @@ public class TimeEntry implements Serializable {
         return hoursWorked.scaleByPowerOfTen(2).intValue();
     }
 
+    public float getMoneyFloat(){
+        return moneyEarned.floatValue();
+    }
+
 }
