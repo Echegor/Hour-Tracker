@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@android:drawable/editbox_background_normal"
-            android:drawableEnd="@drawable/ic_date_range_black_24dp"
+            android:drawableEnd="@drawable/ic_date_range_black_24px"
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="16sp"

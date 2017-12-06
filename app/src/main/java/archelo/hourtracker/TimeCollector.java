@@ -22,7 +22,7 @@ public class TimeCollector extends AppCompatActivity {
     private static String TAG = "TimeCollector";
     int height;
     int width;
-    FloatingActionButton mFab;
+//    FloatingActionButton mFab;
     ConstraintLayout mConstraintLayout;
     CoordinatorLayout mCoordinatorLayout;
 
@@ -41,7 +41,7 @@ public class TimeCollector extends AppCompatActivity {
 //        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 //        height = displayMetrics.heightPixels;
 //        width = displayMetrics.widthPixels;
-        mFab = (FloatingActionButton) findViewById(R.id.next_fab);
+//        mFab = (FloatingActionButton) findViewById(R.id.next_fab);
 //
 //        mConstraintLayout = (ConstraintLayout) findViewById(R.id.bg);
 //
@@ -223,6 +223,6 @@ public class TimeCollector extends AppCompatActivity {
         Log.d(TAG,"onResume");
         super.onResume();
         mCoordinatorLayout.setVisibility(View.VISIBLE);
-        mFab.setVisibility(View.GONE);
+//        mFab.setVisibility(View.GONE);
     }
 }
