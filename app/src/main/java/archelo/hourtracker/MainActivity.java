@@ -1,7 +1,5 @@
 package archelo.hourtracker;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.DialogInterface;
@@ -9,14 +7,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,11 +28,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewAnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.robinhood.spark.SparkView;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,7 +42,7 @@ public class MainActivity extends AppCompatActivity
     public static final String PREFS_NAME = "MyPrefsFile";
     private static final int REQUEST_TIME = 0;
     private RecyclerView mRecyclerView;
-    private HourCardAdapter mAdapter;
+    private CardAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private List<TimeEntry> mItems;
     private boolean itemsRefreshed;
@@ -107,7 +98,7 @@ public class MainActivity extends AppCompatActivity
 
         // specify an adapter (see also next example)
         mItems = getTimeEntries();
-        mAdapter = new HourCardAdapter(mItems,this);
+        mAdapter = new CardAdapter(mItems,this);
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter)mAdapter);
@@ -115,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         touchHelper.attachToRecyclerView(mRecyclerView);
 
 
-//        mAdapter.addNewItemEvent(new HourCardAdapter.ItemEvent() {
+//        mAdapter.addNewItemEvent(new CardAdapter.ItemEvent() {
 //            @Override
 //            public void onItemRemoved(int itemID) {
 //                sparkAdapter.notifyDataSetChanged();

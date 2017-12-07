@@ -36,5 +36,5 @@ public interface ItemTouchHelperAdapter {
      * @see RecyclerView#getAdapterPositionFor(RecyclerView.ViewHolder)
      * @see RecyclerView.ViewHolder#getAdapterPosition()
      */
-    void onItemDismiss(int position);
+    void onItemDismiss(RecyclerView.ViewHolder viewHolder, int position);
 }
