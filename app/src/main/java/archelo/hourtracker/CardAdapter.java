@@ -98,7 +98,10 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
 
     public void makeGraphVisible(){
-        sparkLineVisible = true;
+        if(myDataset.size() > 1){
+            sparkLineVisible = true;
+        }
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -141,7 +144,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         //java.lang.IndexOutOfBoundsException: Inconsistency detected. Invalid view holder adapter positionViewHolder if you dont have below. WTF
         //remove sparkline when there aren't at least two points
         if(myDataset.size() < 2){
-            Log.d(TAG,"notifyItemRangeRemoved 0-" +position +1);
+//            Log.d(TAG,"notifyItemRangeRemoved 0-" +(position +1));
             notifyItemRangeRemoved(0, position + 1);
             sparkLineVisible = false;
             notifyItemRemoved(position);
