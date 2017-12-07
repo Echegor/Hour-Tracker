@@ -27,7 +27,8 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     private Context context;
     private final static String TAG = "CardAdapter";
     private ArrayList<ItemEvent> itemEvents;
-    private boolean sparkLineDismissed;
+    private boolean sparkLineVisible;
+    private boolean sparkLineCreated;
     public static final int SPARK_LINE = 0;
     public static final int TIME_ENTRY = 1;
     // Provide a reference to the views for each data item
@@ -42,34 +43,24 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         this.myDataset = myDataset;
         this.context = context;
         itemEvents = new ArrayList<>();
-        sparkLineDismissed = false;
+        sparkLineVisible = true;
+        sparkLineCreated = false;
     }
 
+
+    //keep this in sync with the size to avoid errors
     @Override
     public int getItemViewType(int position) {
-        if(position == 0 && !sparkLineDismissed){
+        if(position == 0 && sparkLineVisible && myDataset.size() > 1){
+            Log.d(TAG,"getItemViewType pos " + position + " return 0");
             return 0;
         }
         else if(myDataset.size() > 0){
+            Log.d(TAG,"getItemViewType pos " + position + " return 1");
             return 1;
         }
         else{
             return 2;
-        }
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG,"onCreateViewHolder "+viewType);
-        switch (viewType) {
-            case SPARK_LINE:
-                View viewOne = LayoutInflater.from(parent.getContext()).inflate(R.layout.spark_view, parent, false);
-                return new CardAdapter.SparkLineViewHolder(viewOne,myDataset);
-            case TIME_ENTRY:
-                View viewTwo = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
-                return  new CardAdapter.TimeEntryViewHolder(viewTwo);
-            default:
-                return null;
         }
     }
 
@@ -80,9 +71,14 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         switch ((int)holder.itemView.getTag()){
             case SPARK_LINE:
                 CardAdapter.SparkLineViewHolder view = (CardAdapter.SparkLineViewHolder ) holder;
+                sparkLineCreated = true;
+                sparkLineVisible = true;
                 break;
             case TIME_ENTRY:
-                position --;
+                if(sparkLineCreated && sparkLineVisible){
+                    position --;
+                }
+
                 CardAdapter.TimeEntryViewHolder viewHolder = (CardAdapter.TimeEntryViewHolder ) holder;
                 viewHolder.setTimeEntry(myDataset.get(position));
                 break;
@@ -101,13 +97,20 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         itemEvents.remove(event);
     }
 
+    public void makeGraphVisible(){
+        sparkLineVisible = true;
+    }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-//        Log.d(TAG,"getItemCount " + (myDataset.size() + 1));
-        if(sparkLineDismissed){
+
+        if(!sparkLineVisible || myDataset.size() < 2){
+            Log.d(TAG,"getItemCount: no sparkline " + (myDataset.size()));
             return myDataset.size();
         }
+
+        Log.d(TAG,"getItemCount: with sparkline " + (myDataset.size() + 1));
         return myDataset.size() + 1;
     }
 
@@ -116,29 +119,14 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    //from adapter
+    //When you remove two views, notifyItemRangeRemoved has to be called. Otherwise, a crash happens.
     @Override
     public void onItemDismiss(RecyclerView.ViewHolder viewHolder, int position) {
         Log.d(TAG,"onItemDismiss view tag " + viewHolder.itemView.getTag() + " position: "  + position);
-//        if(sparkLineDismissed){
-//            --position;
-//            removeItemFromDb(position);
-//            myDataset.remove(position);
-//        }
-//        else if ( position == 0){
-//            sparkLineDismissed = true;
-//        }
-//        else{
-//            removeItemFromDb(position);
-//            myDataset.remove(position);
-//        }
-//
-//        notifyItemRemoved(position);
-        //fireItemEvents(position);
 
         switch ((int)viewHolder.itemView.getTag()){
             case SPARK_LINE:
-                sparkLineDismissed = true;
+                sparkLineVisible = false;
                 break;
             case TIME_ENTRY:
                 TimeEntry entry = ((TimeEntryViewHolder) viewHolder).getEntry();
@@ -150,7 +138,19 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         }
 
-        notifyItemRemoved(position);
+        //java.lang.IndexOutOfBoundsException: Inconsistency detected. Invalid view holder adapter positionViewHolder if you dont have below. WTF
+        //remove sparkline when there aren't at least two points
+        if(myDataset.size() < 2){
+            Log.d(TAG,"notifyItemRangeRemoved 0-" +position +1);
+            notifyItemRangeRemoved(0, position + 1);
+            sparkLineVisible = false;
+            notifyItemRemoved(position);
+        }
+        else{
+            notifyItemRemoved(position);
+        }
+
+
 
     }
 
@@ -171,6 +171,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 Collections.swap(myDataset, i, i - 1);
             }
         }
+
         notifyItemMoved(fromPosition, toPosition);
 //        return true;
     }
@@ -180,7 +181,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         SQLiteDatabase db = null;
         try{
             long itemID = entry.getId();
-            Log.d(TAG,"deleting item " + itemID);
+//            Log.d(TAG,"deleting item " + itemID);
             String whereClause = "_id=?";
             String[] whereArgs = new String[] {Long.toString(itemID)};
             database = new DbHelper(context);
@@ -197,6 +198,22 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             if(db != null){
                 db.close();
             }
+        }
+    }
+
+    //I know you want to touch this. Please do not. Modify getItemViewType instead.
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TAG,"onCreateViewHolder "+viewType);
+        switch (viewType) {
+            case SPARK_LINE:
+                View viewOne = LayoutInflater.from(parent.getContext()).inflate(R.layout.spark_view, parent, false);
+                return new CardAdapter.SparkLineViewHolder(viewOne,myDataset);
+            case TIME_ENTRY:
+                View viewTwo = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
+                return  new CardAdapter.TimeEntryViewHolder(viewTwo);
+            default:
+                return null;
         }
     }
     public static class TimeEntryViewHolder extends RecyclerView.ViewHolder {

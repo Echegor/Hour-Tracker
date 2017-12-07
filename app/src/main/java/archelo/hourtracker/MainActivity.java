@@ -323,6 +323,7 @@ public class MainActivity extends AppCompatActivity
 
                     //slower performace. Removed
                     mAdapter.notifyDataSetChanged();
+                    mAdapter.makeGraphVisible();
                     Log.d(TAG,"Refreshing data set");
 //                    mAdapter.notifyItemInserted(mItems.size() - 1);
                     //TODO scroll on item add
