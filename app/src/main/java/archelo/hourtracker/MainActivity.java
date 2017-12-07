@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity
                 TimeEntry entry= (TimeEntry) extras.getSerializable(TimeEntry.CLASS_NAME); //Obtaining data
                 //Log.d(TAG,"Is object null? " + String.valueOf(entry));
                 if(entry != null){
-                    mItems.add(entry);
+                    mItems.add(0,entry);
 
                     //slower performace. Removed
                     mAdapter.notifyDataSetChanged();
