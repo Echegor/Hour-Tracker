@@ -2,12 +2,14 @@ package archelo.hourtracker;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.transition.TransitionManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.robinhood.spark.SparkView;
@@ -23,14 +25,17 @@ import java.util.List;
  */
 
 public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemTouchHelperAdapter {
+    public static final int SPARK_LINE = 0;
+    public static final int TIME_ENTRY = 1;
     private List<TimeEntry> myDataset;
     private Context context;
     private final static String TAG = "CardAdapter";
     private ArrayList<ItemEvent> itemEvents;
     private boolean sparkLineVisible;
     private boolean sparkLineCreated;
-    public static final int SPARK_LINE = 0;
-    public static final int TIME_ENTRY = 1;
+    private RecyclerView recyclerView;
+    private int mExpandedPosition;
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -39,12 +44,14 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         public void onItemRemoved(int itemID);
     }
 
-    public CardAdapter(List<TimeEntry> myDataset , Context context) {
+    public CardAdapter(List<TimeEntry> myDataset , Context context , RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
         this.myDataset = myDataset;
         this.context = context;
         itemEvents = new ArrayList<>();
         sparkLineVisible = true;
         sparkLineCreated = false;
+        mExpandedPosition = -1;
     }
 
 
@@ -79,8 +86,21 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     position --;
                 }
 
+                final int actualPOS = position;
                 CardAdapter.TimeEntryViewHolder viewHolder = (CardAdapter.TimeEntryViewHolder ) holder;
-                viewHolder.setTimeEntry(myDataset.get(position));
+                viewHolder.setTimeEntry(myDataset.get(actualPOS));
+
+                final boolean isExpanded = actualPOS==mExpandedPosition;
+                viewHolder.notes.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+                viewHolder.itemView.setActivated(isExpanded);
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mExpandedPosition = isExpanded ? -1:actualPOS;
+                        TransitionManager.beginDelayedTransition(recyclerView);
+                        notifyDataSetChanged();
+                    }
+                });
                 break;
             default:
                 Log.e(TAG,"invalid tag " + (int)holder.itemView.getTag());
@@ -221,6 +241,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
     public static class TimeEntryViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        private ImageView personPhoto;
         private TimeEntry entry;
         private CardView cv;
         private TextView hoursWorkedField;
@@ -228,6 +249,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         private TextView dateSavedField;
         private TextView startTimeLabel;
         private TextView endTimeLabel;
+        public TextView notes;
         public TimeEntryViewHolder(View itemview) {
             super(itemview);
             itemview.setTag(TIME_ENTRY);
@@ -237,7 +259,8 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             dateSavedField = (TextView)itemView.findViewById(R.id.dateSavedField);
             startTimeLabel = (TextView)itemView.findViewById(R.id.startTimeLabel);
             endTimeLabel = (TextView)itemView.findViewById(R.id.endTimeLabel);
-//            personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
+            personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
+            notes = (TextView) itemview.findViewById(R.id.notes);
         }
 
         public void setTimeEntry(TimeEntry entry){
@@ -257,6 +280,11 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             startTimeLabel.setText(startTime);
             endTimeLabel.setText(endTime);
             dateSavedField.setText(dateCreated);
+            personPhoto.setImageResource(R.drawable.ic_add_black_plus_24dp);
+        }
+
+        public void expandNotes(){
+
         }
 
         public TimeEntry getEntry(){

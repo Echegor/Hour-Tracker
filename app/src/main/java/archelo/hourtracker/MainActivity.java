@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity
 
         // specify an adapter (see also next example)
         mItems = getTimeEntries();
-        mAdapter = new CardAdapter(mItems,this);
+        mAdapter = new CardAdapter(mItems,this,mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter)mAdapter);
