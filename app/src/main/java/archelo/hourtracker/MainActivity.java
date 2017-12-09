@@ -125,6 +125,14 @@ public class MainActivity extends AppCompatActivity
         itemsRefreshed = false;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item= menu.findItem(R.id.action_settings);
+        item.setVisible(false);
+        super.onPrepareOptionsMenu(menu);
+        return true;
+    }
+
     //A clever trick is done to store money. Multiply by 100 and store as int. The other approach would be to store as string. I read online
     //it was recommended to do it as integer and I do not know why.
     public List<TimeEntry> getTimeEntries(){
