@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         // specify an adapter (see also next example)
         mItems = getTimeEntries();
-        mAdapter = new CardAdapter(mItems,this,mRecyclerView);
+        mAdapter = new CardAdapter(mItems,this);
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter)mAdapter);
@@ -332,10 +332,9 @@ public class MainActivity extends AppCompatActivity
                     mItems.add(0,entry);
 
                     //slower performace. Removed
-                    mAdapter.notifyDataSetChanged();
-                    mAdapter.makeGraphVisible();
+                    //mAdapter.notifyDataSetChanged();
                     Log.d(TAG,"Refreshing data set");
-//                    mAdapter.notifyItemInserted(mItems.size() - 1);
+                    mAdapter.notifyItemInserted(0);
                     //TODO scroll on item add
                     //I flipped the two
 //                    mAdapter.notifyItemInserted(0);

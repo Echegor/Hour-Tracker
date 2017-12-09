@@ -2,7 +2,6 @@ package archelo.hourtracker;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.transition.TransitionManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,11 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.robinhood.spark.SparkView;
-
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,117 +21,55 @@ import java.util.List;
  * Created by Archelo on 12/4/2017.
  */
 
-public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemTouchHelperAdapter {
-    public static final int SPARK_LINE = 0;
-    public static final int TIME_ENTRY = 1;
+public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewHolder> implements ItemTouchHelperAdapter {
     private List<TimeEntry> myDataset;
     private Context context;
-    private final static String TAG = "CardAdapter";
-    private ArrayList<ItemEvent> itemEvents;
-    private boolean sparkLineVisible;
-    private boolean sparkLineCreated;
-    private RecyclerView recyclerView;
-    private int mExpandedPosition;
-
+    private final static String TAG = "HourCardAdapter";
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
 
-    public interface ItemEvent{
-        public void onItemRemoved(int itemID);
-    }
 
-    public CardAdapter(List<TimeEntry> myDataset , Context context , RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
+    // Provide a suitable constructor (depends on the kind of dataset)
+    public CardAdapter(List<TimeEntry> myDataset , Context context) {
         this.myDataset = myDataset;
         this.context = context;
-        itemEvents = new ArrayList<>();
-        sparkLineVisible = true;
-        sparkLineCreated = false;
-        mExpandedPosition = -1;
     }
 
-
-    //keep this in sync with the size to avoid errors
+    // Create new views (invoked by the layout manager)
     @Override
-    public int getItemViewType(int position) {
-        if(position == 0 && sparkLineVisible && myDataset.size() > 1){
-            Log.d(TAG,"getItemViewType pos " + position + " return 0");
-            return 0;
-        }
-        else if(myDataset.size() > 0){
-            Log.d(TAG,"getItemViewType pos " + position + " return 1");
-            return 1;
-        }
-        else{
-            return 2;
-        }
+    public CardAdapter.TimeEntryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // create a new view
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
+        // set the view's size, margins, paddings and layout parameters
+        CardAdapter.TimeEntryViewHolder vh = new CardAdapter.TimeEntryViewHolder(v);
+        return vh;
     }
 
+    // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG,"onBindViewHolder " + position);
+    public void onBindViewHolder(CardAdapter.TimeEntryViewHolder holder, int position) {
+        final TimeEntry entry = myDataset.get(position);
+        String dateCreated = DateFormat.getDateTimeInstance().format(entry.getDateCreated());
+        String startTime = DateFormat.getTimeInstance().format(entry.getStartTime());
+        String endTime = DateFormat.getTimeInstance().format(entry.getEndTime());
+        String hoursWorked = NumberFormat.getNumberInstance().format(entry.getHoursWorked());
+        String moneyEarned = NumberFormat.getCurrencyInstance().format(entry.getMoneyEarned());
 
-        switch ((int)holder.itemView.getTag()){
-            case SPARK_LINE:
-                CardAdapter.SparkLineViewHolder view = (CardAdapter.SparkLineViewHolder ) holder;
-                sparkLineCreated = true;
-                sparkLineVisible = true;
-                break;
-            case TIME_ENTRY:
-                if(sparkLineCreated && sparkLineVisible){
-                    position --;
-                }
-
-                final int actualPOS = position;
-                CardAdapter.TimeEntryViewHolder viewHolder = (CardAdapter.TimeEntryViewHolder ) holder;
-                viewHolder.setTimeEntry(myDataset.get(actualPOS));
-
-                final boolean isExpanded = actualPOS==mExpandedPosition;
-                viewHolder.notes.setVisibility(isExpanded?View.VISIBLE:View.GONE);
-                viewHolder.itemView.setActivated(isExpanded);
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mExpandedPosition = isExpanded ? -1:actualPOS;
-                        TransitionManager.beginDelayedTransition(recyclerView);
-                        notifyDataSetChanged();
-                    }
-                });
-                break;
-            default:
-                Log.e(TAG,"invalid tag " + (int)holder.itemView.getTag());
-
-        }
-
-    }
-
-    public void addNewItemEvent(ItemEvent event){
-        itemEvents.add(event);
-    }
-
-    public void removeItemEvent(ItemEvent event){
-        itemEvents.remove(event);
-    }
-
-    public void makeGraphVisible(){
-        if(myDataset.size() > 1){
-            sparkLineVisible = true;
-        }
+        holder.hoursWorkedField.setText(hoursWorked);
+        holder.moneyEarnedField.setText(moneyEarned);
+        holder.startTimeLabel.setText(startTime);
+        holder.endTimeLabel.setText(endTime);
+        holder.dateSavedField.setText(dateCreated);
+        holder.notes.setText(entry.getNotes());
+        holder.personPhoto.setImageResource(R.drawable.ic_add_black_plus_24dp);
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-
-        if(!sparkLineVisible || myDataset.size() < 2){
-            Log.d(TAG,"getItemCount: no sparkline " + (myDataset.size()));
-            return myDataset.size();
-        }
-
-        Log.d(TAG,"getItemCount: with sparkline " + (myDataset.size() + 1));
-        return myDataset.size() + 1;
+        return myDataset.size();
     }
 
     @Override
@@ -142,45 +77,12 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    //When you remove two views, notifyItemRangeRemoved has to be called. Otherwise, a crash happens.
+    //from adapter
     @Override
     public void onItemDismiss(RecyclerView.ViewHolder viewHolder, int position) {
-        Log.d(TAG,"onItemDismiss view tag " + viewHolder.itemView.getTag() + " position: "  + position);
-
-        switch ((int)viewHolder.itemView.getTag()){
-            case SPARK_LINE:
-                sparkLineVisible = false;
-                break;
-            case TIME_ENTRY:
-                TimeEntry entry = ((TimeEntryViewHolder) viewHolder).getEntry();
-                myDataset.remove(entry);
-                removeItemFromDb(entry);
-                break;
-            default:
-                Log.e(TAG,"invalid tag " + (int)viewHolder.itemView.getTag());
-
-        }
-
-        //java.lang.IndexOutOfBoundsException: Inconsistency detected. Invalid view holder adapter positionViewHolder if you dont have below. WTF
-        //remove sparkline when there aren't at least two points
-        if(myDataset.size() < 2){
-//            Log.d(TAG,"notifyItemRangeRemoved 0-" +(position +1));
-            notifyItemRangeRemoved(0, position + 1);
-            sparkLineVisible = false;
-            notifyItemRemoved(position);
-        }
-        else{
-            notifyItemRemoved(position);
-        }
-
-
-
-    }
-
-    public void fireItemEvents(int item){
-        for(ItemEvent e : itemEvents){
-            e.onItemRemoved(item);
-        }
+        removeItemFromDb(position);
+        myDataset.remove(position);
+        notifyItemRemoved(position);
     }
 
     @Override
@@ -194,17 +96,16 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 Collections.swap(myDataset, i, i - 1);
             }
         }
-
         notifyItemMoved(fromPosition, toPosition);
 //        return true;
     }
 
-    public void removeItemFromDb(TimeEntry entry){
+    public void removeItemFromDb(int position){
         DbHelper database = null;
         SQLiteDatabase db = null;
         try{
-            long itemID = entry.getId();
-//            Log.d(TAG,"deleting item " + itemID);
+            long itemID = myDataset.get(position).getId();
+            Log.d(TAG,"deleting item " + itemID);
             String whereClause = "_id=?";
             String[] whereArgs = new String[] {Long.toString(itemID)};
             database = new DbHelper(context);
@@ -223,36 +124,18 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             }
         }
     }
-
-    //I know you want to touch this. Please do not. Modify getItemViewType instead.
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG,"onCreateViewHolder "+viewType);
-        switch (viewType) {
-            case SPARK_LINE:
-                View viewOne = LayoutInflater.from(parent.getContext()).inflate(R.layout.spark_view, parent, false);
-                return new CardAdapter.SparkLineViewHolder(viewOne,myDataset);
-            case TIME_ENTRY:
-                View viewTwo = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
-                return  new CardAdapter.TimeEntryViewHolder(viewTwo);
-            default:
-                return null;
-        }
-    }
     public static class TimeEntryViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        private ImageView personPhoto;
-        private TimeEntry entry;
-        private CardView cv;
-        private TextView hoursWorkedField;
-        private TextView moneyEarnedField;
-        private TextView dateSavedField;
-        private TextView startTimeLabel;
-        private TextView endTimeLabel;
-        public TextView notes;
+        CardView cv;
+        TextView hoursWorkedField;
+        TextView moneyEarnedField;
+        TextView dateSavedField;
+        TextView startTimeLabel;
+        TextView endTimeLabel;
+        TextView notes;
+        ImageView personPhoto;
         public TimeEntryViewHolder(View itemview) {
             super(itemview);
-            itemview.setTag(TIME_ENTRY);
             cv = (CardView)itemView.findViewById(R.id.cv);
             hoursWorkedField = (TextView)itemView.findViewById(R.id.hoursWorkedField);
             moneyEarnedField = (TextView)itemView.findViewById(R.id.moneyEarnedField);
@@ -262,51 +145,6 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
             notes = (TextView) itemview.findViewById(R.id.notes);
         }
-
-        public void setTimeEntry(TimeEntry entry){
-            this.entry = entry;
-            updateView();
-        }
-
-        public void updateView(){
-            String dateCreated = DateFormat.getDateTimeInstance().format(entry.getDateCreated());
-            String startTime = DateFormat.getTimeInstance().format(entry.getStartTime());
-            String endTime = DateFormat.getTimeInstance().format(entry.getEndTime());
-            String hoursWorked = NumberFormat.getNumberInstance().format(entry.getHoursWorked());
-            String moneyEarned = NumberFormat.getCurrencyInstance().format(entry.getMoneyEarned());
-
-            hoursWorkedField.setText(hoursWorked);
-            moneyEarnedField.setText(moneyEarned);
-            startTimeLabel.setText(startTime);
-            endTimeLabel.setText(endTime);
-            dateSavedField.setText(dateCreated);
-            personPhoto.setImageResource(R.drawable.ic_add_black_plus_24dp);
-        }
-
-        public void expandNotes(){
-
-        }
-
-        public TimeEntry getEntry(){
-            return entry;
-        }
-
-    }
-
-    public static class SparkLineViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        SparkView sparkView;
-        SparkViewAdapter sparkAdapter;
-
-        public SparkLineViewHolder(View itemview, List<TimeEntry> items) {
-            super(itemview);
-            itemview.setTag(SPARK_LINE);
-            sparkView = (SparkView)itemView.findViewById(R.id.sparkview);
-            sparkAdapter = new SparkViewAdapter(items);
-            sparkView.setAdapter(sparkAdapter);
-            sparkView.setAnimateChanges(true);
-        }
-
     }
 }
 
