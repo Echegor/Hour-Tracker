@@ -188,6 +188,7 @@ public class MainActivity extends AppCompatActivity
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
+        Log.d(TAG,"Retrieved " + list.size() + " from DB");
         return list;
     }
 

@@ -8,4 +8,9 @@
     <color name="money">#216C2A</color>
     <color name="selected_comment_background">#696666</color>
     <color name="comment_background">#ffffff</color>
+    <color name="green">#a3c639</color>
+    <color name="dark_green">#85a71d</color>
+    <color name="yellow">#ff0</color>
+    <color name="gray">#ccc</color>
+    <color name="pink">#e91e63</color>
 </resources>
