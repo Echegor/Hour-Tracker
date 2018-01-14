@@ -137,4 +137,9 @@
   </string>
     <string name="profile_photo">This is your profile image</string>
     <string name="add_your_profile_picture">Add your profile picture!</string>
+    <string name="reports">Reports</string>
+    <string name="import_nav">Import</string>
+    <string name="settings">Settings</string>
+    <string name="communicate">Communicate</string>
+    <string name="profile">Profile</string>
 </resources>

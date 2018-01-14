@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +32,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -47,6 +51,8 @@ public class MainActivity extends AppCompatActivity
     private List<TimeEntry> mItems;
     private boolean itemsRefreshed;
     private Toolbar toolbar;
+    private AppBarLayout appBarLayout;
+    private ImageView face;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity
         Log.v(TAG,"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -107,6 +114,7 @@ public class MainActivity extends AppCompatActivity
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(mRecyclerView);
 
+        attachAppBarLayout();
 
 //        mAdapter.addNewItemEvent(new CardAdapter.ItemEvent() {
 //            @Override
@@ -117,6 +125,42 @@ public class MainActivity extends AppCompatActivity
         checkForFirstTime();
     }
 
+
+    public void attachAppBarLayout(){
+        appBarLayout = (AppBarLayout) findViewById(R.id.main_appbar);
+        face = (ImageView) findViewById(R.id.main_backdrop);
+        if(appBarLayout == null || face == null){
+            Log.e(TAG,"FAILED TO BIND happy_face or appbar LAYOUT");
+        }
+        else{
+            Log.d(TAG,"BOUND APP BAR LAYOUT");
+            appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                final AnimatedVectorDrawableCompat sadToHappy = AnimatedVectorDrawableCompat.create(MainActivity.this,R.drawable.sad_to_happy_animaton);
+                final AnimatedVectorDrawableCompat happyToSad = AnimatedVectorDrawableCompat.create(MainActivity.this,R.drawable.happy_to_sad_animation);
+
+                @Override
+                public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                    Log.d(TAG,"collapsing toolbar Vertical Offset is " + verticalOffset);
+                    if (Math.abs(verticalOffset)-appBarLayout.getTotalScrollRange() == 0) {
+                        //  Collapsed
+                        Log.d(TAG,"Going from happy to sad");
+                        final Animatable animatable = (Animatable) face.getDrawable();
+                        animatable.start();
+                        face.setImageDrawable(happyToSad);
+
+                    }
+                    else if(verticalOffset == 0) {
+                        Log.d(TAG,"Going from sad to happy");
+
+                        final Animatable animatable = (Animatable) face.getDrawable();
+                        animatable.start();
+                        face.setImageDrawable(sadToHappy);
+                        //Expanded
+                    }
+                }
+            });
+        }
+    }
 
     //ensure that if the recycler view has been refreshed, it is not refreshed again
     @Override
@@ -238,15 +282,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 

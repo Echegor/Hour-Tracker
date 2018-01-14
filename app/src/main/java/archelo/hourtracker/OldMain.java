@@ -63,7 +63,7 @@ public class OldMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG,"onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.drawer_main);
+//        setContentView(R.layout.drawer_main);
 
         final Intent intent = getIntent();
 

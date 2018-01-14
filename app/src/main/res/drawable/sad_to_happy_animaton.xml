@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/sad_face">
+
+    <target
+        android:name="mouth"
+        android:animation="@animator/sad_to_happy_animator"/>
+
+    <!--<target-->
+    <!--android:name="@string/play_icon_top_path_name"-->
+    <!--android:animation="@animator/upper_play_to_pause_animation"/>-->
+
+    <!--<target-->
+    <!--android:name="@string/play_icon_bottom_path_name"-->
+    <!--android:animation="@animator/bottom_play_to_pause_animation"/>-->
+</animated-vector>

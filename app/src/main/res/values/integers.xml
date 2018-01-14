@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="stroke_width">4</integer>
-    <integer name="heart_animation_duration">300</integer>
+    <integer name="heart_animation_duration">200</integer>
+    <integer name="emotion_change_animation_duration">2000</integer>
 </resources>
