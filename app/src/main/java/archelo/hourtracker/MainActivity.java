@@ -18,8 +18,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -295,9 +298,20 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+
+        //By caling finish after starting the new activity, you remove it from the backstack allowing you to not keep them all in memeory.
+//        switch (item) {
+//            case NAVDRAWER_ITEM_MY_SCHEDULE:
+//                intent = new Intent(this, MyScheduleActivity.class);
+//                startActivity(intent);
+//                finish();
+//                break;
+
+        drawer.closeDrawer(GravityCompat.START);
         switch (id){
             case R.id.nav_report:
                 Log.d(TAG,"Pressed nav_report");
+                item.setChecked(false);
                 return true;
             case R.id.nav_camera:
                 Log.d(TAG,"Pressed nav_camera");
@@ -305,14 +319,15 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
                 startActivity(intent);
-                Log.d(TAG,"Pressed nav_manage");
+                Log.d(TAG,"Pressed nav_settings");
+                item.setChecked(false);
                 return true;
             case R.id.nav_share:
                 Log.d(TAG,"Pressed nav_share");
                 return true;
         }
 
-        drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 
@@ -341,7 +356,43 @@ public class MainActivity extends AppCompatActivity
         //TODO remove commas
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         input.setGravity(Gravity.CENTER);
-        input.setFilters(new InputFilter[]{new MoneyValueFilter()});
+        //input.setFilters(new InputFilter[]{new MoneyValueFilter()});
+        input.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (!s.toString().matches("^\\$(\\d{1,3}(\\,\\d{3})*|(\\d+))(\\.\\d{2})?$")) {
+                    String userInput = "" + s.toString().replaceAll("[^\\d]", "");
+                    StringBuilder cashAmountBuilder = new StringBuilder(userInput);
+
+                    while (cashAmountBuilder.length() > 3 && cashAmountBuilder.charAt(0) == '0') {
+                        cashAmountBuilder.deleteCharAt(0);
+                    }
+                    while (cashAmountBuilder.length() < 3) {
+                        cashAmountBuilder.insert(0, '0');
+                    }
+                    cashAmountBuilder.insert(cashAmountBuilder.length() - 2, '.');
+
+                    input.removeTextChangedListener(this);
+                    input.setText(cashAmountBuilder.toString());
+
+                    input.setTextKeepState("$" + cashAmountBuilder.toString());
+                    Selection.setSelection(input.getText(), cashAmountBuilder.toString().length() + 1);
+
+                    input.addTextChangedListener(this);
+                }
+            }
+        });
 
         builder.setView(input);
 
