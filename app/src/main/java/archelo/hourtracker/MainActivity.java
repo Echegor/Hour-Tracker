@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private AppBarLayout appBarLayout;
     private ImageView face;
+    DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +62,27 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initToolBar();
+        initFAB();
+        initNavigationDrawer();
+        initRecyclerView();
+        initAppBarLayoutListener();
+
+//        mAdapter.addNewItemEvent(new CardAdapter.ItemEvent() {
+//            @Override
+//            public void onItemRemoved(int itemID) {
+//                sparkAdapter.notifyDataSetChanged();
+//            }
+//        });
+        checkForFirstTime();
+    }
+
+    public void initToolBar(){
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+    }
+    public void initFAB(){
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,15 +102,19 @@ public class MainActivity extends AppCompatActivity
 //                overridePendingTransition(0, 0);
             }
         });
+    }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    public void initNavigationDrawer(){
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
 
+    public void initRecyclerView(){
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
         // use this setting to improve performance if you know that changes
@@ -113,20 +135,8 @@ public class MainActivity extends AppCompatActivity
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter)mAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(mRecyclerView);
-
-        attachAppBarLayout();
-
-//        mAdapter.addNewItemEvent(new CardAdapter.ItemEvent() {
-//            @Override
-//            public void onItemRemoved(int itemID) {
-//                sparkAdapter.notifyDataSetChanged();
-//            }
-//        });
-        checkForFirstTime();
     }
-
-
-    public void attachAppBarLayout(){
+    public void initAppBarLayoutListener(){
         appBarLayout = (AppBarLayout) findViewById(R.id.main_appbar);
         face = (ImageView) findViewById(R.id.main_backdrop);
         if(appBarLayout == null || face == null){
@@ -267,28 +277,41 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        //Removed settings button from top right, this does not fire unless you place something in actionbar
+        switch (id){
+            case R.id.action_settings:
+                Log.d(TAG,"Pressed action_settings");
+                return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+
+    //These fire from nav_drawer
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
+        switch (id){
+            case R.id.nav_report:
+                Log.d(TAG,"Pressed nav_report");
+                return true;
+            case R.id.nav_camera:
+                Log.d(TAG,"Pressed nav_camera");
+                return true;
+            case R.id.nav_settings:
+                Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+                startActivity(intent);
+                Log.d(TAG,"Pressed nav_manage");
+                return true;
+            case R.id.nav_share:
+                Log.d(TAG,"Pressed nav_share");
+                return true;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
