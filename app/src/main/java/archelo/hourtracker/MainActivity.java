@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private AppBarLayout appBarLayout;
     private ImageView face;
-    DrawerLayout drawer;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,12 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
         checkForFirstTime();
+    }
+
+    private void initNavigationDrawer() {
+        Utility.InitDrawerResult result = Utility.initNavigationDrawer(this,toolbar);
+        drawer = result.drawer_layout;
+        navigationView = result.nav_view;
     }
 
     public void initToolBar(){
@@ -107,15 +114,15 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void initNavigationDrawer(){
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
+//    public void initNavigationDrawer(){
+//        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
+//    }
 
     public void initRecyclerView(){
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -175,6 +182,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+    }
     //ensure that if the recycler view has been refreshed, it is not refreshed again
     @Override
     public void onPause(){
@@ -309,18 +321,23 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         switch (id){
+            case R.id.nav_home:
+                Log.d(TAG,"Pressed nav_report");
+                //item.setChecked(false);
+                return true;
             case R.id.nav_report:
                 Log.d(TAG,"Pressed nav_report");
-                item.setChecked(false);
+                //item.setChecked(false);
                 return true;
             case R.id.nav_camera:
                 Log.d(TAG,"Pressed nav_camera");
                 return true;
             case R.id.nav_settings:
+                Log.d(TAG,"Pressed nav_settings");
                 Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
                 startActivity(intent);
-                Log.d(TAG,"Pressed nav_settings");
-                item.setChecked(false);
+                //item.setChecked(false);
+                finish();
                 return true;
             case R.id.nav_share:
                 Log.d(TAG,"Pressed nav_share");

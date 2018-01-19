@@ -98,4 +98,5 @@
     <string name="profile">Profile</string>
     <string name="hourly_wage">Hourly Wage</string>
     <string name="pref_title_Allow_Notifications">Allow Notifications</string>
+    <string name="home">Home</string>
 </resources>

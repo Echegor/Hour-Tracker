@@ -30,6 +30,7 @@
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/ActivityEnterExitAnimation</item>
 
     </style>
 
@@ -50,6 +51,10 @@
     <style name="PauseDialogAnimation">
         <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
         <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+    </style>
+
+    <style name="ActivityEnterExitAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
     </style>
 
 

@@ -70,7 +70,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
         SharedPreferences settings = getActivity().getSharedPreferences(OldMain.PREFS_NAME, 0);
         String w = settings.getString("wage","0");
         Log.v("TabFragment","wage is : " + w);
-        wage = new BigDecimal(w);
+        wage = new BigDecimal(Utility.getMoneyValue(w));
         hoursDecimal = new BigDecimal("0.00");
         moneyDecimal = new BigDecimal("0.00");
         minutesForBreak = new BigDecimal("0");

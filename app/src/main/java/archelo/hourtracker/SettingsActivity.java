@@ -14,19 +14,30 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -39,12 +50,18 @@ import java.util.List;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class SettingsActivity extends AppCompatPreferenceActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "SettingsActivity";
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private Toolbar mToolbar;
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
@@ -111,9 +128,27 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+        setContentView(R.layout.settings_activity);
 
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
-                new GeneralPreferenceFragment()).commit();
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
+        Utility.InitDrawerResult result = Utility.initNavigationDrawer(this,mToolbar);
+        drawer = result.drawer_layout;
+        navigationView = result.nav_view;
+
+//        getFragmentManager().beginTransaction().replace(android.R.id.content,
+//                new GeneralPreferenceFragment()).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -123,7 +158,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            //actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -135,6 +170,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         return isXLargeTablet(this);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        navigationView.getMenu().findItem(R.id.nav_settings).setChecked(true);
+    }
+
     /**
      * This method stops fragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
@@ -142,6 +183,38 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        drawer.closeDrawer(GravityCompat.START);
+        switch (id){
+            case R.id.nav_home:
+                Log.d(TAG,"Pressed nav_report");
+                startActivity(new Intent(SettingsActivity.this,MainActivity.class));
+                finish();
+                //item.setChecked(false);
+                return true;
+            case R.id.nav_report:
+                Log.d(TAG,"Pressed nav_report");
+                //item.setChecked(false);
+                return true;
+            case R.id.nav_camera:
+                Log.d(TAG,"Pressed nav_camera");
+                return true;
+            case R.id.nav_settings:
+                Log.d(TAG,"Pressed nav_settings");
+                //item.setChecked(false);
+                return false;
+            case R.id.nav_share:
+                Log.d(TAG,"Pressed nav_share");
+                return true;
+        }
+
+
+        return true;
     }
 
     /**
@@ -181,6 +254,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
+//                    Log.d(TAG,"Formatting " + s.toString());
+//                    DecimalFormat formatter = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
+//                    DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+//                    //symbols.setCurrencySymbol(""); // Don't use null.
+//                    //formatter.setDecimalFormatSymbols(symbols);
+//                    formatter.setMinimumFractionDigits(2);
+//                    editText.setText(formatter.format(s.toString().substring(1)));
 
                     if (!s.toString().matches("^\\$(\\d{1,3}(\\,\\d{3})*|(\\d+))(\\.\\d{2})?$")) {
                         String userInput = "" + s.toString().replaceAll("[^\\d]", "");
