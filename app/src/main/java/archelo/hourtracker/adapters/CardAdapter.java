@@ -1,4 +1,4 @@
-package archelo.hourtracker;
+package archelo.hourtracker.adapters;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,11 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
+
+import archelo.hourtracker.R;
+import archelo.hourtracker.database.TimeEntry;
+import archelo.hourtracker.database.DbHelper;
+import archelo.hourtracker.database.DbHelperContract;
 
 /**
  * Created by Archelo on 12/4/2017.

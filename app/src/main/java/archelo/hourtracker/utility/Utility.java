@@ -1,4 +1,4 @@
-package archelo.hourtracker;
+package archelo.hourtracker.utility;
 
 import android.app.Activity;
 import android.support.design.widget.NavigationView;
@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
+import archelo.hourtracker.R;
 
 /**
  * Created by rtl1e on 1/17/2018.

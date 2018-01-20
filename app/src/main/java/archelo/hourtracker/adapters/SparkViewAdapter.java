@@ -1,8 +1,10 @@
-package archelo.hourtracker;
+package archelo.hourtracker.adapters;
 
 import com.robinhood.spark.SparkAdapter;
 
 import java.util.List;
+
+import archelo.hourtracker.database.TimeEntry;
 
 /**
  * Created by rtl1e on 12/6/2017.

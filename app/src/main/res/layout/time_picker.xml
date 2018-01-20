@@ -17,7 +17,7 @@
         android:background="?android:attr/selectableItemBackground">
 
 
-        <archelo.hourtracker.NumberPicker
+        <archelo.hourtracker.views.NumberPicker
             android:id="@+id/hour"
             android:descendantFocusability="blocksDescendants"
             android:layout_height="match_parent"
@@ -33,13 +33,13 @@
             android:theme="@style/DefaultNumberPickerTheme"
             android:text="@string/COLON"
             />
-        <archelo.hourtracker.NumberPicker
+        <archelo.hourtracker.views.NumberPicker
             android:id="@+id/mins"
             android:descendantFocusability="blocksDescendants"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:layout_weight="1" />
-        <archelo.hourtracker.NumberPicker
+        <archelo.hourtracker.views.NumberPicker
             android:id="@+id/ampm"
             android:descendantFocusability="blocksDescendants"
             android:layout_height="match_parent"

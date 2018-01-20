@@ -1,10 +1,12 @@
-package archelo.hourtracker;
+package archelo.hourtracker.adapters;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
+
+import archelo.hourtracker.fragments.TimeFragment;
 
 /**
  * Created by Archelo on 10/28/2017.

@@ -1,4 +1,4 @@
-package archelo.hourtracker;
+package archelo.hourtracker.database;
 
 import android.provider.BaseColumns;
 

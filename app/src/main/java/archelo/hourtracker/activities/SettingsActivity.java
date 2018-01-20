@@ -1,13 +1,10 @@
-package archelo.hourtracker;
+package archelo.hourtracker.activities;
 
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -21,23 +18,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.Selection;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.List;
-import java.util.Locale;
+import archelo.hourtracker.R;
+import archelo.hourtracker.utility.Utility;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -82,7 +72,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Nav
 //            else if(preference instanceof EditTextPreference){
 //                EditTextPreference editTextPreference = (EditTextPreference) preference;
 //                EditText editText = editTextPreference.getEditText();
-//                editText.setFilters(new InputFilter[]{new MoneyValueFilter()});
 //                preference.setSummary(editText.getText().toString());
 //            }
             else{
@@ -285,7 +274,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Nav
                 }
             };
             editText.addTextChangedListener(tw);
-            //editText.setFilters(new InputFilter[]{new MoneyValueFilter()});
         }
 
         @Override

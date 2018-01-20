@@ -1,22 +1,18 @@
-package archelo.hourtracker;
+package archelo.hourtracker.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Transition;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewAnimationUtils;
+
+import archelo.hourtracker.R;
+import archelo.hourtracker.fragments.TabFragment;
 
 public class TimeCollector extends AppCompatActivity {
     private static String TAG = "TimeCollector";

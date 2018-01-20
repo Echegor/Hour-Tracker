@@ -1,4 +1,4 @@
-package archelo.hourtracker;
+package archelo.hourtracker.adapters;
 
 /**
  * Created by rtl1e on 12/5/2017.

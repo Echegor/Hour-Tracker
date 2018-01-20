@@ -1,4 +1,4 @@
-package archelo.hourtracker;
+package archelo.hourtracker.views;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

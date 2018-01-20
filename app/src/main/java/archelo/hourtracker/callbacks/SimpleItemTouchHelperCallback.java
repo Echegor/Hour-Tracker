@@ -1,7 +1,9 @@
-package archelo.hourtracker;
+package archelo.hourtracker.callbacks;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+
+import archelo.hourtracker.adapters.ItemTouchHelperAdapter;
 
 /**
  * Created by rtl1e on 12/5/2017.

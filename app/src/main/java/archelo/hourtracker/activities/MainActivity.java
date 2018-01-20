@@ -1,4 +1,4 @@
-package archelo.hourtracker;
+package archelo.hourtracker.activities;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -19,7 +19,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.TextWatcher;
@@ -29,7 +28,6 @@ import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -41,6 +39,15 @@ import android.widget.TextView;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import archelo.hourtracker.R;
+import archelo.hourtracker.callbacks.SimpleItemTouchHelperCallback;
+import archelo.hourtracker.database.TimeEntry;
+import archelo.hourtracker.utility.Utility;
+import archelo.hourtracker.adapters.CardAdapter;
+import archelo.hourtracker.adapters.ItemTouchHelperAdapter;
+import archelo.hourtracker.database.DbHelper;
+import archelo.hourtracker.database.DbHelperContract;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -373,7 +380,6 @@ public class MainActivity extends AppCompatActivity
         //TODO remove commas
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         input.setGravity(Gravity.CENTER);
-        //input.setFilters(new InputFilter[]{new MoneyValueFilter()});
         input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

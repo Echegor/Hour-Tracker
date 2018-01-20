@@ -21,11 +21,11 @@
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-        <archelo.hourtracker.MeasuredViewPager
+        <archelo.hourtracker.views.MeasuredViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        </archelo.hourtracker.MeasuredViewPager>
+        </archelo.hourtracker.views.MeasuredViewPager>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
 
                 android:drawableStart="@drawable/ic_airline_seat_recline_normal_black_48px"
                 />
-            <archelo.hourtracker.SeekBarHint
+            <archelo.hourtracker.views.SeekBarHint
                 android:id="@+id/breakSeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

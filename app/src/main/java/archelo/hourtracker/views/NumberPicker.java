@@ -1,4 +1,4 @@
-package archelo.hourtracker;
+package archelo.hourtracker.views;
 
 /**
  * Created by Archelo on 10/16/2017.
@@ -10,9 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -23,12 +21,13 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
 import java.util.Locale;
+
+import archelo.hourtracker.R;
 
 public class NumberPicker extends LinearLayout {
 

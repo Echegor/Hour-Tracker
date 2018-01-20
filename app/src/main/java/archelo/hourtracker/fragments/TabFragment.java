@@ -1,27 +1,20 @@
-package archelo.hourtracker;
+package archelo.hourtracker.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
@@ -34,6 +27,15 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import archelo.hourtracker.R;
+import archelo.hourtracker.activities.MainActivity;
+import archelo.hourtracker.views.SeekBarHint;
+import archelo.hourtracker.database.TimeEntry;
+import archelo.hourtracker.utility.Utility;
+import archelo.hourtracker.adapters.TabAdapter;
+import archelo.hourtracker.database.DbHelper;
+import archelo.hourtracker.database.DbHelperContract;
 
 
 /**
@@ -67,7 +69,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreateView performed with bundle " + (savedInstanceState == null ? "null" : savedInstanceState.toString()));
 
-        SharedPreferences settings = getActivity().getSharedPreferences(OldMain.PREFS_NAME, 0);
+        SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREFS_NAME, 0);
         String w = settings.getString("wage","0");
         Log.v("TabFragment","wage is : " + w);
         wage = new BigDecimal(Utility.getMoneyValue(w));

@@ -1,4 +1,4 @@
-package archelo.hourtracker;
+package archelo.hourtracker.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

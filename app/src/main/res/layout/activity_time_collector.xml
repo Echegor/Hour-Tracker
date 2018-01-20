@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="archelo.hourtracker.MainActivity">
+    tools:context="archelo.hourtracker.activities.MainActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/bg"
@@ -31,7 +31,7 @@
             <!--app:layout_constraintTop_toTopOf="parent" />-->
         <fragment
             android:id="@+id/fragment_place"
-            android:name="archelo.hourtracker.TabFragment"
+            android:name="archelo.hourtracker.fragments.TabFragment"
             android:layout_width="match_parent"
             android:visibility="invisible"
             android:layout_height="match_parent" />
