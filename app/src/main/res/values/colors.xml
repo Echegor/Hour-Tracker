@@ -6,6 +6,7 @@
     <color name="colorAccent">#f9683a</color>
     <color name="transparent">#00ffffff</color>\
     <color name="money">#216C2A</color>
+    <color name="moneylight">#06c91e</color>
     <color name="selected_comment_background">#696666</color>
     <color name="comment_background">#ffffff</color>
     <color name="green">#a3c639</color>

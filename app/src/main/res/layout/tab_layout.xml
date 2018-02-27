@@ -4,21 +4,24 @@
     android:id="@+id/tabScroller"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorPrimaryDark"
     android:fillViewport="true">
 
     <LinearLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/white"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
         android:orientation="vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         tools:context=".OldMain">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorPrimaryDark"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
         <archelo.hourtracker.views.MeasuredViewPager
@@ -29,8 +32,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:focusableInTouchMode="true">
+            android:background="@color/colorPrimaryDark"
+            android:focusableInTouchMode="true"
+            android:padding="10dp">
             <!--android:background="@android:drawable/editbox_background_normal"-->
             <CheckedTextView
                 android:id="@+id/add_break_check"
@@ -39,12 +43,10 @@
                 android:layout_alignParentEnd="true"
                 android:checkMark="?android:attr/listChoiceIndicatorMultiple"
                 android:drawableStart="@drawable/ic_airline_seat_recline_normal_black_48px"
-
                 android:paddingTop="10dp"
                 android:text="@string/add_break"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
-
                 android:textStyle="bold"
                 />
             <archelo.hourtracker.views.SeekBarHint
@@ -70,6 +72,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/hours_worked"
                     android:textAlignment="center"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_columnWeight="1"
@@ -95,6 +98,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/hours_worked"
                     android:textAlignment="center"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_columnWeight="1"
@@ -121,7 +125,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/grid"
-                android:text="@string/notes" />
+                android:text="@string/notes"
+                android:textColor="@android:color/white" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -132,6 +137,8 @@
                     android:id="@+id/notebook"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+
                     android:hint="@string/notebook_hint"
                     android:inputType="textMultiLine" />
 
@@ -153,7 +160,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:orientation="vertical" >
+            android:background="@color/colorPrimaryDark"
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <Button
                 android:id="@+id/save_button"
