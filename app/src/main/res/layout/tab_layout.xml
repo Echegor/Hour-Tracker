@@ -2,9 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tabScroller"
-    android:fillViewport="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
     <LinearLayout
         android:id="@+id/main_layout"
@@ -29,20 +29,23 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
             android:focusableInTouchMode="true">
+            <!--android:background="@android:drawable/editbox_background_normal"-->
             <CheckedTextView
                 android:id="@+id/add_break_check"
-                android:layout_alignParentEnd="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:background="@android:drawable/editbox_background_normal"
-                android:text="@string/add_break"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:layout_alignParentEnd="true"
                 android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-
                 android:drawableStart="@drawable/ic_airline_seat_recline_normal_black_48px"
+
+                android:paddingTop="10dp"
+                android:text="@string/add_break"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+
+                android:textStyle="bold"
                 />
             <archelo.hourtracker.views.SeekBarHint
                 android:id="@+id/breakSeekBar"
@@ -57,8 +60,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/breakSeekBar"
-                app:rowCount="2"
-                app:columnCount="2">
+                app:columnCount="2"
+                app:rowCount="2">
 
 
                 <TextView
@@ -82,8 +85,8 @@
                     android:textColor="@color/money"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_gravity="fill_horizontal"
                     app:layout_columnWeight="1"
+                    app:layout_gravity="fill_horizontal"
                     app:layout_rowWeight="1"/>
 
                 <TextView
@@ -94,8 +97,8 @@
                     android:textAlignment="center"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_gravity="fill_horizontal"
                     app:layout_columnWeight="1"
+                    app:layout_gravity="fill_horizontal"
                     app:layout_rowWeight="1"/>
 
                 <TextView
@@ -107,18 +110,18 @@
                     android:textColor="@color/money"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_gravity="fill_horizontal"
                     app:layout_columnWeight="1"
+                    app:layout_gravity="fill_horizontal"
                     app:layout_rowWeight="1"/>
 
 
             </android.support.v7.widget.GridLayout>
             <TextView
                 android:id="@+id/noteLabel"
-                android:text="@string/notes"
-                android:layout_below="@id/grid"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/grid"
+                android:text="@string/notes" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -129,8 +132,8 @@
                     android:id="@+id/notebook"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:hint="@string/notebook_hint"/>
+                    android:hint="@string/notebook_hint"
+                    android:inputType="textMultiLine" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -154,18 +157,18 @@
 
             <Button
                 android:id="@+id/save_button"
-                android:visibility="gone"
-                android:text="@string/save"
-                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="@string/save"
+                android:visibility="gone" />
             <Button
                 android:id="@+id/next_button"
                 android:layout_width="match_parent"
-                android:layout_alignParentBottom="true"
                 android:layout_height="wrap_content"
-                android:text="@string/next"
+                android:layout_alignParentBottom="true"
                 android:drawableEnd="@drawable/ic_arrow_forward_black_24dp"
+                android:text="@string/next"
                 />
 
         </RelativeLayout>

@@ -1,5 +1,6 @@
 package archelo.hourtracker.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.DialogInterface;
@@ -10,13 +11,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.InputType;
@@ -24,14 +31,9 @@ import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,13 +43,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import archelo.hourtracker.R;
-import archelo.hourtracker.callbacks.SimpleItemTouchHelperCallback;
-import archelo.hourtracker.database.TimeEntry;
-import archelo.hourtracker.utility.Utility;
 import archelo.hourtracker.adapters.CardAdapter;
 import archelo.hourtracker.adapters.ItemTouchHelperAdapter;
+import archelo.hourtracker.callbacks.SimpleItemTouchHelperCallback;
 import archelo.hourtracker.database.DbHelper;
 import archelo.hourtracker.database.DbHelperContract;
+import archelo.hourtracker.database.TimeEntry;
+import archelo.hourtracker.utility.Utility;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -329,11 +331,12 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         switch (id){
             case R.id.nav_home:
-                Log.d(TAG,"Pressed nav_report");
+                Log.d(TAG, "Pressed nav_home");
                 //item.setChecked(false);
                 return true;
             case R.id.nav_report:
                 Log.d(TAG,"Pressed nav_report");
+                startActivity(new Intent(MainActivity.this, ReportActivity.class));
                 //item.setChecked(false);
                 return true;
             case R.id.nav_camera:
@@ -341,8 +344,7 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case R.id.nav_settings:
                 Log.d(TAG,"Pressed nav_settings");
-                Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 //item.setChecked(false);
                 finish();
                 return true;
@@ -352,11 +354,11 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        return true;
+        return false;
     }
 
     public void checkForFirstTime() {
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
         if (settings.getBoolean("my_first_time", true)) {
             //the app is being launched for first time, do something
@@ -439,10 +441,11 @@ public class MainActivity extends AppCompatActivity
 
     public void saveWage(String wage) {
         Log.v(TAG, "Wage entered: " + wage);
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        settings.edit().putString("wage", wage).apply();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        sharedPref.edit().putString("wage", wage).apply();
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v(TAG, "onActivityResult");

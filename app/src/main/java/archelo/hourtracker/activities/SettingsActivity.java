@@ -11,13 +11,13 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
@@ -42,10 +42,6 @@ import archelo.hourtracker.utility.Utility;
  */
 public class SettingsActivity extends AppCompatPreferenceActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "SettingsActivity";
-    private DrawerLayout drawer;
-    private NavigationView navigationView;
-    private Toolbar mToolbar;
-
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -82,6 +78,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Nav
             return true;
         }
     };
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private Toolbar mToolbar;
 
     /**
      * Helper method to determine if the device has an extra-large screen. For
@@ -188,7 +187,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Nav
                 return true;
             case R.id.nav_report:
                 Log.d(TAG,"Pressed nav_report");
+                startActivity(new Intent(SettingsActivity.this, ReportActivity.class));
                 //item.setChecked(false);
+                finish();
                 return true;
             case R.id.nav_camera:
                 Log.d(TAG,"Pressed nav_camera");
@@ -203,7 +204,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Nav
         }
 
 
-        return true;
+        return false;
     }
 
     /**
