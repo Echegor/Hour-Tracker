@@ -2,7 +2,6 @@ package archelo.hourtracker.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -23,8 +20,6 @@ import java.util.List;
 import archelo.hourtracker.R;
 import archelo.hourtracker.activities.TimeCollector;
 import archelo.hourtracker.database.TimeEntry;
-import archelo.hourtracker.database.DbHelper;
-import archelo.hourtracker.database.DbHelperContract;
 import archelo.hourtracker.utility.Utility;
 
 /**
@@ -32,9 +27,9 @@ import archelo.hourtracker.utility.Utility;
  */
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewHolder> implements ItemTouchHelperAdapter {
+    private final static String TAG = "HourCardAdapter";
     private List<TimeEntry> myDataset;
     private Context context;
-    private final static String TAG = "HourCardAdapter";
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -59,7 +54,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewH
     // Replace the contents of a view (invoked by the layout manager)
 
     @Override
-    public void onBindViewHolder(CardAdapter.TimeEntryViewHolder holder, final int position) {
+    public void onBindViewHolder(final CardAdapter.TimeEntryViewHolder holder, int position) {
         final TimeEntry entry = myDataset.get(position);
         String dateCreated = DateFormat.getDateTimeInstance().format(entry.getDateCreated());
         String startTime = DateFormat.getTimeInstance().format(entry.getStartTime());
@@ -80,30 +75,31 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewH
         holder.cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"card pressed " + position);
+                Log.d(TAG, "card pressed " + holder.getAdapterPosition());
                 Intent intent = new Intent(context,TimeCollector.class );
-                intent.putExtra(TimeEntry.CLASS_NAME,myDataset.get(position));
+                intent.putExtra(TimeEntry.CLASS_NAME, myDataset.get(holder.getAdapterPosition()));
                 context.startActivity(intent);
             }
         });
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"edit pressed " + position);
+                Log.d(TAG, "edit pressed " + holder.getAdapterPosition());
             }
         });
 
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"share pressed " + position);
+                Log.d(TAG, "share pressed " + holder.getAdapterPosition());
             }
         });
 
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"delete pressed " + position);
+                Log.d(TAG, "delete pressed " + holder.getAdapterPosition());
+                onItemDismiss(holder, holder.getAdapterPosition());
             }
         });
 
@@ -165,17 +161,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewH
         ImageView delete;
         public TimeEntryViewHolder(View itemView) {
             super(itemView);
-            cv = (CardView)itemView.findViewById(R.id.cv);
-            hoursWorkedField = (TextView) itemView.findViewById(R.id.hoursWorkedField);
-            moneyEarnedField = (TextView) itemView.findViewById(R.id.moneyEarnedField);
-            dateSavedField = (TextView) itemView.findViewById(R.id.dateSavedField);
-            startTimeLabel = (TextView) itemView.findViewById(R.id.startTimeLabel);
-            endTimeLabel = (TextView) itemView.findViewById(R.id.endTimeLabel);
-            dayOfWeek = (TextView) itemView.findViewById(R.id.day_of_week);
-            notes = (TextView) itemView.findViewById(R.id.notes);
-            edit = (ImageView) itemView.findViewById(R.id.edit_card);
-            share = (ImageView) itemView.findViewById(R.id.share_card);
-            delete = (ImageView) itemView.findViewById(R.id.delete_card);
+            cv = itemView.findViewById(R.id.cv);
+            hoursWorkedField = itemView.findViewById(R.id.hoursWorkedField);
+            moneyEarnedField = itemView.findViewById(R.id.moneyEarnedField);
+            dateSavedField = itemView.findViewById(R.id.dateSavedField);
+            startTimeLabel = itemView.findViewById(R.id.startTimeLabel);
+            endTimeLabel = itemView.findViewById(R.id.endTimeLabel);
+            dayOfWeek = itemView.findViewById(R.id.day_of_week);
+            notes = itemView.findViewById(R.id.notes);
+            edit = itemView.findViewById(R.id.edit_card);
+            share = itemView.findViewById(R.id.share_card);
+            delete = itemView.findViewById(R.id.delete_card);
         }
     }
 }
