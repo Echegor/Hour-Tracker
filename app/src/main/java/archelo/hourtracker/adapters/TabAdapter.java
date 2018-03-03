@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
+import java.util.Date;
+
 import archelo.hourtracker.fragments.TimeFragment;
 
 /**
@@ -15,11 +17,15 @@ import archelo.hourtracker.fragments.TimeFragment;
 public class TabAdapter extends FragmentStatePagerAdapter {
     private TimeFragment fragmentOne;
     private TimeFragment fragmentTwo;
+    private Date start;
+    private Date end;
     private int mNumOfTabs;
 
-    public TabAdapter(FragmentManager fm, int NumOfTabs) {
+    public TabAdapter(FragmentManager fm, int NumOfTabs, Date start, Date end) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
+        this.start = start;
+        this.end = end;
     }
     // Here we can finally safely save a reference to the created
     // Fragment, no matter where it came from (either getItem() or
@@ -51,11 +57,13 @@ public class TabAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 bundle.putInt("position",0);
+                bundle.putLong("date",start.getTime());
                 Fragment fragmentOne = new TimeFragment();
                 fragmentOne.setArguments(bundle);
                 return fragmentOne;
             case 1:
                 bundle.putInt("position",1);
+                bundle.putLong("date",start.getTime());
                 Fragment fragmentTwo = new TimeFragment();
                 fragmentTwo.setArguments(bundle);
                 return fragmentTwo;

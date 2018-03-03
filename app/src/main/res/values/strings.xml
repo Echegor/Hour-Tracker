@@ -57,7 +57,7 @@
     <string name="title_activity_time_collector">TimeCollector</string>
     <string name="Break_Length">How long was your break?</string>
     <string name="minutes">&#160;minutes</string>
-    <string name="notes">Notes:</string>
+    <string name="notes">Notes: </string>
     <string name="notebook_hint">Enter your daily activity!</string>
 
     <string name="path_circle">

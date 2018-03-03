@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="1dp"
-        card_view:cardCornerRadius="0dp"
+        card_view:cardCornerRadius="8dp"
         card_view:contentPadding="5dp"
         android:stateListAnimator="@animator/comment_selection"
         android:id="@+id/cv"
@@ -27,12 +27,20 @@
             android:padding="16dp"
             >
 
-            <ImageView
-                android:id="@+id/person_photo"
+            <!--<ImageView-->
+                <!--android:id="@+id/person_photo"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentStart="true"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_marginEnd="16dp" />-->
+
+            <TextView
+                android:id="@+id/day_of_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp" />
 
             <TextView
@@ -40,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/person_photo"
+                android:layout_toEndOf="@+id/day_of_week"
                 android:text="@string/hours_worked"
                 android:textSize="20sp" />
 
@@ -58,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/moneyEarnedLabel"
                 android:textSize="20sp"
-                android:layout_toEndOf="@+id/person_photo"
+                android:layout_toEndOf="@+id/day_of_week"
                 android:layout_below="@id/hoursWorkedField"
                 android:textColor="@color/money"
                 android:text="@string/earned"
@@ -82,7 +90,6 @@
                 android:layout_alignEnd="@id/hoursWorkedField"
                 android:layout_alignParentEnd="true"
                 android:textSize="20sp"
-                android:text="StartTime"
                 />
 
             <TextView
@@ -94,15 +101,14 @@
                 android:layout_alignEnd="@id/hoursWorkedField"
                 android:layout_alignParentEnd="true"
                 android:textSize="20sp"
-                android:text="EndTime"
                 />
-
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/dateSavedField"
-                android:layout_toEndOf="@+id/person_photo"
+                android:id="@+id/notes_label"
+                android:text="@string/notes"
+                android:layout_toEndOf="@+id/day_of_week"
                 android:layout_below="@+id/moneyEarnedLabel"
                 />
 
@@ -110,15 +116,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/notes"
-                android:layout_toEndOf="@+id/person_photo"
-                android:text="BOOOYOGOGOGOGDOFODFGODGF"
-
+                android:layout_toEndOf="@+id/notes_label"
+                android:layout_below="@+id/moneyEarnedLabel"
                 />
+
             <LinearLayout
+                android:id="@+id/action_icons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/dateSavedField"
-                android:layout_alignParentBottom="true"
+                android:layout_below="@id/notes"
                 android:layout_alignParentEnd="true">
 
                 <ImageView
@@ -127,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="16dp"
-                    android:src="@android:drawable/ic_menu_edit" />
+                    android:src="@drawable/ic_edit_black_24dp" />
 
                 <ImageView
                     android:id="@+id/share_card"
@@ -135,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="16dp"
-                    android:src="@android:drawable/ic_menu_share" />
+                    android:src="@drawable/ic_share_black_24dp" />
 
                 <ImageView
                     android:id="@+id/delete_card"
@@ -143,26 +149,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="16dp"
-                    android:src="@android:drawable/ic_menu_delete" />
-
-
-                <!--<Button-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@android:drawable/ic_menu_delete"-->
-                    <!--/>-->
-                <!--<Button-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@android:drawable/ic_menu_share"-->
-                    <!--/>-->
-                <!--<Button-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@android:drawable/ic_menu_edit"-->
-
+                    android:src="@drawable/ic_delete_black_24dp" />
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dateSavedField"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/action_icons"
+                />
 
 
         </RelativeLayout>

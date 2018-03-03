@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import archelo.hourtracker.views.NumberPicker;
@@ -49,9 +50,11 @@ public class TimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         position = getArguments().getInt("position");
+        Long timeStamp = getArguments().getLong("date");
 
         final Calendar calendar = Calendar.getInstance(Locale.US);
         lastCalendar = calendar;
+        lastCalendar.setTime(new Date(timeStamp));
         Log.v("Inflating","Time fragment: " + position);
         View view = inflater.inflate(R.layout.time_fragment, container, false);
         currentDate = (Button) view.findViewById(R.id.currentDate);
@@ -106,9 +109,7 @@ public class TimeFragment extends Fragment {
             ampmPicker.setValue(savedInstanceState.getInt(FIRST_AMPM,calendar.get(Calendar.AM_PM)));
         }
         else{
-            hourPicker.setValue(calendar.get(Calendar.HOUR));
-            minutePicker.setValue(calendar.get(Calendar.MINUTE));
-            ampmPicker.setValue(calendar.get(Calendar.AM_PM));
+            updatePickersFromCalendar();
         }
 
 
@@ -156,6 +157,12 @@ public class TimeFragment extends Fragment {
         return view;
     }
 
+    private void updatePickersFromCalendar(){
+        hourPicker.setValue(lastCalendar.get(Calendar.HOUR));
+        minutePicker.setValue(lastCalendar.get(Calendar.MINUTE));
+        ampmPicker.setValue(lastCalendar.get(Calendar.AM_PM));
+    }
+
     //Do not use Hour oft the day. I thought it was hour in 12 hour format. Instead,
     //I tried setting the time to 24 hour format, but adding more than 12 hours, sets the day ahead.
     public void updateCalendarTime(){
@@ -201,6 +208,11 @@ public class TimeFragment extends Fragment {
     public void onActivityCreated (Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
+    }
+
+    public void setTime(Date date){
+        lastCalendar.setTime(date);
+        updatePickersFromCalendar();
     }
 
     public String getHour(){

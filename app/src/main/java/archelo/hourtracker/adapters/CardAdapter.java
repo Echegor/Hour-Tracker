@@ -1,6 +1,7 @@
 package archelo.hourtracker.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -11,15 +12,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 
 import archelo.hourtracker.R;
+import archelo.hourtracker.activities.TimeCollector;
 import archelo.hourtracker.database.TimeEntry;
 import archelo.hourtracker.database.DbHelper;
 import archelo.hourtracker.database.DbHelperContract;
+import archelo.hourtracker.utility.Utility;
 
 /**
  * Created by Archelo on 12/4/2017.
@@ -51,14 +57,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewH
     }
 
     // Replace the contents of a view (invoked by the layout manager)
+
     @Override
-    public void onBindViewHolder(CardAdapter.TimeEntryViewHolder holder, int position) {
+    public void onBindViewHolder(CardAdapter.TimeEntryViewHolder holder, final int position) {
         final TimeEntry entry = myDataset.get(position);
         String dateCreated = DateFormat.getDateTimeInstance().format(entry.getDateCreated());
         String startTime = DateFormat.getTimeInstance().format(entry.getStartTime());
         String endTime = DateFormat.getTimeInstance().format(entry.getEndTime());
         String hoursWorked = NumberFormat.getNumberInstance().format(entry.getHoursWorked());
         String moneyEarned = NumberFormat.getCurrencyInstance().format(entry.getMoneyEarned());
+        String dayOfweek = new SimpleDateFormat("EE").format(entry.getDateCreated()) ;
 
         holder.hoursWorkedField.setText(hoursWorked);
         holder.moneyEarnedField.setText(moneyEarned);
@@ -66,7 +74,38 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewH
         holder.endTimeLabel.setText(endTime);
         holder.dateSavedField.setText(dateCreated);
         holder.notes.setText(entry.getNotes());
-        holder.personPhoto.setImageResource(R.drawable.ic_add_black_plus_24dp);
+        holder.dayOfWeek.setText(dayOfweek);
+//        holder.dayOfWeek.setImageResource(R.drawable.ic_add_black_plus_24dp);
+
+        holder.cv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"card pressed " + position);
+                Intent intent = new Intent(context,TimeCollector.class );
+                intent.putExtra(TimeEntry.CLASS_NAME,myDataset.get(position));
+                context.startActivity(intent);
+            }
+        });
+        holder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"edit pressed " + position);
+            }
+        });
+
+        holder.share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"share pressed " + position);
+            }
+        });
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"delete pressed " + position);
+            }
+        });
 
     }
 
@@ -105,28 +144,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewH
     }
 
     public void removeItemFromDb(int position){
-        DbHelper database = null;
-        SQLiteDatabase db = null;
-        try{
-            long itemID = myDataset.get(position).getId();
-            Log.d(TAG,"deleting item " + itemID);
-            String whereClause = "_id=?";
-            String[] whereArgs = new String[] {Long.toString(itemID)};
-            database = new DbHelper(context);
-            db = database.getWritableDatabase();
-            db.delete(DbHelperContract.DbEntry.TABLE_NAME, whereClause, whereArgs);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        finally{
-            if(database != null){
-                database.close();
-            }
-            if(db != null){
-                db.close();
-            }
-        }
+        long itemID = myDataset.get(position).getId();
+        Log.d(TAG,"deleting item " + position +  ", itemID = " + itemID);
+
+        Utility.deleteItem(itemID,context);
+
     }
     public static class TimeEntryViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -137,17 +159,23 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewH
         TextView startTimeLabel;
         TextView endTimeLabel;
         TextView notes;
-        ImageView personPhoto;
-        public TimeEntryViewHolder(View itemview) {
-            super(itemview);
+        TextView dayOfWeek;
+        ImageView edit;
+        ImageView share;
+        ImageView delete;
+        public TimeEntryViewHolder(View itemView) {
+            super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
-            hoursWorkedField = (TextView)itemView.findViewById(R.id.hoursWorkedField);
-            moneyEarnedField = (TextView)itemView.findViewById(R.id.moneyEarnedField);
-            dateSavedField = (TextView)itemView.findViewById(R.id.dateSavedField);
-            startTimeLabel = (TextView)itemView.findViewById(R.id.startTimeLabel);
-            endTimeLabel = (TextView)itemView.findViewById(R.id.endTimeLabel);
-            personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
-            notes = (TextView) itemview.findViewById(R.id.notes);
+            hoursWorkedField = (TextView) itemView.findViewById(R.id.hoursWorkedField);
+            moneyEarnedField = (TextView) itemView.findViewById(R.id.moneyEarnedField);
+            dateSavedField = (TextView) itemView.findViewById(R.id.dateSavedField);
+            startTimeLabel = (TextView) itemView.findViewById(R.id.startTimeLabel);
+            endTimeLabel = (TextView) itemView.findViewById(R.id.endTimeLabel);
+            dayOfWeek = (TextView) itemView.findViewById(R.id.day_of_week);
+            notes = (TextView) itemView.findViewById(R.id.notes);
+            edit = (ImageView) itemView.findViewById(R.id.edit_card);
+            share = (ImageView) itemView.findViewById(R.id.share_card);
+            delete = (ImageView) itemView.findViewById(R.id.delete_card);
         }
     }
 }

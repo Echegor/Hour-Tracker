@@ -29,6 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </archelo.hourtracker.views.MeasuredViewPager>
+
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,6 +38,7 @@
             android:focusableInTouchMode="true"
             android:padding="10dp">
             <!--android:background="@android:drawable/editbox_background_normal"-->
+
             <CheckedTextView
                 android:id="@+id/add_break_check"
                 android:layout_width="match_parent"
@@ -54,6 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/add_break_check"/>
+
 
             <android.support.v7.widget.GridLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -128,9 +132,12 @@
                 android:text="@string/notes"
                 android:textColor="@android:color/white" />
 
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/layout_border"
+                android:padding="10dp"
                 android:layout_below="@id/noteLabel">
 
                 <android.support.design.widget.TextInputEditText
@@ -156,6 +163,7 @@
 
 
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
