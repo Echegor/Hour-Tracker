@@ -24,7 +24,7 @@ public class ReportActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         Utility.InitDrawerResult result = Utility.initNavigationDrawer(this, mToolbar);
@@ -40,7 +40,7 @@ public class ReportActivity extends AppCompatActivity implements NavigationView.
         switch (id) {
             case R.id.nav_home:
                 Log.d(TAG, "Pressed nav_report");
-                startActivity(new Intent(ReportActivity.this, MainActivity.class));
+                onBackPressed();
                 finish();
                 //item.setChecked(false);
                 return true;
@@ -64,5 +64,15 @@ public class ReportActivity extends AppCompatActivity implements NavigationView.
 
 
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

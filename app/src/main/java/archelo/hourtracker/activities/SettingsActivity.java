@@ -118,7 +118,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Nav
         setupActionBar();
         setContentView(R.layout.settings_activity);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         Utility.InitDrawerResult result = Utility.initNavigationDrawer(this,mToolbar);
@@ -131,7 +131,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Nav
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -181,7 +181,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Nav
         switch (id){
             case R.id.nav_home:
                 Log.d(TAG,"Pressed nav_report");
-                startActivity(new Intent(SettingsActivity.this,MainActivity.class));
+                //startActivity(new Intent(SettingsActivity.this,MainActivity.class));
+                onBackPressed();
                 finish();
                 //item.setChecked(false);
                 return true;

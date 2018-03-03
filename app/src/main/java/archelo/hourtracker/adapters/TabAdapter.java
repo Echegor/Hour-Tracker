@@ -63,7 +63,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
                 return fragmentOne;
             case 1:
                 bundle.putInt("position",1);
-                bundle.putLong("date",start.getTime());
+                bundle.putLong("date", end.getTime());
                 Fragment fragmentTwo = new TimeFragment();
                 fragmentTwo.setArguments(bundle);
                 return fragmentTwo;
@@ -72,6 +72,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    //only works if the tab has been instantiated
     public TimeFragment getFragmentOne(){
         return fragmentOne;
     }

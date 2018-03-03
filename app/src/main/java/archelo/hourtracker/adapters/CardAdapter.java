@@ -75,9 +75,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewH
         holder.cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "card pressed " + holder.getAdapterPosition());
+                int position = holder.getAdapterPosition();
+                Log.d(TAG, "card pressed " + position);
+
+                TimeEntry entry = myDataset.get(position);
+                entry.setCurrentIndex(position);
                 Intent intent = new Intent(context,TimeCollector.class );
-                intent.putExtra(TimeEntry.CLASS_NAME, myDataset.get(holder.getAdapterPosition()));
+                intent.putExtra(TimeEntry.CLASS_NAME, entry);
                 context.startActivity(intent);
             }
         });

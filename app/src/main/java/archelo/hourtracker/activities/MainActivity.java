@@ -44,7 +44,6 @@ import java.util.List;
 
 import archelo.hourtracker.R;
 import archelo.hourtracker.adapters.CardAdapter;
-import archelo.hourtracker.adapters.ItemTouchHelperAdapter;
 import archelo.hourtracker.callbacks.SimpleItemTouchHelperCallback;
 import archelo.hourtracker.database.DbHelper;
 import archelo.hourtracker.database.DbHelperContract;
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity
     private CardAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private List<TimeEntry> mItems;
-    private boolean itemsRefreshed;
     private Toolbar toolbar;
     private AppBarLayout appBarLayout;
     private ImageView face;
@@ -70,7 +68,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        itemsRefreshed = true;
         Log.v(TAG,"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -97,12 +94,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void initToolBar(){
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
     public void initFAB(){
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,7 +131,7 @@ public class MainActivity extends AppCompatActivity
 //    }
 
     public void initRecyclerView(){
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        mRecyclerView = findViewById(R.id.my_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -151,13 +148,13 @@ public class MainActivity extends AppCompatActivity
         mAdapter = new CardAdapter(mItems,this);
         mRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter)mAdapter);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(mRecyclerView);
     }
     public void initAppBarLayoutListener(){
-        appBarLayout = (AppBarLayout) findViewById(R.id.main_appbar);
-        face = (ImageView) findViewById(R.id.main_backdrop);
+        appBarLayout = findViewById(R.id.main_appbar);
+        face = findViewById(R.id.main_backdrop);
         if(appBarLayout == null || face == null){
             Log.e(TAG,"FAILED TO BIND happy_face or appbar LAYOUT");
         }
@@ -169,7 +166,7 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                    Log.d(TAG,"collapsing toolbar Vertical Offset is " + verticalOffset);
+                    //Log.d(TAG,"collapsing toolbar Vertical Offset is " + verticalOffset);
                     if (Math.abs(verticalOffset)-appBarLayout.getTotalScrollRange() == 0) {
                         //  Collapsed
                         Log.d(TAG,"Going from happy to sad");
@@ -200,7 +197,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPause(){
         super.onPause();
-        itemsRefreshed = false;
     }
 
     @Override
@@ -277,7 +273,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -346,7 +342,7 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG,"Pressed nav_settings");
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 //item.setChecked(false);
-                finish();
+//                finish();
                 return true;
             case R.id.nav_share:
                 Log.d(TAG,"Pressed nav_share");
@@ -452,32 +448,33 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == REQUEST_TIME && resultCode == Activity.RESULT_OK) {
             //Using coordinator layout to keep snack message above hidden buttons
             Snackbar mSnackbar = Snackbar.make(this.findViewById(R.id.CoordinatorLayout_main), R.string.saved, Snackbar.LENGTH_LONG);
-// get snackbar view
             View mView = mSnackbar.getView();
-// get textview inside snackbar view
-            TextView mTextView = (TextView) mView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView mTextView = mView.findViewById(android.support.design.R.id.snackbar_text);
 //                mTextView.setAllCaps(true);
-// set text to center
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
                 mTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             else
                 mTextView.setGravity(Gravity.CENTER_HORIZONTAL);
 
             Bundle extras = data.getExtras();
-            if (extras != null && !itemsRefreshed) {
+            if (extras != null) {
                 TimeEntry entry= (TimeEntry) extras.getSerializable(TimeEntry.CLASS_NAME); //Obtaining data
                 //Log.d(TAG,"Is object null? " + String.valueOf(entry));
                 if(entry != null){
+                    int index = entry.getCurrentIndex();
                     mItems.add(0,entry);
-
+                    mItems.remove(index);
                     //slower performace. Removed
-                    //mAdapter.notifyDataSetChanged();
+//                    mAdapter.notifyDataSetChanged();
                     Log.d(TAG,"Refreshing data set");
+                    mAdapter.notifyItemRemoved(index);
                     mAdapter.notifyItemInserted(0);
                     //TODO scroll on item add
                     //I flipped the two
 //                    mAdapter.notifyItemInserted(0);
 
+                } else {
+                    Log.d(TAG, "No time entry created on result");
                 }
             }
 // show the snackbar

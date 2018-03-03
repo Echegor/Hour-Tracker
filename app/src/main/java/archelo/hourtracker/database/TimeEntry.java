@@ -21,6 +21,7 @@ public class TimeEntry implements Serializable {
     private int breakValue;
     private BigDecimal moneyEarned;
     private BigDecimal hoursWorked;
+    private int index;
 
     public TimeEntry(long id, long startTime, long endTime, int breakDuration, int isBreakSubtracted, String notes, long dateCreated, BigDecimal moneyEarned, BigDecimal hoursWorked){
         this.id = id;
@@ -90,6 +91,14 @@ public class TimeEntry implements Serializable {
 
     public float getMoneyFloat(){
         return moneyEarned.floatValue();
+    }
+
+    public int getCurrentIndex() {
+        return index;
+    }
+
+    public void setCurrentIndex(int i) {
+        this.index = i;
     }
 
 }

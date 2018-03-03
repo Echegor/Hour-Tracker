@@ -1,7 +1,6 @@
 package archelo.hourtracker.fragments;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,7 +27,6 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import archelo.hourtracker.R;
 import archelo.hourtracker.adapters.TabAdapter;
@@ -117,7 +115,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
                             seekBar.getProgress(),
                             (checkedTextView.isChecked() ? 1 : 0),
                             notebook.getText().toString(),
-                            System.currentTimeMillis(),
+                            savedEntry.getDateCreated().getTime(),
                             moneyDecimal,
                             hoursDecimal);
 
@@ -127,7 +125,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 
 
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(TimeEntry.CLASS_NAME, entry); //second param is Serializable
+                returnIntent.putExtra(TimeEntry.CLASS_NAME, entry);
                 getActivity().setResult(Activity.RESULT_OK,returnIntent);
                 getActivity().finish();
             }
@@ -168,7 +166,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     }
 
     private void setupTabLayout(View view) {
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -203,21 +201,21 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
     }
 
     private void bindViews(View view, TimeEntry entry){
-        moneyEarned = (TextView)view.findViewById(R.id.moneyEarned);
-        hoursWorked = (TextView)view.findViewById(R.id.hoursWorked);
+        moneyEarned = view.findViewById(R.id.moneyEarned);
+        hoursWorked = view.findViewById(R.id.hoursWorked);
         notebook = (TextInputEditText) view.findViewById(R.id.notebook);
-        checkedTextView = (CheckedTextView) view.findViewById(R.id.add_break_check);
-        seekBar = (SeekBarHint) view.findViewById(R.id.breakSeekBar);
+        checkedTextView = view.findViewById(R.id.add_break_check);
+        seekBar = view.findViewById(R.id.breakSeekBar);
         saveButton = view.findViewById(R.id.save_button);
         nextButton = view.findViewById(R.id.next_button);
 
-        viewPager = (ViewPager) view.findViewById(R.id.pager);
+        viewPager = view.findViewById(R.id.pager);
 
         if(entry != null){
             moneyEarned.setText(entry.getMoneyEarned().toPlainString());
             hoursWorked.setText(entry.getHoursWorked().toPlainString());
             notebook.setText(entry.getNotes());
-            checkedTextView.setChecked(Boolean.valueOf(String.valueOf(entry.getBreakValue())));
+            checkedTextView.setChecked((String.valueOf(entry.getBreakValue()).equals("1")));
             seekBar.setProgress(entry.getBreakDuration());
             final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), 2,entry.getStartTime(),entry.getEndTime());
             viewPager.setAdapter(adapter);
@@ -320,7 +318,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_SAVED_DATE,entry.getDateCreated().getTime());
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_HOURS_WORKED,entry.getScaledHours());
             values.put(DbHelperContract.DbEntry.COLUMN_NAME_MONEY_EARNED,entry.getScaledMoney());
-            String where = "id=?";
+            String where = DbHelperContract.DbEntry._ID + "=?";
             String[] whereArgs = new String[] {String.valueOf(entry.getId())};
             Log.d(TAG,"Saving " + values.toString());
             return db.update(DbHelperContract.DbEntry.TABLE_NAME, values, where, whereArgs);

@@ -15,9 +15,10 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
-import archelo.hourtracker.views.NumberPicker;
 import archelo.hourtracker.R;
+import archelo.hourtracker.views.NumberPicker;
 
 
 /**
@@ -41,10 +42,12 @@ public class TimeFragment extends Fragment {
     private int position;
     private Calendar lastCalendar;
 
-    //TODO checkout textswitcher to see how it looks.
-    public interface OnTimeSetListener {
-        void onTimeSet(int id, Calendar calendar);
+    public static void initializePicker(NumberPicker picker, int minValue, int maxValue, String[] data) {
+        picker.setMinValue(minValue);
+        picker.setMaxValue(maxValue);
+        picker.setDisplayedValues(data);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +55,13 @@ public class TimeFragment extends Fragment {
         position = getArguments().getInt("position");
         Long timeStamp = getArguments().getLong("date");
 
-        final Calendar calendar = Calendar.getInstance(Locale.US);
+        final Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
         lastCalendar = calendar;
-        lastCalendar.setTime(new Date(timeStamp));
+        lastCalendar.setTimeInMillis(timeStamp);
+//        lastCalendar.
         Log.v("Inflating","Time fragment: " + position);
         View view = inflater.inflate(R.layout.time_fragment, container, false);
-        currentDate = (Button) view.findViewById(R.id.currentDate);
+        currentDate = view.findViewById(R.id.currentDate);
 
         final DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
 
@@ -92,11 +96,11 @@ public class TimeFragment extends Fragment {
         currentDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
         View pickerOne = view.findViewById(R.id.pickerOne);
 
-        startTime = (TextView) view.findViewById(R.id.startTime);
+        startTime = view.findViewById(R.id.startTime);
 
-        hourPicker = (NumberPicker) pickerOne.findViewById(R.id.hour);
-        minutePicker = (NumberPicker) pickerOne.findViewById(R.id.mins);
-        ampmPicker = (NumberPicker) pickerOne.findViewById(R.id.ampm);
+        hourPicker = pickerOne.findViewById(R.id.hour);
+        minutePicker = pickerOne.findViewById(R.id.mins);
+        ampmPicker = pickerOne.findViewById(R.id.ampm);
 
         initializePicker(hourPicker,0,hour.length-1,hour);
         initializePicker(minutePicker,0,minutes.length -1,minutes);
@@ -158,7 +162,9 @@ public class TimeFragment extends Fragment {
     }
 
     private void updatePickersFromCalendar(){
-        hourPicker.setValue(lastCalendar.get(Calendar.HOUR));
+        //The -1 is here because when instantiating from card view, the array containing the hours strings has
+        //the indexes starting at 1 and so, 1 must be subtracted
+        hourPicker.setValue(lastCalendar.get(Calendar.HOUR) - 1);
         minutePicker.setValue(lastCalendar.get(Calendar.MINUTE));
         ampmPicker.setValue(lastCalendar.get(Calendar.AM_PM));
     }
@@ -231,13 +237,6 @@ public class TimeFragment extends Fragment {
         return DateFormat.getTimeInstance(DateFormat.SHORT).format(lastCalendar.getTime());
     }
 
-    public static void initializePicker(NumberPicker picker,int minValue, int maxValue , String [] data){
-        picker.setMinValue(minValue);
-        picker.setMaxValue(maxValue);
-        picker.setDisplayedValues(data);
-    }
-
-
     //Save the current position of the picker.
     @Override
     public void onSaveInstanceState(Bundle outstate){
@@ -248,12 +247,17 @@ public class TimeFragment extends Fragment {
 
         super.onSaveInstanceState(outstate);
     }
-    //you were fixing time views
 
     private void notifyChange(int id, Calendar calendar) {
 
         if (mOnTimeSetListener != null) {
             mOnTimeSetListener.onTimeSet(id,calendar);
         }
+    }
+    //you were fixing time views
+
+    //TODO checkout textswitcher to see how it looks.
+    public interface OnTimeSetListener {
+        void onTimeSet(int id, Calendar calendar);
     }
 }
