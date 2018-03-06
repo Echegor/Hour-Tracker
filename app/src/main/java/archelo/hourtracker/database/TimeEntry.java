@@ -11,6 +11,7 @@ import java.util.Date;
 public class TimeEntry implements Serializable {
     public static final String CLASS_NAME = "TIME_ENTRY";
     private static final long serialVersionUID = 7526471155622776148L;
+    public static int INVALID_INDEX = -1;
     private long id;
     private Date startTime;
     private Date endTime;
@@ -99,6 +100,20 @@ public class TimeEntry implements Serializable {
 
     public void setCurrentIndex(int i) {
         this.index = i;
+    }
+
+    public void setTimeEntry(TimeEntry entry) {
+        this.id = entry.getId();
+        this.breakValue = entry.getBreakValue();
+        this.startTime = entry.getStartTime();
+        this.endTime = entry.getEndTime();
+        this.dateCreated = entry.getDateCreated();
+        this.notes = entry.getNotes();
+        this.isBreakSubtracted = entry.isBreakSubtracted();
+        this.breakDuration = entry.getBreakDuration();
+        this.moneyEarned = entry.getMoneyEarned();
+        this.hoursWorked = entry.getHoursWorked();
+        this.index = entry.getCurrentIndex();
     }
 
 }

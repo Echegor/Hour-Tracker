@@ -3,19 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tabScroller"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:fillViewport="true">
 
     <LinearLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/colorPrimaryDark"
         android:orientation="vertical"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        tools:context=".OldMain">
+        android:weightSum="1"
+        tools:context=".activities.MainActivity">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
@@ -132,37 +133,25 @@
                 android:text="@string/notes"
                 android:textColor="@android:color/white" />
 
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/noteLabel"
                 android:background="@drawable/layout_border"
-                android:padding="10dp"
-                android:layout_below="@id/noteLabel">
+                android:padding="10dp">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/notebook"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:background="@android:color/white"
-
+                    android:gravity="center|center_horizontal|start|top"
                     android:hint="@string/notebook_hint"
                     android:inputType="textMultiLine" />
 
             </android.support.design.widget.TextInputLayout>
-
-
-                <!--<EditText-->
-                    <!--android:id="@+id/notebook"-->
-                    <!--android:layout_below="@id/noteLabel"-->
-                    <!--android:hint="@string/notebook_hint"-->
-                    <!--android:inputType="textMultiLine"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"/>-->
-
-
-
         </RelativeLayout>
+
 
         <RelativeLayout
             android:layout_width="match_parent"

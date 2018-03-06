@@ -96,7 +96,7 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
 
                 TimeEntry entry = null;
                 if(savedEntry == null){
-                    entry = new  TimeEntry(0,
+                    entry = new TimeEntry(-1,
                             mStartTime.getTimeInMillis(),
                             mStopTime.getTimeInMillis(),
                             seekBar.getProgress(),
@@ -106,9 +106,11 @@ public class TabFragment extends Fragment implements TimeFragment.OnTimeSetListe
                             moneyDecimal,
                             hoursDecimal);
                     entry.setId(performSave(view,entry));
+                    entry.setCurrentIndex(TimeEntry.INVALID_INDEX); //for updating on the main activity result
                     Log.d(TAG,"Created item "+ entry.getId());
                 }
                 else{
+                    //current index is set during card view start
                     entry = new  TimeEntry(savedEntry.getId(),
                             mStartTime.getTimeInMillis(),
                             mStopTime.getTimeInMillis(),

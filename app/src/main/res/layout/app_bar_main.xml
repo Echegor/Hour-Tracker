@@ -23,10 +23,10 @@
             android:id="@+id/main.collapsing"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             >
 
             <!--  android:scaleType="centerCrop"
@@ -42,8 +42,8 @@
                     android:layout_below="@+id/missing_image_text"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
-                    android:src="@drawable/happy_to_sad_animation"
-                    android:contentDescription="@string/profile_photo" />
+                    android:contentDescription="@string/profile_photo"
+                    android:src="@drawable/happy_to_sad_animation" />
 
                 <TextView
                     android:id="@+id/missing_image_text"
@@ -51,9 +51,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
                     android:paddingBottom="10dp"
-                    android:layout_centerHorizontal="true"
                     android:text="@string/add_your_profile_picture"
                     android:textSize="20sp" />
             </RelativeLayout>
@@ -61,27 +61,29 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/main_toolbar"
-                app:title="@string/app_name"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="@string/app_name"
                 />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
-        <include layout="@layout/content_main" />
-    </android.support.v4.widget.NestedScrollView>
+    <include layout="@layout/content_main" />
+
+    <!--<android.support.v4.widget.NestedScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+    <!--&gt;-->
+    <!--<include layout="@layout/content_main" />-->
+    <!--</android.support.v4.widget.NestedScrollView>-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
         app:layout_anchor="@id/main_appbar"
         app:layout_anchorGravity="bottom|right|end"

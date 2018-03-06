@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import archelo.hourtracker.R;
+import archelo.hourtracker.activities.MainActivity;
 import archelo.hourtracker.activities.TimeCollector;
 import archelo.hourtracker.database.TimeEntry;
 import archelo.hourtracker.utility.Utility;
@@ -82,7 +83,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.TimeEntryViewH
                 entry.setCurrentIndex(position);
                 Intent intent = new Intent(context,TimeCollector.class );
                 intent.putExtra(TimeEntry.CLASS_NAME, entry);
-                context.startActivity(intent);
+                ((MainActivity) context).startActivityForResult(intent, 0);
             }
         });
         holder.edit.setOnClickListener(new View.OnClickListener() {

@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity
     public static final int ARRAY_LIST_SIZE = 50; //for optimization
     public static final String TAG = "MainActivity";
     public static final String PREFS_NAME = "MyPrefsFile";
-    private static final int REQUEST_TIME = 0;
     private RecyclerView mRecyclerView;
     private CardAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity
 //                            android.util.Pair.create((View) fab, "bg"));
 //                }
 //                startActivity(intent, options.toBundle());
-                startActivityForResult(intent,REQUEST_TIME);
+                startActivityForResult(intent, 0);
 //                overridePendingTransition(0, 0);
             }
         });
@@ -190,12 +189,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onResume(){
+        Log.d(TAG, "onResume");
         super.onResume();
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
     }
     //ensure that if the recycler view has been refreshed, it is not refreshed again
     @Override
     public void onPause(){
+        Log.d(TAG, "onPause");
         super.onPause();
     }
 
@@ -445,7 +446,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v(TAG, "onActivityResult");
-        if (requestCode == REQUEST_TIME && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             //Using coordinator layout to keep snack message above hidden buttons
             Snackbar mSnackbar = Snackbar.make(this.findViewById(R.id.CoordinatorLayout_main), R.string.saved, Snackbar.LENGTH_LONG);
             View mView = mSnackbar.getView();
@@ -462,16 +463,18 @@ public class MainActivity extends AppCompatActivity
                 //Log.d(TAG,"Is object null? " + String.valueOf(entry));
                 if(entry != null){
                     int index = entry.getCurrentIndex();
-                    mItems.add(0,entry);
-                    mItems.remove(index);
-                    //slower performace. Removed
-//                    mAdapter.notifyDataSetChanged();
-                    Log.d(TAG,"Refreshing data set");
-                    mAdapter.notifyItemRemoved(index);
-                    mAdapter.notifyItemInserted(0);
-                    //TODO scroll on item add
-                    //I flipped the two
-//                    mAdapter.notifyItemInserted(0);
+                    Log.d(TAG, "Refreshing data set index: " + index);
+
+                    if (index != TimeEntry.INVALID_INDEX) {
+//                        mItems.remove(index);
+//                        mItems.add(entry.getCurrentIndex(),entry);
+                        mItems.get(index).setTimeEntry(entry);
+                        mAdapter.notifyItemChanged(index);
+                    } else {
+                        mItems.add(0, entry);
+                        mAdapter.notifyItemInserted(0);
+                        mRecyclerView.smoothScrollToPosition(0);
+                    }
 
                 } else {
                     Log.d(TAG, "No time entry created on result");
